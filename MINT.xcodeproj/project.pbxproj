@@ -7,11 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A64660A31A234F0000648FD9 /* bridge.m in Sources */ = {isa = PBXBuildFile; fileRef = A64660A21A234F0000648FD9 /* bridge.m */; };
+		A64660A81A27771400648FD9 /* OpenJsCADBlackShader.fs in Resources */ = {isa = PBXBuildFile; fileRef = A64660A41A27771400648FD9 /* OpenJsCADBlackShader.fs */; };
+		A64660A91A27771400648FD9 /* OpenJsCADBlackShader.vs in Resources */ = {isa = PBXBuildFile; fileRef = A64660A51A27771400648FD9 /* OpenJsCADBlackShader.vs */; };
+		A64660B01A2B3A7D00648FD9 /* Shader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64660AF1A2B3A7D00648FD9 /* Shader.swift */; };
+		A64660B31A2CC77600648FD9 /* OpenJsCADLightingShader.fs in Resources */ = {isa = PBXBuildFile; fileRef = A64660B11A2CC77600648FD9 /* OpenJsCADLightingShader.fs */; };
+		A64660B41A2CC77600648FD9 /* OpenJsCADLightingShader.vs in Resources */ = {isa = PBXBuildFile; fileRef = A64660B21A2CC77600648FD9 /* OpenJsCADLightingShader.vs */; };
 		A68607F219EEC1E1005E858A /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68607F119EEC1E1005E858A /* main.swift */; };
 		A68607F419EEC1E1005E858A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68607F319EEC1E1005E858A /* AppDelegate.swift */; };
 		A68607F619EEC1E1005E858A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A68607F519EEC1E1005E858A /* Images.xcassets */; };
 		A68607F919EEC1E1005E858A /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = A68607F719EEC1E1005E858A /* MainMenu.xib */; };
 		A686080519EEC1E1005E858A /* MINTTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A686080419EEC1E1005E858A /* MINTTests.swift */; };
+		A686080F19EEC202005E858A /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A686080E19EEC202005E858A /* OpenGL.framework */; };
+		A686081119EEC93B005E858A /* ModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A686081019EEC93B005E858A /* ModelView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -25,6 +33,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A64660A11A234F0000648FD9 /* MINT-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MINT-Bridging-Header.h"; sourceTree = "<group>"; };
+		A64660A21A234F0000648FD9 /* bridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bridge.m; sourceTree = "<group>"; };
+		A64660A41A27771400648FD9 /* OpenJsCADBlackShader.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = OpenJsCADBlackShader.fs; path = MINT/OpenJsCADBlackShader.fs; sourceTree = "<group>"; };
+		A64660A51A27771400648FD9 /* OpenJsCADBlackShader.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = OpenJsCADBlackShader.vs; path = MINT/OpenJsCADBlackShader.vs; sourceTree = "<group>"; };
+		A64660AF1A2B3A7D00648FD9 /* Shader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shader.swift; sourceTree = "<group>"; };
+		A64660B11A2CC77600648FD9 /* OpenJsCADLightingShader.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = OpenJsCADLightingShader.fs; path = MINT/OpenJsCADLightingShader.fs; sourceTree = "<group>"; };
+		A64660B21A2CC77600648FD9 /* OpenJsCADLightingShader.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = OpenJsCADLightingShader.vs; path = MINT/OpenJsCADLightingShader.vs; sourceTree = "<group>"; };
 		A68607EC19EEC1E1005E858A /* MINT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MINT.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A68607F019EEC1E1005E858A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A68607F119EEC1E1005E858A /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
@@ -34,6 +49,9 @@
 		A68607FE19EEC1E1005E858A /* MINTTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MINTTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A686080319EEC1E1005E858A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A686080419EEC1E1005E858A /* MINTTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MINTTests.swift; sourceTree = "<group>"; };
+		A686080E19EEC202005E858A /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		A686081019EEC93B005E858A /* ModelView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelView.swift; sourceTree = "<group>"; };
+		A686081219F01791005E858A /* mint.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = mint.playground; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A686080F19EEC202005E858A /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -54,9 +73,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A64660AC1A27773100648FD9 /* Shader */ = {
+			isa = PBXGroup;
+			children = (
+				A64660B11A2CC77600648FD9 /* OpenJsCADLightingShader.fs */,
+				A64660B21A2CC77600648FD9 /* OpenJsCADLightingShader.vs */,
+				A64660A41A27771400648FD9 /* OpenJsCADBlackShader.fs */,
+				A64660A51A27771400648FD9 /* OpenJsCADBlackShader.vs */,
+			);
+			name = Shader;
+			sourceTree = "<group>";
+		};
 		A68607E319EEC1E0005E858A = {
 			isa = PBXGroup;
 			children = (
+				A64660AC1A27773100648FD9 /* Shader */,
+				A686080E19EEC202005E858A /* OpenGL.framework */,
 				A68607EE19EEC1E1005E858A /* MINT */,
 				A686080119EEC1E1005E858A /* MINTTests */,
 				A68607ED19EEC1E1005E858A /* Products */,
@@ -76,9 +108,14 @@
 			isa = PBXGroup;
 			children = (
 				A68607F319EEC1E1005E858A /* AppDelegate.swift */,
+				A686081219F01791005E858A /* mint.playground */,
+				A686081019EEC93B005E858A /* ModelView.swift */,
+				A64660AF1A2B3A7D00648FD9 /* Shader.swift */,
+				A64660A21A234F0000648FD9 /* bridge.m */,
 				A68607F519EEC1E1005E858A /* Images.xcassets */,
 				A68607F719EEC1E1005E858A /* MainMenu.xib */,
 				A68607EF19EEC1E1005E858A /* Supporting Files */,
+				A64660A11A234F0000648FD9 /* MINT-Bridging-Header.h */,
 			);
 			path = MINT;
 			sourceTree = "<group>";
@@ -189,6 +226,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A64660B31A2CC77600648FD9 /* OpenJsCADLightingShader.fs in Resources */,
+				A64660B41A2CC77600648FD9 /* OpenJsCADLightingShader.vs in Resources */,
+				A64660A81A27771400648FD9 /* OpenJsCADBlackShader.fs in Resources */,
+				A64660A91A27771400648FD9 /* OpenJsCADBlackShader.vs in Resources */,
 				A68607F619EEC1E1005E858A /* Images.xcassets in Resources */,
 				A68607F919EEC1E1005E858A /* MainMenu.xib in Resources */,
 			);
@@ -208,8 +249,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A64660A31A234F0000648FD9 /* bridge.m in Sources */,
+				A686081119EEC93B005E858A /* ModelView.swift in Sources */,
 				A68607F419EEC1E1005E858A /* AppDelegate.swift in Sources */,
 				A68607F219EEC1E1005E858A /* main.swift in Sources */,
+				A64660B01A2B3A7D00648FD9 /* Shader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,10 +368,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = MINT/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "MINT/MINT-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -335,10 +382,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = MINT/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "MINT/MINT-Bridging-Header.h";
 			};
 			name = Release;
 		};
@@ -397,6 +446,7 @@
 				A686080A19EEC1E1005E858A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A686080B19EEC1E1005E858A /* Build configuration list for PBXNativeTarget "MINTTests" */ = {
 			isa = XCConfigurationList;
@@ -405,6 +455,7 @@
 				A686080D19EEC1E1005E858A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
