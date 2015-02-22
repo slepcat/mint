@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A61596D61A3DE09C00B314B6 /* Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61596D51A3DE09C00B314B6 /* Base.swift */; };
 		A64660A31A234F0000648FD9 /* bridge.m in Sources */ = {isa = PBXBuildFile; fileRef = A64660A21A234F0000648FD9 /* bridge.m */; };
 		A64660A81A27771400648FD9 /* OpenJsCADBlackShader.fs in Resources */ = {isa = PBXBuildFile; fileRef = A64660A41A27771400648FD9 /* OpenJsCADBlackShader.fs */; };
 		A64660A91A27771400648FD9 /* OpenJsCADBlackShader.vs in Resources */ = {isa = PBXBuildFile; fileRef = A64660A51A27771400648FD9 /* OpenJsCADBlackShader.vs */; };
@@ -20,6 +21,7 @@
 		A686080519EEC1E1005E858A /* MINTTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A686080419EEC1E1005E858A /* MINTTests.swift */; };
 		A686080F19EEC202005E858A /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A686080E19EEC202005E858A /* OpenGL.framework */; };
 		A686081119EEC93B005E858A /* ModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A686081019EEC93B005E858A /* ModelView.swift */; };
+		A6AACFE51A9999EF00BE0724 /* tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6AACFE41A9999EF00BE0724 /* tag.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,6 +35,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A61596D51A3DE09C00B314B6 /* Base.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Base.swift; sourceTree = "<group>"; };
 		A64660A11A234F0000648FD9 /* MINT-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MINT-Bridging-Header.h"; sourceTree = "<group>"; };
 		A64660A21A234F0000648FD9 /* bridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bridge.m; sourceTree = "<group>"; };
 		A64660A41A27771400648FD9 /* OpenJsCADBlackShader.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = OpenJsCADBlackShader.fs; path = MINT/OpenJsCADBlackShader.fs; sourceTree = "<group>"; };
@@ -52,6 +55,7 @@
 		A686080E19EEC202005E858A /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		A686081019EEC93B005E858A /* ModelView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelView.swift; sourceTree = "<group>"; };
 		A686081219F01791005E858A /* mint.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = mint.playground; sourceTree = "<group>"; };
+		A6AACFE41A9999EF00BE0724 /* tag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = tag.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +114,8 @@
 				A68607F319EEC1E1005E858A /* AppDelegate.swift */,
 				A686081219F01791005E858A /* mint.playground */,
 				A686081019EEC93B005E858A /* ModelView.swift */,
+				A61596D51A3DE09C00B314B6 /* Base.swift */,
+				A6AACFE41A9999EF00BE0724 /* tag.swift */,
 				A64660AF1A2B3A7D00648FD9 /* Shader.swift */,
 				A64660A21A234F0000648FD9 /* bridge.m */,
 				A68607F519EEC1E1005E858A /* Images.xcassets */,
@@ -249,10 +255,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A6AACFE51A9999EF00BE0724 /* tag.swift in Sources */,
 				A64660A31A234F0000648FD9 /* bridge.m in Sources */,
 				A686081119EEC93B005E858A /* ModelView.swift in Sources */,
 				A68607F419EEC1E1005E858A /* AppDelegate.swift in Sources */,
 				A68607F219EEC1E1005E858A /* main.swift in Sources */,
+				A61596D61A3DE09C00B314B6 /* Base.swift in Sources */,
 				A64660B01A2B3A7D00648FD9 /* Shader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
