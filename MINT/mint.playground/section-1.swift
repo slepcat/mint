@@ -4,10 +4,27 @@ import Foundation
 import Cocoa
 import OpenGL
 
-let bundle = NSBundle.mainBundle()
+class Tag {
+    private var count:Int = 0
+    private init() {}
+    
+    var newTag: Int {
+        return count++
+    }
+    
+    class var get: Tag {
+        struct Static {
+            static let tagFactory = Tag()
+        }
+        return Static.tagFactory
+    }
+}
 
-let b: UnsafePointer<CChar> = "baka".withCString()
+var a = Tag.get.newTag
+a = Tag.get.newTag
+a = Tag.get.count
 
 
-let a = String.init(CString: b, encoding: NSUTF8StringEncoding)!.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
+var b = Tag()
 
+b.get.newTag
