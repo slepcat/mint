@@ -44,6 +44,15 @@ struct ViewAngle {
     // OpenGL Parameters
     let bgColor : [Float] = [0.93, 0.93, 0.93, 1]//Background Color, 7% Gray
     
+    // objects
+    //var mesh:[MintClass]? = nil
+    var vboid:GLuint = 0
+    var gl_vertex:GLuint = 0
+    
+    // VBO update flag
+    var needVBO : Bool = true
+    var glmesh:[GLdouble] = []
+    
     override func prepareOpenGL() {
         
         super.prepareOpenGL()
@@ -52,6 +61,7 @@ struct ViewAngle {
         
         if let shader = lightingShader {
             glUseProgram(shader.program)
+            self.gl_vertex = numericCast(glGetAttribLocation(shader.program, "gl_Vertex"))
         } else {
             println("failed to init shader")
         }
@@ -61,7 +71,7 @@ struct ViewAngle {
         
         let aspect = self.frame.size.width / self.frame.size.height
         
-        glFrustum(Double(-aspect / (2.0 * 1.79259098692)), Double(aspect / (2.0 * 1.79259098692)), -0.5 / 1.79259098692, 0.5 / 1.79259098692, 0.5, 1000)
+        glFrustum(Double(-aspect / (2.0 * 1.79259098692)), Double(aspect / (2.0 * 1.79259098692)), -0.5 / 1.79259098692, 0.5 / 1.79259098692, 0.5, 1500)
         glMatrixMode(UInt32(GL_MODELVIEW))
         
         glClearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3])
@@ -77,6 +87,10 @@ struct ViewAngle {
         glRotatef(viewAngle.y, 0, 1, 0)
         glRotatef(viewAngle.z, 0, 0, 1)
         
+        if self.needVBO == true {
+            self.updateVBO()
+        }
+        
         self.drawAnObject()
         
         if self.drawAxes || self.drawPlane {
@@ -86,21 +100,71 @@ struct ViewAngle {
         glFlush()
     }
     
+    func prepareMesh4debug() {
+
+    }
+    
+    func updateVBO() {
+        //test code
+        
+        let mesh: [Vertex] = [Vertex(pos: Vector(x: 0.0 ,y: 30.0, z: 0.0)), Vertex(pos: Vector(x: -10.0, y: -20.0, z:0.0)), Vertex(pos: Vector(x: 10.0, y: -20.0, z: 0.0))]
+        
+        for m in mesh {
+            self.glmesh += [m.pos.x, m.pos.y, m.pos.z]
+        }
+        
+        glGenBuffers(1, &self.vboid)
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vboid)
+        glBufferData(GLenum(GL_ARRAY_BUFFER), self.glmesh.count * sizeof(GLdouble), &self.glmesh, GLenum(GL_STATIC_DRAW))
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+        
+        self.needVBO = false
+        
+        /* mint model should be implemented
+        if mesh == nil {
+            return
+        }
+        
+        for m in self.mesh {
+            // check buffer id of mesh. if nil, prepare VBO buffer.
+            if self.mesh.bufferid == nil {
+            
+            } else {
+                // check update flag. if true, update VBO buffer.
+                if self.mesh.updated == true {
+                    
+                }
+            }
+        }*/
+    }
+    
     func drawAnObject() {
         glColor3f(1.0, 0.85, 0.35)
-        glBegin(UInt32(GL_TRIANGLES))
-            glVertex3f(  0.0,  30.0, 0.0)
-            glVertex3f( -10.0, -20.0, 0.0)
-            glVertex3f(  10.0, -20.0 ,0.0)
-        glEnd()
+        
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vboid)
+        glEnableVertexAttribArray(gl_vertex)
+        
+        glVertexAttribPointer(self.gl_vertex, 3, GLenum(GL_DOUBLE), GLboolean(GL_FALSE), 0, nil)
+        glDrawArrays(GLenum(GL_TRIANGLES), 0, 3)
+        
+        //glDrawElements(GLenum(GL_TRIANGLES), GLsizei(self.glmesh.count), GLenum(GL_UNSIGNED_BYTE), nil)
+        
+        
+        glDisableVertexAttribArray(gl_vertex)
+        
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+
     }
     
     func drawAxesAndPlane() {
-        glEnable(UInt32(GL_BLEND))
-        glBlendFunc(UInt32(GL_SRC_ALPHA), UInt32(GL_ONE_MINUS_SRC_ALPHA))
-        glBegin(UInt32(GL_LINES))
+        glEnable(GLenum(GL_BLEND))
+        glBlendFunc(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA))
+        glBegin(GLenum(GL_LINES))
+        
         let plate:Float = 200
-        if(self.drawPlane) {
+        
+        // draw plane grid
+        if self.drawPlane {
             glColor4f(0.8,0.8,0.8,0.5) // -- minor grid
             for var x = -plate / 2; x <= plate / 2; x += 1 {
                 if (x % 10) != 0 {
@@ -164,7 +228,7 @@ struct ViewAngle {
             */
         }
         glEnd()
-        glDisable(UInt32(GL_BLEND))
+        glDisable(GLenum(GL_BLEND))
     }
     
     
