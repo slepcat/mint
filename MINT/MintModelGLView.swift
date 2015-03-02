@@ -30,15 +30,17 @@ struct ViewAngle {
     let zoomMin:Float = 10
     
     // camera speeds
-    
     //var rotateFactor:Float = 0.1
-    var zoomFactor:Float = 0.005
+    //var zoomFactor:Float = 0.005
     
-    // UI Settings
+    // UI Settings: Axes & Plane
     var drawAxes : Bool = true
     var drawPlane : Bool = true
     var drawLines : Bool = false
-    
+    var axes_vbo : [GLuint] = []
+    var plane_vbo : [GLuint] = []
+    var pvcount : GLsizei = 0
+    var avcount : GLsizei = 0
     var lightingShader:Shader? = nil
     
     // OpenGL Parameters
@@ -47,7 +49,10 @@ struct ViewAngle {
     // objects
     //var mesh:[MintClass]? = nil
     var vboid:GLuint = 0
+    var vboc:GLuint = 0
     var gl_vertex:GLuint = 0
+    var gl_color:GLuint = 0
+    var gl_alpha:GLuint = 0
     
     // VBO update flag
     var needVBO : Bool = true
@@ -61,7 +66,28 @@ struct ViewAngle {
         
         if let shader = lightingShader {
             glUseProgram(shader.program)
-            self.gl_vertex = numericCast(glGetAttribLocation(shader.program, "gl_Vertex"))
+            
+            // Vertex id
+            var attribId = glGetAttribLocation(shader.program, "gl_Vertex")
+            if  attribId >= 0 {
+                self.gl_vertex = numericCast(attribId)
+            } else {
+                println("failed to get gl_Vertex pos")
+            }
+            // Color id
+            attribId = glGetAttribLocation(shader.program, "vertexColor")
+            if  attribId >= 0 {
+                self.gl_color = numericCast(attribId)
+            } else {
+                println("failed to get vertexColor")
+            }
+            // Alpha id
+            attribId = glGetAttribLocation(shader.program, "vertexAlpha")
+            if  attribId >= 0 {
+                self.gl_alpha = numericCast(attribId)
+            } else {
+                println("failed to get vertexAlpha")
+            }
         } else {
             println("failed to init shader")
         }
@@ -118,6 +144,13 @@ struct ViewAngle {
         glBufferData(GLenum(GL_ARRAY_BUFFER), self.glmesh.count * sizeof(GLdouble), &self.glmesh, GLenum(GL_STATIC_DRAW))
         glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
         
+        var mcolor: [GLfloat] = [1.0, 0.85, 0.35, 1.0, 0.85, 0.35, 0.5, 0.85, 0.85]
+        
+        glGenBuffers(1, &self.vboc)
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vboc)
+        glBufferData(GLenum(GL_ARRAY_BUFFER), mcolor.count * sizeof(GLfloat), &mcolor, GLenum(GL_STATIC_DRAW))
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+        
         self.needVBO = false
         
         /* mint model should be implemented
@@ -139,18 +172,23 @@ struct ViewAngle {
     }
     
     func drawAnObject() {
-        glColor3f(1.0, 0.85, 0.35)
+        //glColor3f(1.0, 0.85, 0.35)
         
-        glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vboid)
         glEnableVertexAttribArray(gl_vertex)
-        
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vboid)
         glVertexAttribPointer(self.gl_vertex, 3, GLenum(GL_DOUBLE), GLboolean(GL_FALSE), 0, nil)
+        
+        glEnableVertexAttribArray(gl_color)
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vboc)
+        glVertexAttribPointer(self.gl_color, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
+        
         glDrawArrays(GLenum(GL_TRIANGLES), 0, 3)
+        
         
         //glDrawElements(GLenum(GL_TRIANGLES), GLsizei(self.glmesh.count), GLenum(GL_UNSIGNED_BYTE), nil)
         
-        
         glDisableVertexAttribArray(gl_vertex)
+        glDisableVertexAttribArray(gl_color)
         
         glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
 
@@ -159,75 +197,173 @@ struct ViewAngle {
     func drawAxesAndPlane() {
         glEnable(GLenum(GL_BLEND))
         glBlendFunc(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA))
-        glBegin(GLenum(GL_LINES))
         
-        let plate:Float = 200
+        let plate:GLfloat = 200
         
-        // draw plane grid
+        // draw plane grid if required
         if self.drawPlane {
-            glColor4f(0.8,0.8,0.8,0.5) // -- minor grid
-            for var x = -plate / 2; x <= plate / 2; x += 1 {
-                if (x % 10) != 0 {
-                    glVertex3f(-plate/2, x, 0)
-                    glVertex3f(plate/2, x, 0)
-                    glVertex3f(x, -plate/2, 0)
-                    glVertex3f(x, plate/2, 0)
+            if self.plane_vbo.count == 0 {
+                var planeLines : [GLfloat] = []
+                var planeRGB : [GLfloat] = []
+                var planeA : [GLfloat] = []
+               // -- minor grid
+                for var x = -plate / 2; x <= plate / 2; x += 1 {
+                    if (x % 10) != 0 {
+                        planeLines += [-plate/2, x, 0.0]
+                        planeLines += [plate/2, x, 0.0]
+                        planeLines += [x, -plate/2, 0.0]
+                        planeLines += [x, plate/2, 0.0]
+                        planeRGB +=    [0.9,0.9,0.9,
+                                        0.9,0.9,0.9,
+                                        0.9,0.9,0.9,
+                                        0.9,0.9,0.9]
+                        planeA += [0.5,0.5,0.5,0.5]
+                   }
                 }
+                // -- major grid
+                for var x = -plate / 2; x <= plate / 2; x += 10 {
+                    planeLines += [-plate/2, x, 0.0]
+                    planeLines += [plate/2, x, 0.0]
+                    planeLines += [x, -plate/2, 0.0]
+                    planeLines += [x, plate/2, 0.0]
+                    planeRGB +=   [0.7,0.7,0.7,
+                                    0.7,0.7,0.7,
+                                    0.7,0.7,0.7,
+                                    0.7,0.7,0.7]
+                    planeA += [0.5,0.5,0.5,0.5]
+                }
+                
+                self.plane_vbo = [0,0,0]
+                
+                // prepare buffer for grid
+                glGenBuffers(3, &self.plane_vbo)
+                
+                // set grid line vertices to 1st buffer
+                glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.plane_vbo[0])
+                glBufferData(GLenum(GL_ARRAY_BUFFER), planeLines.count * sizeof(GLfloat), &planeLines, GLenum(GL_STATIC_DRAW))
+                // set grid colors to 2nd buffer
+                glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.plane_vbo[1])
+                glBufferData(GLenum(GL_ARRAY_BUFFER), planeRGB.count * sizeof(GLfloat), &planeRGB, GLenum(GL_STATIC_DRAW))
+                // set grid alpha to 3rd buffer
+                glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.plane_vbo[2])
+                glBufferData(GLenum(GL_ARRAY_BUFFER), planeA.count * sizeof(GLfloat), &planeA, GLenum(GL_STATIC_DRAW))
+                glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+                
+                self.pvcount = GLsizei(planeA.count)
             }
-            glColor4f(0.5,0.5,0.5,0.5) // -- major grid
-            for var x = -plate / 2; x <= plate / 2; x += 10 {
-                glVertex3f(-plate/2, x, 0)
-                glVertex3f(plate/2, x, 0)
-                glVertex3f(x, -plate/2, 0)
-                glVertex3f(x, plate/2, 0)
-            }
+            
+            //println("try to draw gird")
+            // draw grid
+            glEnableVertexAttribArray(gl_vertex)
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.plane_vbo[0])
+            glVertexAttribPointer(self.gl_vertex, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
+            
+            glEnableVertexAttribArray(gl_color)
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.plane_vbo[1])
+            glVertexAttribPointer(self.gl_color, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
+            
+            
+            glEnableVertexAttribArray(gl_alpha)
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.plane_vbo[2])
+            glVertexAttribPointer(self.gl_alpha, 1, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
+            
+            glDrawArrays(GLenum(GL_LINES), 0, self.pvcount)
+            
+            
+            //glDrawElements(GLenum(GL_TRIANGLES), GLsizei(self.glmesh.count), GLenum(GL_UNSIGNED_BYTE), nil)
+            
+            glDisableVertexAttribArray(gl_vertex)
+            glDisableVertexAttribArray(gl_color)
+            glDisableVertexAttribArray(gl_alpha)
+           
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
         }
         
-        //draw axis
+        // draw axes if required
         if self.drawAxes {
-            //X - red
-            glColor4f(1, 0.5, 0.5, 0.2) //negative direction is lighter
-            glVertex3f(-100, 0, 0)
-            glVertex3f(0, 0, 0)
+            if self.axes_vbo.count == 0 {
+                var axesLines : [GLfloat] = []
+                var axesRGB : [GLfloat] = []
+                var axesA : [GLfloat] = []
+                //X - red
+                axesRGB += [1, 0.5, 0.5]
+                axesRGB += [1, 0.25, 0.25]
+                axesA += [0.0, 0.5] //negative direction is lighter
+                axesLines += [-100, 0.0, 0.0]
+                axesLines += [0.0, 0.0, 0.0]
+                
+                axesRGB += [1, 0.25, 0.25]
+                axesRGB += [1, 0, 0]
+                axesA += [0.5, 1] //positive direction
+                axesLines += [0.0, 0.0, 0.0]
+                axesLines += [100, 0.0, 0.0]
+                //Y - green
+                axesRGB += [0.5, 1, 0.5]
+                axesRGB += [0.25, 1, 0.25]
+                axesA += [0.0, 0.5] //negative direction is lighter
+                axesLines += [0.0, -100, 0.0]
+                axesLines += [0.0, 0.0, 0.0]
+                
+                axesRGB += [0.25, 1, 0.25]
+                axesRGB += [0, 1, 0]
+                axesA += [0.5, 1] //positive direction
+                axesLines += [0.0, 0.0, 0.0]
+                axesLines += [0.0, 100, 0.0]
+                //Z - black
+                axesRGB += [0.5, 0.5, 0.5]
+                axesRGB += [0.35, 0.35, 0.35]
+                axesA += [0.2, 0.6] //negative direction is lighter
+                axesLines += [0.0, 0.0, -100]
+                axesLines += [0.0, 0.0, 0.0]
+                
+                axesRGB += [0.35, 0.35, 0.35]
+                axesRGB += [0.2, 0.2, 0.2]
+                axesA += [0.6, 0.8] //positive direction
+                axesLines += [0.0, 0.0, 0.0]
+                axesLines += [0.0, 0.0, 100]
+                
+                self.axes_vbo = [0,0,0]
+                
+                // prepare buffer for grid
+                glGenBuffers(3, &self.axes_vbo)
+                
+                // set grid line vertices to 1st buffer
+                glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.axes_vbo[0])
+                glBufferData(GLenum(GL_ARRAY_BUFFER), axesLines.count * sizeof(GLfloat), &axesLines, GLenum(GL_STATIC_DRAW))
+                // set grid colors to 2nd buffer
+                glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.axes_vbo[1])
+                glBufferData(GLenum(GL_ARRAY_BUFFER), axesRGB.count * sizeof(GLfloat), &axesRGB, GLenum(GL_STATIC_DRAW))
+                // set grid alpha to 3rd buffer
+                glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.axes_vbo[2])
+                glBufferData(GLenum(GL_ARRAY_BUFFER), axesA.count * sizeof(GLfloat), &axesA, GLenum(GL_STATIC_DRAW))
+                glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+                
+                //self.avcount = GLsizei(axesA.count)
+            }
             
-            glColor4f(1, 0, 0, 0.8) //positive direction
-            glVertex3f(0, 0, 0)
-            glVertex3f(100, 0, 0)
-            //Y - green
-            glColor4f(0.5, 1, 0.5, 0.2) //negative direction is lighter
-            glVertex3f(0, -100, 0)
-            glVertex3f(0, 0, 0)
+            println("try to draw axis")
+            // draw grid
+            glEnableVertexAttribArray(gl_vertex)
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.axes_vbo[0])
+            glVertexAttribPointer(self.gl_vertex, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
             
-            glColor4f(0, 1, 0, 0.8) //positive direction
-            glVertex3f(0, 0, 0)
-            glVertex3f(0, 100, 0)
-            //Z - black
-            glColor4f(0.5, 0.5, 0.5, 0.2) //negative direction is lighter
-            glVertex3f(0, 0, -100)
-            glVertex3f(0, 0, 0)
+            glEnableVertexAttribArray(gl_color)
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.axes_vbo[1])
+            glVertexAttribPointer(self.gl_color, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
             
-            glColor4f(0.2, 0.2, 0.2, 0.8) //positive direction
-            glVertex3f(0, 0, 0)
-            glVertex3f(0, 0, 100)
             
-            //arrow? ported from openJsCAD, but seems not useful
-            /*
-            glBegin(UInt32(GL_TRIANGLES))
-            glColor4f(0.6, 0.2, 0.6, 0.2) //positive direction
-            glVertex3f(-plate,-plate,0)
-            glVertex3f(plate,-plate,0)
-            glVertex3f(plate,plate,0)
-            glEnd()
+            glEnableVertexAttribArray(gl_alpha)
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.axes_vbo[2])
+            glVertexAttribPointer(self.gl_alpha, 1, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
             
-            glBegin(UInt32(GL_TRIANGLES))
-            glColor4f(0.6, 0.2, 0.6, 0.2) //positive direction
-            glVertex3f(plate,plate,0)
-            glVertex3f(-plate,plate,0)
-            glVertex3f(-plate,-plate,0)
-            glEnd()
-            */
+            glDrawArrays(GLenum(GL_LINES), 0, 12)
+            
+            glDisableVertexAttribArray(gl_vertex)
+            glDisableVertexAttribArray(gl_color)
+            glDisableVertexAttribArray(gl_alpha)
+            
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
         }
-        glEnd()
         glDisable(GLenum(GL_BLEND))
     }
     
