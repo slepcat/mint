@@ -20,6 +20,7 @@ protocol MintSubject {
     func removeObserver(observer: MintObserver)
 }
 
-protocol MintClass {
-    
+protocol MintLeaf {
+    func eval(arg: Any) -> Any
+    func solve() -> Any
 }

@@ -4,27 +4,14 @@ import Foundation
 import Cocoa
 import OpenGL
 
-class Tag {
-    private var count:Int = 0
-    private init() {}
-    
-    var newTag: Int {
-        return count++
-    }
-    
-    class var get: Tag {
-        struct Static {
-            static let tagFactory = Tag()
-        }
-        return Static.tagFactory
-    }
+
+// Enum difinition for BSP /Boolean operation
+// You cannot change order of cases because Planer.splitPolygon use it.
+enum BSP : Int {
+    case Coplanar = 0, Front, Back, Spanning, Coplanar_front, Coplanar_back
 }
 
-var a = Tag.get.newTag
-a = Tag.get.newTag
-a = Tag.get.count
+let ti = BSP.Back
+let tj = BSP.Front
 
 
-var b = Tag()
-
-b.get.newTag
