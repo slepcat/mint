@@ -1,5 +1,5 @@
 //
-//  tag.swift
+//  MintSingletons.swift
 //  MINT
 //
 //  Created by 安藤 泰造 on 2015/02/22.
