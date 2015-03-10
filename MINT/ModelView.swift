@@ -101,6 +101,9 @@ struct ViewAngle {
         glMatrixMode(UInt32(GL_MODELVIEW))
         
         glClearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3])
+        
+        glEnable(GLenum(GL_DEPTH_TEST))
+        glDepthFunc(GLenum(GL_LESS))
     }
     
     override func drawRect(dirtyRect: NSRect) {
@@ -131,12 +134,20 @@ struct ViewAngle {
     }
     
     func updateVBO() {
-        //test code
         
-        let mesh: [Vertex] = [Vertex(pos: Vector(x: 0.0 ,y: 30.0, z: 0.0)), Vertex(pos: Vector(x: -10.0, y: -20.0, z:0.0)), Vertex(pos: Vector(x: 10.0, y: -20.0, z: 0.0))]
+        //test code from here
+        let cube : Cube = Cube()
+        cube.width = 100.0
+        var mcolor : [GLfloat] = []
         
-        for m in mesh {
-            self.glmesh += [m.pos.x, m.pos.y, m.pos.z]
+        let cubeMesh = cube.solve()
+        if  let someMesh = cubeMesh as? Mesh {
+            self.glmesh = someMesh.glmesh()
+            
+            let colorArray = someMesh.mesh.count * 3
+            for var i = 0; i < colorArray; i++ {
+                mcolor += [1.0, 0.85, 0.35, 1.0, 0.85, 0.35, 0.5, 0.85, 0.85]
+            }
         }
         
         glGenBuffers(1, &self.vboid)
@@ -144,13 +155,14 @@ struct ViewAngle {
         glBufferData(GLenum(GL_ARRAY_BUFFER), self.glmesh.count * sizeof(GLdouble), &self.glmesh, GLenum(GL_STATIC_DRAW))
         glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
         
-        var mcolor: [GLfloat] = [1.0, 0.85, 0.35, 1.0, 0.85, 0.35, 0.5, 0.85, 0.85]
         
         glGenBuffers(1, &self.vboc)
         glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vboc)
         glBufferData(GLenum(GL_ARRAY_BUFFER), mcolor.count * sizeof(GLfloat), &mcolor, GLenum(GL_STATIC_DRAW))
         glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
         
+        // to here
+
         self.needVBO = false
         
         /* mint model should be implemented
@@ -182,7 +194,7 @@ struct ViewAngle {
         glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vboc)
         glVertexAttribPointer(self.gl_color, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
         
-        glDrawArrays(GLenum(GL_TRIANGLES), 0, 3)
+        glDrawArrays(GLenum(GL_TRIANGLES), 0, GLsizei(self.glmesh.count / 3))
         
         
         //glDrawElements(GLenum(GL_TRIANGLES), GLsizei(self.glmesh.count), GLenum(GL_UNSIGNED_BYTE), nil)
@@ -222,15 +234,17 @@ struct ViewAngle {
                 }
                 // -- major grid
                 for var x = -plate / 2; x <= plate / 2; x += 10 {
-                    planeLines += [-plate/2, x, 0.0]
-                    planeLines += [plate/2, x, 0.0]
-                    planeLines += [x, -plate/2, 0.0]
-                    planeLines += [x, plate/2, 0.0]
-                    planeRGB +=   [0.7,0.7,0.7,
-                                    0.7,0.7,0.7,
-                                    0.7,0.7,0.7,
-                                    0.7,0.7,0.7]
-                    planeA += [0.5,0.5,0.5,0.5]
+                    if x != 0 {
+                        planeLines += [-plate/2, x, 0.0]
+                        planeLines += [plate/2, x, 0.0]
+                        planeLines += [x, -plate/2, 0.0]
+                        planeLines += [x, plate/2, 0.0]
+                        planeRGB +=   [0.7,0.7,0.7,
+                            0.7,0.7,0.7,
+                            0.7,0.7,0.7,
+                            0.7,0.7,0.7]
+                        planeA += [0.5,0.5,0.5,0.5]
+                    }
                 }
                 
                 self.plane_vbo = [0,0,0]
@@ -294,7 +308,7 @@ struct ViewAngle {
                 
                 axesRGB += [1, 0.25, 0.25]
                 axesRGB += [1, 0, 0]
-                axesA += [0.5, 1] //positive direction
+                axesA += [0.5, 0.95] //positive direction
                 axesLines += [0.0, 0.0, 0.0]
                 axesLines += [100, 0.0, 0.0]
                 //Y - green
@@ -306,7 +320,7 @@ struct ViewAngle {
                 
                 axesRGB += [0.25, 1, 0.25]
                 axesRGB += [0, 1, 0]
-                axesA += [0.5, 1] //positive direction
+                axesA += [0.5, 0.95] //positive direction
                 axesLines += [0.0, 0.0, 0.0]
                 axesLines += [0.0, 100, 0.0]
                 //Z - black
