@@ -1000,6 +1000,10 @@ CSG.Polygon.defaultShared = new CSG.Polygon.Shared(null);
 class Mesh {
     var mesh:[Polygon] = []
     
+    init(m: [Polygon]) {
+        mesh = m;
+    }
+    
     func glmesh() -> [GLdouble] {
         
         var glmesh:[GLdouble] = []
