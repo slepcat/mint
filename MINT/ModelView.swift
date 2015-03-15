@@ -29,10 +29,6 @@ struct ViewAngle {
     let zoomMax:Float = 1000
     let zoomMin:Float = 10
     
-    // camera speeds
-    //var rotateFactor:Float = 0.1
-    //var zoomFactor:Float = 0.005
-    
     // UI Settings: Axes & Plane
     var drawAxes : Bool = true
     var drawPlane : Bool = true
@@ -46,18 +42,15 @@ struct ViewAngle {
     // OpenGL Parameters
     let bgColor : [Float] = [0.93, 0.93, 0.93, 1]//Background Color, 7% Gray
     
-    // objects
-    //var mesh:[MintClass]? = nil
-    var vboid:GLuint = 0
-    var vboc:GLuint = 0
+    // Main stack of drawing objects.
+    var stack:[GLmesh] = []
+    
+    //Attribute pointer for shader
     var gl_vertex:GLuint = 0
+    var gl_normal:GLuint = 0
     var gl_color:GLuint = 0
     var gl_alpha:GLuint = 0
-    
-    // VBO update flag
-    var needVBO : Bool = true
-    var glmesh:[GLdouble] = []
-    
+   
     override func prepareOpenGL() {
         
         super.prepareOpenGL()
@@ -73,6 +66,13 @@ struct ViewAngle {
                 self.gl_vertex = numericCast(attribId)
             } else {
                 println("failed to get gl_Vertex pos")
+            }
+            // Normal id
+            attribId = glGetAttribLocation(shader.program, "vertexNormal")
+            if  attribId >= 0 {
+                self.gl_normal = numericCast(attribId)
+            } else {
+                println("failed to get gl_Normal")
             }
             // Color id
             attribId = glGetAttribLocation(shader.program, "vertexColor")
@@ -104,6 +104,8 @@ struct ViewAngle {
         
         glEnable(GLenum(GL_DEPTH_TEST))
         glDepthFunc(GLenum(GL_LESS))
+        
+        println("open gl view prepared")
     }
     
     override func drawRect(dirtyRect: NSRect) {
@@ -116,11 +118,7 @@ struct ViewAngle {
         glRotatef(viewAngle.y, 0, 1, 0)
         glRotatef(viewAngle.z, 0, 0, 1)
         
-        if self.needVBO == true {
-            self.updateVBO()
-        }
-        
-        self.drawAnObject()
+        self.drawObjects()
         
         if self.drawAxes || self.drawPlane {
             self.drawAxesAndPlane()
@@ -129,81 +127,30 @@ struct ViewAngle {
         glFlush()
     }
     
-    func prepareMesh4debug() {
-
-    }
-    
-    func updateVBO() {
+    // draw mesh from stack
+    func drawObjects() {
         
-        //test code from here
-        let cube : Cube = Cube()
-        cube.width = 100.0
-        var mcolor : [GLfloat] = []
-        
-        let cubeMesh = cube.solve()
-        if  let someMesh = cubeMesh as? Mesh {
-            self.glmesh = someMesh.glmesh()
+        for mesh in stack {
+            glEnableVertexAttribArray(gl_vertex)
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), mesh.vbufferid)
+            glVertexAttribPointer(self.gl_vertex, 3, GLenum(GL_DOUBLE), GLboolean(GL_FALSE), 0, nil)
             
-            let colorArray = someMesh.mesh.count * 3
-            for var i = 0; i < colorArray; i++ {
-                mcolor += [1.0, 0.85, 0.35, 1.0, 0.85, 0.35, 0.5, 0.85, 0.85]
-            }
-        }
-        
-        glGenBuffers(1, &self.vboid)
-        glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vboid)
-        glBufferData(GLenum(GL_ARRAY_BUFFER), self.glmesh.count * sizeof(GLdouble), &self.glmesh, GLenum(GL_STATIC_DRAW))
-        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
-        
-        
-        glGenBuffers(1, &self.vboc)
-        glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vboc)
-        glBufferData(GLenum(GL_ARRAY_BUFFER), mcolor.count * sizeof(GLfloat), &mcolor, GLenum(GL_STATIC_DRAW))
-        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
-        
-        // to here
-
-        self.needVBO = false
-        
-        /* mint model should be implemented
-        if mesh == nil {
-            return
-        }
-        
-        for m in self.mesh {
-            // check buffer id of mesh. if nil, prepare VBO buffer.
-            if self.mesh.bufferid == nil {
+            glEnableVertexAttribArray(gl_color)
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), mesh.cbufferid)
+            glVertexAttribPointer(self.gl_color, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
             
-            } else {
-                // check update flag. if true, update VBO buffer.
-                if self.mesh.updated == true {
-                    
-                }
-            }
-        }*/
-    }
-    
-    func drawAnObject() {
-        //glColor3f(1.0, 0.85, 0.35)
-        
-        glEnableVertexAttribArray(gl_vertex)
-        glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vboid)
-        glVertexAttribPointer(self.gl_vertex, 3, GLenum(GL_DOUBLE), GLboolean(GL_FALSE), 0, nil)
-        
-        glEnableVertexAttribArray(gl_color)
-        glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vboc)
-        glVertexAttribPointer(self.gl_color, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
-        
-        glDrawArrays(GLenum(GL_TRIANGLES), 0, GLsizei(self.glmesh.count / 3))
-        
-        
-        //glDrawElements(GLenum(GL_TRIANGLES), GLsizei(self.glmesh.count), GLenum(GL_UNSIGNED_BYTE), nil)
+            glEnableVertexAttribArray(gl_normal)
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), mesh.nbufferid)
+            glVertexAttribPointer(self.gl_normal, 3, GLenum(GL_DOUBLE), GLboolean(GL_FALSE), 0, nil)
+            
+            glDrawArrays(GLenum(GL_TRIANGLES), 0, mesh.buffersize)
+        }
         
         glDisableVertexAttribArray(gl_vertex)
         glDisableVertexAttribArray(gl_color)
+        glDisableVertexAttribArray(gl_normal)
         
         glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
-
     }
     
     func drawAxesAndPlane() {
@@ -395,15 +342,6 @@ struct ViewAngle {
     }
     
     override func mouseDragged(theEvent : NSEvent) {
-        /*
-        let draggedPt:NSPoint = theEvent.locationInWindow
-        let currentPt:NSPoint = self.convertPoint(draggedPt, fromView: nil)
-        
-        let delta:NSPoint = NSPoint(x: currentPt.x - lastPt.x, y: currentPt.y - lastPt.y)
-        
-        //println("mouse dragged to X:\(lastPt.x), Y:\(lastPt.y)")
-        println("delta are X:\(delta.x), Y:\(delta.y)")
-        */
         
         if NSEventModifierFlags.AlternateKeyMask & theEvent.modifierFlags != nil {
             //rotate x and y
@@ -474,4 +412,49 @@ struct ViewAngle {
         }
     }
 
+}
+
+class GLmesh:MintObserver {
+    //open gl buffer ids
+    var vbufferid : GLuint = 0
+    var nbufferid : GLuint = 0
+    var cbufferid : GLuint = 0
+    //length of mesh array
+    var buffersize : GLsizei = 0
+    
+    // update open gl vertices & attribute array
+    func update(subject: MintSubject, index: Int) {
+        if vbufferid == 0 { // In case of inital update
+            let result = subject.solveMesh(index)
+            var glmesh = [GLdouble](result.mesh)
+            var glnormal = [GLdouble](result.normals)
+            var glcolor = [GLfloat](result.colors)
+            
+            buffersize = GLsizei(glmesh.count)
+            
+            if buffersize != 0 {// Check 'result' have valid mesh
+                //mesh
+                glGenBuffers(1, &self.vbufferid)
+                glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vbufferid)
+                glBufferData(GLenum(GL_ARRAY_BUFFER), glmesh.count * sizeof(GLdouble), &glmesh, GLenum(GL_STATIC_DRAW))
+                //normal
+                glGenBuffers(1, &self.nbufferid)
+                glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.nbufferid)
+                glBufferData(GLenum(GL_ARRAY_BUFFER), glnormal.count * sizeof(GLdouble), &glnormal, GLenum(GL_STATIC_DRAW))
+                //color
+                glGenBuffers(1, &self.cbufferid)
+                glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.cbufferid)
+                glBufferData(GLenum(GL_ARRAY_BUFFER), glcolor.count * sizeof(GLfloat), &glcolor, GLenum(GL_STATIC_DRAW))
+                
+                glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+            }
+        } else { // In case of update
+            // updating code here...
+        }
+        
+    }
+}
+
+class AxesAndPlane {
+    
 }

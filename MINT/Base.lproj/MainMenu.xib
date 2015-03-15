@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6250" systemVersion="14B25" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1510" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6250"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6751"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -14,6 +14,7 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="MINT" customModuleProvider="target">
             <connections>
+                <outlet property="mintController" destination="Y5y-Yc-Qt7" id="VII-Io-aKA"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
             </connections>
         </customObject>
@@ -681,7 +682,12 @@
                     </openGLView>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="365" y="318"/>
+            <point key="canvasLocation" x="509" y="223"/>
         </window>
+        <customObject id="Y5y-Yc-Qt7" customClass="MintController" customModule="MINT" customModuleProvider="target">
+            <connections>
+                <outlet property="modelview" destination="Fk8-ER-HQe" id="bxW-Zx-rXa"/>
+            </connections>
+        </customObject>
     </objects>
 </document>

@@ -15,7 +15,6 @@
 //  6. VxAttr  (class)  :VxAttr is collection of attribute of vertex, such as color and uv *TBI
 
 import Foundation
-import OpenGL
 
 // Enum difinition for BSP /Boolean operation
 // You cannot change order of cases because Planer.splitPolygon use it.
@@ -189,7 +188,9 @@ func - (left: Vector, right:Vector) -> Vector {
 // defined by `CSG.Vertex`.
 
 struct Vertex {
-    let pos:Vector
+    let pos : Vector
+    var normal : Vector = Vector(x: 0, y: 0, z: 0)
+    var color = [Float](count: 3, repeatedValue: 0.5)
     var tag:Int = Tag.get.newTag
     
     // defined by `CSG.Vertex`.
@@ -197,19 +198,10 @@ struct Vertex {
         self.pos = pos
     }
     
-    // create from an untyped object with identical property names:
-    init(fromObject obj:Vector) {
-        self.pos = obj
-    }
-    
     // Return a vertex with all orientation-specific data (e.g. vertex normal) flipped. Called when the
     // orientation of a polygon is flipped.
     func flipped() -> Vertex {
         return self
-    }
-    
-    func getTag() -> Int {
-        return self.tag
     }
     
     // Create a new vertex between this vertex and `other` by linearly
@@ -496,7 +488,7 @@ CSG.Plane.anyPlaneFromVector3Ds = function(a, b, c) {
 // passed as the third argument
 
 struct Polygon {
-    let vertices : [Vertex]
+    var vertices : [Vertex]
     let shared : Int
     let plane : Plane
     
@@ -504,12 +496,22 @@ struct Polygon {
         self.vertices = vertices
         self.shared = shared
         self.plane = plane
+        
+        // After initalize properties, setup normals.
+        if vertices.count >= 3 {
+            self.generateNormal()
+        }
     }
     
     init(vertices: [Vertex], shared : Int) {
         self.vertices = vertices
         self.shared = shared
         self.plane = Plane(a: vertices[0],b: vertices[1],c: vertices[2])
+        
+        // After initalize properties, setup normals.
+        if vertices.count >= 3 {
+            self.generateNormal()
+        }
     }
     
     // check whether the polygon is convex (it should be, otherwise we will get unexpected results)
@@ -521,10 +523,21 @@ struct Polygon {
         }
     }
     
-    /*
+    mutating func generateNormal() {
+        let a = self.vertices[1].pos - self.vertices[0].pos
+        let b = self.vertices[2].pos - self.vertices[0].pos
+        
+        let polyNormal = a.cross(b).unit()
+        
+        for var i = 0; i < self.vertices.count; i++ {
+            self.vertices[i].normal = polyNormal
+        }
+    }
+    
+    // need to re consider
     func fliped() -> Polygon {
-        return
-    }*/
+        return self
+    }
     
     func toStlString() -> String {
         var result = ""
@@ -1004,18 +1017,40 @@ class Mesh {
         mesh = m;
     }
     
-    func glmesh() -> [GLdouble] {
+    func meshArray() -> [Double] {
         
-        var glmesh:[GLdouble] = []
+        var mesharray:[Double] = []
         
         for polygon in mesh {
             for vertex in polygon.vertices {
-                glmesh += [vertex.pos.x, vertex.pos.y, vertex.pos.z]
+                mesharray += [vertex.pos.x, vertex.pos.y, vertex.pos.z]
             }
         }
         
-        return glmesh
+        return mesharray
     }
     
+    func normalArray() -> [Double] {
+        var normals:[Double] = []
+        
+        for polygon in mesh {
+            for vertex in polygon.vertices {
+                normals += [vertex.normal.x, vertex.normal.y, vertex.normal.z]
+            }
+        }
+        
+        return normals
+    }
     
+    func colorArray() -> [Float] {
+        var colors:[Float] = []
+        
+        for polygon in mesh {
+            for vertex in polygon.vertices {
+                colors += vertex.color
+            }
+        }
+        
+        return colors
+    }
 }

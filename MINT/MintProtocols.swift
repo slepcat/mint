@@ -8,19 +8,21 @@
 
 import Foundation
 
-protocol MintObserver {
-    func update(mesh:[Vertex])
+protocol MintObserver:class { // observer must be class type
+    func update(subject: MintSubject, index: Int)//tell observer which leaves are updated
 }
 
-protocol MintSubject {
-    var mesh: [Vertex] {get set}
-    var bufferid:Int {get set}
-    var updated: Bool {get set}
+protocol MintSubject:class {
+    //return mesh & attributes of leave determined by the index.
+    func solveMesh(index: Int) -> (mesh: [Double], normals: [Double], colors: [Float])
+
+    // Observer register & remove
     func registerObserver(observer: MintObserver)
     func removeObserver(observer: MintObserver)
 }
 
 protocol MintLeaf {
+    // For evaluation & solver
     func eval(arg: Any) -> Any
     func solve() -> Any
 }

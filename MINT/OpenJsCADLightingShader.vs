@@ -2,6 +2,7 @@
 //attribute vec3 vertexPosition_modelspace;
 attribute vec3 vertexColor;
 attribute float vertexAlpha;
+attribute vec3 vertexNormal;
 
 varying vec3 color;
 varying float alpha;
@@ -12,6 +13,6 @@ void main() {
 	light = lightDir;
 	color = vertexColor;
 	alpha = vertexAlpha;
-	normal = gl_NormalMatrix * gl_Normal;
+	normal = gl_NormalMatrix * vertexNormal;
 	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 }
