@@ -10,7 +10,16 @@ import Foundation
 
 // Root level of Mint leaves chains. Should be 'Singleton'?
 // This is 'Subject' against view classes as 'Observer'.
-class MintInterpreter:MintSubject {
+class MintInterpreter {
+    private var leafPool = [Leaf]()
+    //var globalStack = MintGlobalStack()
+    
+    func addLeaf(leaf: Leaf) {
+        leafPool.append(leaf)
+    }
+}
+
+class MintGlobalStack:MintSubject {
     private var rootStack = [Leaf]()
     private var observers = [MintObserver]()
     
@@ -53,6 +62,7 @@ class MintInterpreter:MintSubject {
             observers[i].update(self, index: i)
         }
     }
+    
     
     // Manipulation interface for 'MintController
     

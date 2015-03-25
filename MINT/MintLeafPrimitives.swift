@@ -50,12 +50,12 @@ class Cube:Primitive ,MintLeaf{
         
         var vertices : [Vertex] = []
         
-        vertices += [Vertex(pos: Vector(x: left, y: front, z: bottom))] //bottom
+        vertices += [Vertex(pos: Vector(x: right, y: back, z: bottom))] //bottom
         vertices += [Vertex(pos: Vector(x: right, y: front, z: bottom))]
-        vertices += [Vertex(pos: Vector(x: right, y: back, z: bottom))]
-        vertices += [Vertex(pos: Vector(x: right, y: back, z: bottom))]
-        vertices += [Vertex(pos: Vector(x: left, y: back, z: bottom))]
         vertices += [Vertex(pos: Vector(x: left, y: front, z: bottom))]
+        vertices += [Vertex(pos: Vector(x: left, y: front, z: bottom))]
+        vertices += [Vertex(pos: Vector(x: left, y: back, z: bottom))]
+        vertices += [Vertex(pos: Vector(x: right, y: back, z: bottom))]
 
         vertices += [Vertex(pos: Vector(x: left, y: front, z: bottom))] // front
         vertices += [Vertex(pos: Vector(x: right, y: front, z: bottom))]
@@ -71,19 +71,19 @@ class Cube:Primitive ,MintLeaf{
         vertices += [Vertex(pos: Vector(x: right, y: front, z: top))]
         vertices += [Vertex(pos: Vector(x: right, y: front, z: bottom))]
         
-        vertices += [Vertex(pos: Vector(x: left, y: back, z: bottom))] // back
+        vertices += [Vertex(pos: Vector(x: right, y: back, z: top))] // back
         vertices += [Vertex(pos: Vector(x: right, y: back, z: bottom))]
-        vertices += [Vertex(pos: Vector(x: right, y: back, z: top))]
-        vertices += [Vertex(pos: Vector(x: right, y: back, z: top))]
-        vertices += [Vertex(pos: Vector(x: left, y: back, z: top))]
         vertices += [Vertex(pos: Vector(x: left, y: back, z: bottom))]
+        vertices += [Vertex(pos: Vector(x: left, y: back, z: bottom))]
+        vertices += [Vertex(pos: Vector(x: left, y: back, z: top))]
+        vertices += [Vertex(pos: Vector(x: right, y: back, z: top))]
         
-        vertices += [Vertex(pos: Vector(x: left, y: front, z: bottom))] //left
+        vertices += [Vertex(pos: Vector(x: left, y: back, z: top))] //left
         vertices += [Vertex(pos: Vector(x: left, y: back, z: bottom))]
-        vertices += [Vertex(pos: Vector(x: left, y: back, z: top))]
-        vertices += [Vertex(pos: Vector(x: left, y: back, z: top))]
-        vertices += [Vertex(pos: Vector(x: left, y: front, z: top))]
         vertices += [Vertex(pos: Vector(x: left, y: front, z: bottom))]
+        vertices += [Vertex(pos: Vector(x: left, y: front, z: bottom))]
+        vertices += [Vertex(pos: Vector(x: left, y: front, z: top))]
+        vertices += [Vertex(pos: Vector(x: left, y: back, z: top))]
         
         vertices += [Vertex(pos: Vector(x: right, y: back, z: top))] // top
         vertices += [Vertex(pos: Vector(x: left, y: front, z: top))]

@@ -32,11 +32,9 @@ struct ViewAngle {
     // UI Settings: Axes & Plane
     var drawAxes : Bool = true
     var drawPlane : Bool = true
-    var drawLines : Bool = false
-    var axes_vbo : [GLuint] = []
-    var plane_vbo : [GLuint] = []
-    var pvcount : GLsizei = 0
-    var avcount : GLsizei = 0
+    var axes : Axes? = nil
+    var plane : GridPlane? = nil
+    
     var lightingShader:Shader? = nil
     
     // OpenGL Parameters
@@ -120,8 +118,13 @@ struct ViewAngle {
         
         self.drawObjects()
         
-        if self.drawAxes || self.drawPlane {
-            self.drawAxesAndPlane()
+        
+        if self.drawAxes {
+           drawAxisLines()
+        }
+        
+        if self.drawPlane {
+            drawGridPlane()
         }
         
         glFlush()
@@ -153,82 +156,77 @@ struct ViewAngle {
         glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
     }
     
-    func drawAxesAndPlane() {
-        glEnable(GLenum(GL_BLEND))
-        glBlendFunc(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA))
+    func drawAxisLines() {
         
-        let plate:GLfloat = 200
+        if axes == nil {
+            axes = Axes()
+        }
         
-        // draw plane grid if required
-        if self.drawPlane {
-            if self.plane_vbo.count == 0 {
-                var planeLines : [GLfloat] = []
-                var planeRGB : [GLfloat] = []
-                var planeA : [GLfloat] = []
-               // -- minor grid
-                for var x = -plate / 2; x <= plate / 2; x += 1 {
-                    if (x % 10) != 0 {
-                        planeLines += [-plate/2, x, 0.0]
-                        planeLines += [plate/2, x, 0.0]
-                        planeLines += [x, -plate/2, 0.0]
-                        planeLines += [x, plate/2, 0.0]
-                        planeRGB +=    [0.9,0.9,0.9,
-                                        0.9,0.9,0.9,
-                                        0.9,0.9,0.9,
-                                        0.9,0.9,0.9]
-                        planeA += [0.5,0.5,0.5,0.5]
-                   }
-                }
-                // -- major grid
-                for var x = -plate / 2; x <= plate / 2; x += 10 {
-                    if x != 0 {
-                        planeLines += [-plate/2, x, 0.0]
-                        planeLines += [plate/2, x, 0.0]
-                        planeLines += [x, -plate/2, 0.0]
-                        planeLines += [x, plate/2, 0.0]
-                        planeRGB +=   [0.7,0.7,0.7,
-                            0.7,0.7,0.7,
-                            0.7,0.7,0.7,
-                            0.7,0.7,0.7]
-                        planeA += [0.5,0.5,0.5,0.5]
-                    }
-                }
-                
-                self.plane_vbo = [0,0,0]
-                
-                // prepare buffer for grid
-                glGenBuffers(3, &self.plane_vbo)
-                
-                // set grid line vertices to 1st buffer
-                glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.plane_vbo[0])
-                glBufferData(GLenum(GL_ARRAY_BUFFER), planeLines.count * sizeof(GLfloat), &planeLines, GLenum(GL_STATIC_DRAW))
-                // set grid colors to 2nd buffer
-                glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.plane_vbo[1])
-                glBufferData(GLenum(GL_ARRAY_BUFFER), planeRGB.count * sizeof(GLfloat), &planeRGB, GLenum(GL_STATIC_DRAW))
-                // set grid alpha to 3rd buffer
-                glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.plane_vbo[2])
-                glBufferData(GLenum(GL_ARRAY_BUFFER), planeA.count * sizeof(GLfloat), &planeA, GLenum(GL_STATIC_DRAW))
-                glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
-                
-                self.pvcount = GLsizei(planeA.count)
-            }
+        if let ax = axes {
+            glEnable(GLenum(GL_BLEND))
+            glBlendFunc(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA))
             
-            //println("try to draw gird")
-            // draw grid
+            // draw axes
             glEnableVertexAttribArray(gl_vertex)
-            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.plane_vbo[0])
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), ax.axes_vbo[0])
             glVertexAttribPointer(self.gl_vertex, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
             
             glEnableVertexAttribArray(gl_color)
-            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.plane_vbo[1])
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), ax.axes_vbo[1])
             glVertexAttribPointer(self.gl_color, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
             
             
             glEnableVertexAttribArray(gl_alpha)
-            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.plane_vbo[2])
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), ax.axes_vbo[2])
             glVertexAttribPointer(self.gl_alpha, 1, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
             
-            glDrawArrays(GLenum(GL_LINES), 0, self.pvcount)
+            glEnableVertexAttribArray(gl_normal)
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), ax.axes_vbo[3])
+            glVertexAttribPointer(self.gl_normal, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
+            
+            glDrawArrays(GLenum(GL_LINES), 0, ax.avcount)
+            
+            glDisableVertexAttribArray(gl_vertex)
+            glDisableVertexAttribArray(gl_color)
+            glDisableVertexAttribArray(gl_alpha)
+            glDisableVertexAttribArray(gl_normal)
+            
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+            
+            glDisable(GLenum(GL_BLEND))
+
+        }
+    }
+    
+    func drawGridPlane() {
+        
+        if plane == nil {
+            plane = GridPlane()
+        }
+        
+        if let pl = plane {
+            glEnable(GLenum(GL_BLEND))
+            glBlendFunc(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA))
+            
+            //println("try to draw gird")
+            // draw grid
+            glEnableVertexAttribArray(gl_vertex)
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), pl.plane_vbo[0])
+            glVertexAttribPointer(self.gl_vertex, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
+            
+            glEnableVertexAttribArray(gl_color)
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), pl.plane_vbo[1])
+            glVertexAttribPointer(self.gl_color, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
+            
+            glEnableVertexAttribArray(gl_alpha)
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), pl.plane_vbo[2])
+            glVertexAttribPointer(self.gl_alpha, 1, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
+            
+            glEnableVertexAttribArray(gl_normal)
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), pl.plane_vbo[3])
+            glVertexAttribPointer(self.gl_normal, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
+            
+            glDrawArrays(GLenum(GL_LINES), 0, pl.pvcount)
             
             
             //glDrawElements(GLenum(GL_TRIANGLES), GLsizei(self.glmesh.count), GLenum(GL_UNSIGNED_BYTE), nil)
@@ -236,98 +234,14 @@ struct ViewAngle {
             glDisableVertexAttribArray(gl_vertex)
             glDisableVertexAttribArray(gl_color)
             glDisableVertexAttribArray(gl_alpha)
-           
-            glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
-        }
-        
-        // draw axes if required
-        if self.drawAxes {
-            if self.axes_vbo.count == 0 {
-                var axesLines : [GLfloat] = []
-                var axesRGB : [GLfloat] = []
-                var axesA : [GLfloat] = []
-                //X - red
-                axesRGB += [1, 0.5, 0.5]
-                axesRGB += [1, 0.25, 0.25]
-                axesA += [0.0, 0.5] //negative direction is lighter
-                axesLines += [-100, 0.0, 0.0]
-                axesLines += [0.0, 0.0, 0.0]
-                
-                axesRGB += [1, 0.25, 0.25]
-                axesRGB += [1, 0, 0]
-                axesA += [0.5, 0.95] //positive direction
-                axesLines += [0.0, 0.0, 0.0]
-                axesLines += [100, 0.0, 0.0]
-                //Y - green
-                axesRGB += [0.5, 1, 0.5]
-                axesRGB += [0.25, 1, 0.25]
-                axesA += [0.0, 0.5] //negative direction is lighter
-                axesLines += [0.0, -100, 0.0]
-                axesLines += [0.0, 0.0, 0.0]
-                
-                axesRGB += [0.25, 1, 0.25]
-                axesRGB += [0, 1, 0]
-                axesA += [0.5, 0.95] //positive direction
-                axesLines += [0.0, 0.0, 0.0]
-                axesLines += [0.0, 100, 0.0]
-                //Z - black
-                axesRGB += [0.5, 0.5, 0.5]
-                axesRGB += [0.35, 0.35, 0.35]
-                axesA += [0.2, 0.6] //negative direction is lighter
-                axesLines += [0.0, 0.0, -100]
-                axesLines += [0.0, 0.0, 0.0]
-                
-                axesRGB += [0.35, 0.35, 0.35]
-                axesRGB += [0.2, 0.2, 0.2]
-                axesA += [0.6, 0.8] //positive direction
-                axesLines += [0.0, 0.0, 0.0]
-                axesLines += [0.0, 0.0, 100]
-                
-                self.axes_vbo = [0,0,0]
-                
-                // prepare buffer for grid
-                glGenBuffers(3, &self.axes_vbo)
-                
-                // set grid line vertices to 1st buffer
-                glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.axes_vbo[0])
-                glBufferData(GLenum(GL_ARRAY_BUFFER), axesLines.count * sizeof(GLfloat), &axesLines, GLenum(GL_STATIC_DRAW))
-                // set grid colors to 2nd buffer
-                glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.axes_vbo[1])
-                glBufferData(GLenum(GL_ARRAY_BUFFER), axesRGB.count * sizeof(GLfloat), &axesRGB, GLenum(GL_STATIC_DRAW))
-                // set grid alpha to 3rd buffer
-                glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.axes_vbo[2])
-                glBufferData(GLenum(GL_ARRAY_BUFFER), axesA.count * sizeof(GLfloat), &axesA, GLenum(GL_STATIC_DRAW))
-                glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
-                
-                //self.avcount = GLsizei(axesA.count)
-            }
-            
-            println("try to draw axis")
-            // draw grid
-            glEnableVertexAttribArray(gl_vertex)
-            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.axes_vbo[0])
-            glVertexAttribPointer(self.gl_vertex, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
-            
-            glEnableVertexAttribArray(gl_color)
-            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.axes_vbo[1])
-            glVertexAttribPointer(self.gl_color, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
-            
-            
-            glEnableVertexAttribArray(gl_alpha)
-            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.axes_vbo[2])
-            glVertexAttribPointer(self.gl_alpha, 1, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
-            
-            glDrawArrays(GLenum(GL_LINES), 0, 12)
-            
-            glDisableVertexAttribArray(gl_vertex)
-            glDisableVertexAttribArray(gl_color)
-            glDisableVertexAttribArray(gl_alpha)
+            glDisableVertexAttribArray(gl_normal)
             
             glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+            
+            glDisable(GLenum(GL_BLEND))
+            
         }
-        glDisable(GLenum(GL_BLEND))
     }
-    
     
     // event handling
     // rotate view, zoom in/out, pan
@@ -455,6 +369,153 @@ class GLmesh:MintObserver {
     }
 }
 
-class AxesAndPlane {
+class Axes {
+    var axes_vbo : [GLuint] = []
+    var avcount : GLsizei = 0
     
+    init() {
+        // draw axes if required
+        if self.axes_vbo.count == 0 {
+            var axesLines : [GLfloat] = []
+            var axesRGB : [GLfloat] = []
+            var axesA : [GLfloat] = []
+            var axesN : [GLfloat] = []
+            
+            //X - red
+            axesRGB += [1, 0, 0, 1, 0, 0]
+            axesA += [0.2, 0.5] //negative direction is lighter
+            axesLines += [-100, 0.0, 0.0]
+            axesLines += [0.0, 0.0, 0.0]
+            axesN += [0.0, 0.0, 1.0, 0.0, 0.0, 1.0]
+            
+            axesRGB += [1, 0, 0, 1, 0, 0]
+            axesA += [0.5, 0.95] //positive direction
+            axesLines += [0.0, 0.0, 0.0]
+            axesLines += [100, 0.0, 0.0]
+            axesN += [0.0, 0.0, 1.0, 0.0, 0.0, 1.0]
+            
+            //Y - green
+            axesRGB += [0, 1, 0, 0, 1, 0]
+            axesA += [0.2, 0.5] //negative direction is lighter
+            axesLines += [0.0, -100, 0.0]
+            axesLines += [0.0, 0.0, 0.0]
+            axesN += [0.0, 0.0, 1.0, 0.0, 0.0, 1.0]
+            
+            axesRGB += [0, 1, 0, 0, 1, 0]
+            axesA += [0.5, 0.95] //positive direction
+            axesLines += [0.0, 0.0, 0.0]
+            axesLines += [0.0, 100, 0.0]
+            axesN += [0.0, 0.0, 1.0, 0.0, 0.0, 1.0]
+            
+            //Z - black
+            axesRGB += [0, 0, 0, 0, 0, 0]
+            axesA += [0.2, 0.5] //negative direction is lighter
+            axesLines += [0.0, 0.0, -100]
+            axesLines += [0.0, 0.0, 0.0]
+            axesN += [0.0, 0.0, 1.0, 0.0, 0.0, 1.0]
+            
+            axesRGB += [0, 0, 0, 0, 0, 0]
+            axesA += [0.5, 0.95] //positive direction
+            axesLines += [0.0, 0.0, 0.0]
+            axesLines += [0.0, 0.0, 100]
+            axesN += [0.0, 0.0, 1.0, 0.0, 0.0, 1.0]
+            
+            self.axes_vbo = [0,0,0,0]
+            
+            self.avcount = GLsizei(axesA.count)
+            
+            // prepare buffer for grid
+            glGenBuffers(4, &self.axes_vbo)
+            
+            // set grid line vertices to 1st buffer
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.axes_vbo[0])
+            glBufferData(GLenum(GL_ARRAY_BUFFER), axesLines.count * sizeof(GLfloat), &axesLines, GLenum(GL_STATIC_DRAW))
+            // set grid colors to 2nd buffer
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.axes_vbo[1])
+            glBufferData(GLenum(GL_ARRAY_BUFFER), axesRGB.count * sizeof(GLfloat), &axesRGB, GLenum(GL_STATIC_DRAW))
+            // set grid alpha to 3rd buffer
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.axes_vbo[2])
+            glBufferData(GLenum(GL_ARRAY_BUFFER), axesA.count * sizeof(GLfloat), &axesA, GLenum(GL_STATIC_DRAW))
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+            // set grid normal to 4th buffer
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.axes_vbo[3])
+            glBufferData(GLenum(GL_ARRAY_BUFFER), axesN.count * sizeof(GLfloat), &axesN, GLenum(GL_STATIC_DRAW))
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+        }
+    }
+}
+
+class GridPlane {
+    // UI Settings: Axes & Plane
+    var plane_vbo : [GLuint] = []
+    var pvcount : GLsizei = 0
+    
+    init() {
+        let plate:GLfloat = 200
+        
+        if self.plane_vbo.count == 0 {
+            var planeLines : [GLfloat] = []
+            var planeRGB : [GLfloat] = []
+            var planeA : [GLfloat] = []
+            var planeN : [GLfloat] = []//normal
+            // -- minor grid
+            for var x = -plate / 2; x <= plate / 2; x += 1 {
+                if (x % 10) != 0 {
+                    planeLines += [-plate/2, x, 0.0]
+                    planeLines += [plate/2, x, 0.0]
+                    planeLines += [x, -plate/2, 0.0]
+                    planeLines += [x, plate/2, 0.0]
+                    planeRGB += [0.9,0.9,0.9,
+                        0.9,0.9,0.9,
+                        0.9,0.9,0.9,
+                        0.9,0.9,0.9]
+                    planeN += [0,0,1,
+                        0,0,1,
+                        0,0,1,
+                        0,0,1]
+                    planeA += [0.5,0.5,0.5,0.5]
+                }
+            }
+            // -- major grid
+            for var x = -plate / 2; x <= plate / 2; x += 10 {
+                if x != 0 {
+                    planeLines += [-plate/2, x, 0.0]
+                    planeLines += [plate/2, x, 0.0]
+                    planeLines += [x, -plate/2, 0.0]
+                    planeLines += [x, plate/2, 0.0]
+                    planeRGB +=   [0.7,0.7,0.7,
+                        0.7,0.7,0.7,
+                        0.7,0.7,0.7,
+                        0.7,0.7,0.7]
+                    planeN += [0,0,1,
+                        0,0,1,
+                        0,0,1,
+                        0,0,1]
+                    planeA += [0.5,0.5,0.5,0.5]
+                }
+            }
+            
+            self.plane_vbo = [0,0,0,0]
+            
+            // prepare buffer for grid
+            glGenBuffers(4, &self.plane_vbo)
+            
+            // set grid line vertices to 1st buffer
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.plane_vbo[0])
+            glBufferData(GLenum(GL_ARRAY_BUFFER), planeLines.count * sizeof(GLfloat), &planeLines, GLenum(GL_STATIC_DRAW))
+            // set grid colors to 2nd buffer
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.plane_vbo[1])
+            glBufferData(GLenum(GL_ARRAY_BUFFER), planeRGB.count * sizeof(GLfloat), &planeRGB, GLenum(GL_STATIC_DRAW))
+            // set grid alpha to 3rd buffer
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.plane_vbo[2])
+            glBufferData(GLenum(GL_ARRAY_BUFFER), planeA.count * sizeof(GLfloat), &planeA, GLenum(GL_STATIC_DRAW))
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+            // set grid normal to 4th buffer
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.plane_vbo[3])
+            glBufferData(GLenum(GL_ARRAY_BUFFER), planeN.count * sizeof(GLfloat), &planeN, GLenum(GL_STATIC_DRAW))
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+            
+            self.pvcount = GLsizei(planeA.count)
+        }
+    }
 }

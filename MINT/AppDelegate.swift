@@ -11,13 +11,18 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate {
                             
     @IBOutlet weak var window: NSWindow!
+    @IBOutlet var modelViewController: MintModelViewController!
     @IBOutlet var mintController: MintController!
-    
+    @IBOutlet var palleteController: MintPalleteController!
+
     // MINT Controller
 
     func applicationDidFinishLaunching(aNotification: NSNotification?) {
         // Insert code here to initialize your application
-        println("appFinishLaunch")
+        modelViewController.mint = mintController.mint
+        mintController.globalStack = modelViewController.globalStack
+        
+        //palleteController.preparePallete()
         
         test()
     }
@@ -27,8 +32,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func test() {
-        println("startTest")
-        mintController.testMesh()
+        mintController.createLeaf()
+        modelViewController.drawStack()
+        //modelViewController.testMesh()
     }
 }
 

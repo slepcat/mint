@@ -26,3 +26,9 @@ protocol MintLeaf {
     func eval(arg: Any) -> Any
     func solve() -> Any
 }
+
+protocol MintCommand {
+    func excute()
+    func undo()
+    func redo()
+}
