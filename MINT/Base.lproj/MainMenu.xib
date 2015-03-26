@@ -707,11 +707,11 @@
                             <action selector="buttonClicked:" target="NAm-X9-eSI" id="h6n-qD-V4N"/>
                         </connections>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="97417A16-1771-43F8-9B7B-827BA6400397" label="2D Primitives" paletteLabel="2D Primitives" image="Cube" id="Uch-kz-Syl">
+                    <toolbarItem implicitItemIdentifier="97417A16-1771-43F8-9B7B-827BA6400397" label="2D Primitives" paletteLabel="2D Primitives" tag="2" image="Cube" id="Uch-kz-Syl">
                         <nil key="toolTip"/>
                         <size key="minSize" width="32" height="32"/>
                         <size key="maxSize" width="32" height="32"/>
-                        <button key="view" focusRingType="none" id="oNO-2F-B40">
+                        <button key="view" focusRingType="none" tag="2" id="oNO-2F-B40">
                             <rect key="frame" x="0.0" y="14" width="32" height="32"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="Cube" imagePosition="overlaps" alignment="center" state="on" focusRingType="none" imageScaling="proportionallyDown" inset="2" id="6Pj-P8-OD1">
@@ -719,12 +719,15 @@
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
                         </button>
+                        <connections>
+                            <action selector="buttonClicked:" target="NAm-X9-eSI" id="IXl-QR-wsQ"/>
+                        </connections>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="20D672F0-69B2-4977-A06A-F2926AB69C11" label="Operator" paletteLabel="Operator" image="Cube" id="ZMv-NN-ME3">
+                    <toolbarItem implicitItemIdentifier="20D672F0-69B2-4977-A06A-F2926AB69C11" label="Operator" paletteLabel="Operator" tag="3" image="Cube" id="ZMv-NN-ME3">
                         <nil key="toolTip"/>
                         <size key="minSize" width="32" height="32"/>
                         <size key="maxSize" width="32" height="32"/>
-                        <button key="view" focusRingType="none" id="tB7-Pc-RBP">
+                        <button key="view" focusRingType="none" tag="3" id="tB7-Pc-RBP">
                             <rect key="frame" x="0.0" y="14" width="32" height="32"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="Cube" imagePosition="overlaps" alignment="center" state="on" focusRingType="none" imageScaling="proportionallyDown" inset="2" id="iO6-H8-i35">
@@ -732,12 +735,15 @@
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
                         </button>
+                        <connections>
+                            <action selector="buttonClicked:" target="NAm-X9-eSI" id="M1s-Se-wof"/>
+                        </connections>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="9823848D-4F93-4EF8-8D4A-5E30E523A737" label="Transfomer" paletteLabel="Transfomer" image="Cube" id="k4z-TS-MBF">
+                    <toolbarItem implicitItemIdentifier="9823848D-4F93-4EF8-8D4A-5E30E523A737" label="Transfomer" paletteLabel="Transfomer" tag="4" image="Cube" id="k4z-TS-MBF">
                         <nil key="toolTip"/>
                         <size key="minSize" width="32" height="32"/>
                         <size key="maxSize" width="32" height="32"/>
-                        <button key="view" focusRingType="none" id="Vzo-ez-bOU">
+                        <button key="view" focusRingType="none" tag="4" id="Vzo-ez-bOU">
                             <rect key="frame" x="0.0" y="14" width="32" height="32"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="Cube" imagePosition="overlaps" alignment="center" state="on" focusRingType="none" imageScaling="proportionallyDown" inset="2" id="gIe-RH-lKy">
@@ -745,12 +751,15 @@
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
                         </button>
+                        <connections>
+                            <action selector="buttonClicked:" target="NAm-X9-eSI" id="vVi-bJ-CDc"/>
+                        </connections>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="7D0DE644-879A-45C8-B731-F867573372FF" label="Data Type" paletteLabel="Data Type" image="Cube" id="g5O-PD-Yrr">
+                    <toolbarItem implicitItemIdentifier="7D0DE644-879A-45C8-B731-F867573372FF" label="Data Type" paletteLabel="Data Type" tag="5" image="Cube" id="g5O-PD-Yrr">
                         <nil key="toolTip"/>
                         <size key="minSize" width="32" height="32"/>
                         <size key="maxSize" width="32" height="32"/>
-                        <button key="view" focusRingType="none" id="uFE-ae-mIl">
+                        <button key="view" focusRingType="none" tag="5" id="uFE-ae-mIl">
                             <rect key="frame" x="0.0" y="14" width="32" height="32"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="Cube" imagePosition="overlaps" alignment="center" state="on" focusRingType="none" imageScaling="proportionallyDown" inset="2" id="ttN-PV-PYi">
@@ -758,32 +767,9 @@
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
                         </button>
-                    </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="333AC671-E762-4EBB-9537-0A5CE5272878" label="Custom" paletteLabel="Custom" image="Cube" id="UK4-Ow-pte">
-                        <nil key="toolTip"/>
-                        <size key="minSize" width="32" height="32"/>
-                        <size key="maxSize" width="32" height="32"/>
-                        <button key="view" focusRingType="none" id="uHp-Q6-QX2">
-                            <rect key="frame" x="0.0" y="14" width="32" height="32"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="Cube" imagePosition="overlaps" alignment="center" state="on" focusRingType="none" imageScaling="proportionallyDown" inset="2" id="VUY-l2-Axx">
-                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                <font key="font" metaFont="system"/>
-                            </buttonCell>
-                        </button>
-                    </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="F7FECC6A-8604-49B5-83D5-49E012DF113C" label="Standard Parts" paletteLabel="Standard Parts" image="Cube" id="VTd-Ju-yLj">
-                        <nil key="toolTip"/>
-                        <size key="minSize" width="32" height="32"/>
-                        <size key="maxSize" width="32" height="32"/>
-                        <button key="view" focusRingType="none" id="rlC-cv-cx5">
-                            <rect key="frame" x="0.0" y="14" width="32" height="32"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="Cube" imagePosition="overlaps" alignment="center" state="on" focusRingType="none" imageScaling="proportionallyDown" inset="2" id="gXm-lC-dsZ">
-                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                <font key="font" metaFont="system"/>
-                            </buttonCell>
-                        </button>
+                        <connections>
+                            <action selector="buttonClicked:" target="NAm-X9-eSI" id="kyN-SJ-ixh"/>
+                        </connections>
                     </toolbarItem>
                 </allowedToolbarItems>
                 <defaultToolbarItems>
@@ -792,8 +778,6 @@
                     <toolbarItem reference="ZMv-NN-ME3"/>
                     <toolbarItem reference="k4z-TS-MBF"/>
                     <toolbarItem reference="g5O-PD-Yrr"/>
-                    <toolbarItem reference="UK4-Ow-pte"/>
-                    <toolbarItem reference="VTd-Ju-yLj"/>
                 </defaultToolbarItems>
             </toolbar>
             <point key="canvasLocation" x="196" y="-99"/>
@@ -811,90 +795,11 @@
         </customObject>
         <customObject id="NAm-X9-eSI" customClass="MintPalleteController" customModule="MINT" customModuleProvider="target">
             <connections>
-                <outlet property="pop3DPrimitives" destination="rZW-Fw-ZYZ" id="1vZ-nl-ZLH"/>
-                <outlet property="toolList" destination="btu-4A-hyv" id="vNn-mP-smC"/>
                 <outlet property="toolbar" destination="ofU-33-grL" id="4Yt-kx-K9Y"/>
             </connections>
         </customObject>
-        <viewController id="A57-6d-NXU" userLabel="Popover View Controller">
-            <connections>
-                <outlet property="view" destination="btu-4A-hyv" id="iUG-5a-zOu"/>
-            </connections>
-        </viewController>
-        <popover behavior="t" id="rZW-Fw-ZYZ">
-            <connections>
-                <outlet property="contentViewController" destination="A57-6d-NXU" id="JA6-Is-Vfv"/>
-            </connections>
-        </popover>
-        <scrollView autohidesScrollers="YES" horizontalLineScroll="43" horizontalPageScroll="10" verticalLineScroll="43" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="7Rh-fV-pAG">
-            <rect key="frame" x="0.0" y="0.0" width="196" height="168"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-            <clipView key="contentView" id="QEv-Sl-vpa">
-                <rect key="frame" x="1" y="0.0" width="238" height="134"/>
-                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                <subviews>
-                    <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="41" rowSizeStyle="automatic" viewBased="YES" id="btu-4A-hyv">
-                        <rect key="frame" x="0.0" y="0.0" width="238" height="134"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                        <size key="intercellSpacing" width="3" height="2"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
-                        <tableColumns>
-                            <tableColumn width="190.73046875" minWidth="40" maxWidth="1000" id="6Pa-ni-05z">
-                                <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
-                                    <font key="font" metaFont="smallSystem"/>
-                                    <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
-                                </tableHeaderCell>
-                                <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="3et-R4-c4u">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                                <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
-                                <prototypeCellViews>
-                                    <tableCellView identifier="toolView" id="Qcr-A0-YPe">
-                                        <rect key="frame" x="1" y="1" width="191" height="41"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <subviews>
-                                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="J9N-zD-beY">
-                                                <rect key="frame" x="2.5" y="4" width="32" height="32"/>
-                                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="Lx7-xe-ex4"/>
-                                            </imageView>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pdc-kc-JBy">
-                                                <rect key="frame" x="41" y="12" width="143" height="17"/>
-                                                <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="4l7-rw-NmA">
-                                                    <font key="font" metaFont="system"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                </textFieldCell>
-                                            </textField>
-                                        </subviews>
-                                        <connections>
-                                            <outlet property="imageView" destination="J9N-zD-beY" id="wow-ye-QKc"/>
-                                            <outlet property="textField" destination="pdc-kc-JBy" id="FvF-ad-6cR"/>
-                                        </connections>
-                                    </tableCellView>
-                                </prototypeCellViews>
-                            </tableColumn>
-                        </tableColumns>
-                    </tableView>
-                </subviews>
-                <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-            </clipView>
-            <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="6Ci-lh-Z5p">
-                <rect key="frame" x="1" y="31" width="46" height="16"/>
-                <autoresizingMask key="autoresizingMask"/>
-            </scroller>
-            <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="n6t-Rw-iY0">
-                <rect key="frame" x="224" y="17" width="15" height="102"/>
-                <autoresizingMask key="autoresizingMask"/>
-            </scroller>
-            <point key="canvasLocation" x="-569.5" y="-336"/>
-        </scrollView>
     </objects>
     <resources>
         <image name="Cube" width="40" height="40"/>
-        <image name="NSActionTemplate" width="14" height="14"/>
     </resources>
 </document>
