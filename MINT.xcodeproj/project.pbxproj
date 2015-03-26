@@ -31,6 +31,7 @@
 		A6B8B4491AB7207300235759 /* NoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B8B4481AB7207300235759 /* NoteView.swift */; };
 		A6B8B44B1AB9D5E400235759 /* MintCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B8B44A1AB9D5E400235759 /* MintCommands.swift */; };
 		A6B8B44D1ABB84D300235759 /* PalleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B8B44C1ABB84D300235759 /* PalleteView.swift */; };
+		A6CA06741AC3711E00AB2135 /* MintPopoverPalleteView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A6CA06731AC3711E00AB2135 /* MintPopoverPalleteView.xib */; };
 		A6E1F5E21AABDDD700CE9EA3 /* MintLeaf.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E1F5E11AABDDD700CE9EA3 /* MintLeaf.swift */; };
 		A6E1F5E41AAC9EA000CE9EA3 /* MintLeafPrimitives.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E1F5E31AAC9EA000CE9EA3 /* MintLeafPrimitives.swift */; };
 /* End PBXBuildFile section */
@@ -76,6 +77,7 @@
 		A6B8B4481AB7207300235759 /* NoteView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteView.swift; sourceTree = "<group>"; };
 		A6B8B44A1AB9D5E400235759 /* MintCommands.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintCommands.swift; sourceTree = "<group>"; };
 		A6B8B44C1ABB84D300235759 /* PalleteView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PalleteView.swift; sourceTree = "<group>"; };
+		A6CA06731AC3711E00AB2135 /* MintPopoverPalleteView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MintPopoverPalleteView.xib; sourceTree = "<group>"; };
 		A6E1F5E11AABDDD700CE9EA3 /* MintLeaf.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintLeaf.swift; sourceTree = "<group>"; };
 		A6E1F5E31AAC9EA000CE9EA3 /* MintLeafPrimitives.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintLeafPrimitives.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -162,6 +164,7 @@
 				A64660A21A234F0000648FD9 /* bridge.m */,
 				A68607F519EEC1E1005E858A /* Images.xcassets */,
 				A68607F719EEC1E1005E858A /* MainMenu.xib */,
+				A6CA06731AC3711E00AB2135 /* MintPopoverPalleteView.xib */,
 				A68607EF19EEC1E1005E858A /* Supporting Files */,
 				A64660A11A234F0000648FD9 /* MINT-Bridging-Header.h */,
 			);
@@ -291,6 +294,7 @@
 				A68607F619EEC1E1005E858A /* Images.xcassets in Resources */,
 				A64DDC651AC0254000E9F9B7 /* Cube.tiff in Resources */,
 				A68607F919EEC1E1005E858A /* MainMenu.xib in Resources */,
+				A6CA06741AC3711E00AB2135 /* MintPopoverPalleteView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

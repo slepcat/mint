@@ -78,26 +78,22 @@ class MintModelViewController:NSObject {
 }
 
 class MintPalleteController:NSObject {
-    @IBOutlet weak var pop3DPrimitives : NSPopover!
     @IBOutlet weak var toolbar : NSToolbar!
-    @IBOutlet weak var toolList : NSTableView!
     
-    let toolListController = MintToolListController(toolSet: "3D Primitives")
-    var test: Bool = true
+    var toolSets : [MintToolListController] = []
+    
+    override func awakeFromNib() {
+        if toolSets.count == 0 {
+            toolSets += [MintToolListController(toolSet: "3D Primitives")]
+            toolSets += [MintToolListController(toolSet: "3D Primitives")]
+            println("3D primitives tool set prepared")
+        }
+    }
     
     @IBAction func buttonClicked(sender: AnyObject) {
         if let view = sender as? NSView {
-            switch view.tag {
-            case 1:// 3D Primitives button Tag
-                if test {
-                    toolList.setDataSource(toolListController as NSTableViewDataSource)
-                    toolList.setDelegate(toolListController as NSTableViewDelegate)
-                    
-                    test = false
-                }
-                pop3DPrimitives.showRelativeToRect(view.frame, ofView: view, preferredEdge: 1)
-            default:
-            println("Unknown NSView Object!")
+            if (view.tag > 0) && (view.tag <= toolSets.count) {
+                toolSets[view.tag-1].showPopover(view)
             }
         }
     }
@@ -107,13 +103,27 @@ class MintPalleteController:NSObject {
 // Using 'toolSet: String' in 'init()', load '.toolset' text file to determine contents of
 // NSPopover Interface
 class MintToolListController:NSObject, NSTableViewDataSource, NSTableViewDelegate {
+    @IBOutlet weak var toolList : NSTableView!
+    @IBOutlet weak var popover : NSPopover!
+    
+    var xibObjects : NSArray?
     var toolNames : [String] = []
     var toolImages : [NSImage] = []
     
     init(toolSet: String) {
         super.init()
         
-        // test code
+        // load xib file
+        let myXib = NSNib(nibNamed: "MintPopoverPalleteView", bundle: nil)
+        
+        if myXib?.instantiateWithOwner(self, topLevelObjects: &xibObjects) == nil {
+            println("Failed to load xib, popover views")
+        } else {
+            toolList.setDataSource(self as NSTableViewDataSource)
+            toolList.setDelegate(self as NSTableViewDelegate)
+        }
+        
+        // load tool list & icons
         let appBundle = NSBundle.mainBundle()
         let toolSetPath = appBundle.pathForResource(toolSet, ofType: "toolset")
         
@@ -128,7 +138,7 @@ class MintToolListController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                 // Check each line and add to toolNames except comment line : '#' prefix
                 // If the line have tool name, load icon from NSBundle
                 for line in lines {
-                    if !line.hasPrefix("#") {
+                    if !line.hasPrefix("#") && (countElements(line) > 0) {
                         toolNames += [line]
                         
                         // load icon
@@ -155,7 +165,13 @@ class MintToolListController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                     }
                 }
             }
+        } else {
+            println("Unvalid toolset name")
         }
+    }
+    
+    func showPopover(view: NSView) {
+        popover.showRelativeToRect(view.frame, ofView: view, preferredEdge: 1)
     }
     
     func numberOfRowsInTableView(tableView: NSTableView) -> Int {
