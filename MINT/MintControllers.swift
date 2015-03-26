@@ -119,8 +119,12 @@ class MintToolListController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         if myXib?.instantiateWithOwner(self, topLevelObjects: &xibObjects) == nil {
             println("Failed to load xib, popover views")
         } else {
+            // set data source and delegate for NSTableView
             toolList.setDataSource(self as NSTableViewDataSource)
             toolList.setDelegate(self as NSTableViewDelegate)
+            
+            // set drag operation mask
+            toolList.setDraggingSourceOperationMask(NSDragOperation.Generic, forLocal: true)
         }
         
         // load tool list & icons
@@ -187,5 +191,14 @@ class MintToolListController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         }
         
         return result as? NSView
+    }
+    
+    func tableView(tableView: NSTableView, writeRowsWithIndexes rowIndexes: NSIndexSet, toPasteboard pboard: NSPasteboard) -> Bool {
+        pboard.clearContents()
+        if pboard.writeObjects([toolNames[rowIndexes.firstIndex]]) {
+            return true
+        } else {
+            return false
+        }
     }
 }

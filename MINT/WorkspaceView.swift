@@ -1,5 +1,5 @@
 //
-//  NoteView.swift
+//  WorkspaceView.swift
 //  MINT
 //
 //  Created by 安藤 泰造 on 2015/03/16.
