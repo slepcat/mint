@@ -28,6 +28,7 @@ protocol MintLeaf {
 }
 
 protocol MintCommand {
+    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter)
     func excute()
     func undo()
     func redo()

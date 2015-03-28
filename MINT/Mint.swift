@@ -9,16 +9,29 @@
 import Foundation
 
 // Root level of Mint leaves chains. Should be 'Singleton'?
-// This is 'Subject' against view classes as 'Observer'.
 class MintInterpreter {
     private var leafPool = [Leaf]()
-    //var globalStack = MintGlobalStack()
+    var globalStack = MintGlobalStack()
     
-    func addLeaf(leaf: Leaf) {
-        leafPool.append(leaf)
+    func addLeaf(leafType: String) {
+        var newLeaf : Leaf?
+        
+        switch leafType {
+        case "Cube":
+            newLeaf = Cube()
+        default:
+            println("Unknown leaf type alloc requied!")
+        }
+        
+        if let leaf = newLeaf {
+            leafPool.append(leaf)
+            globalStack.addLeaf(leaf)
+        }
     }
 }
 
+// Root stack of Mint leaves. Provide mesh for 'ModelView'
+// This is 'Subject' against view classes as 'Observer'.
 class MintGlobalStack:MintSubject {
     private var rootStack = [Leaf]()
     private var observers = [MintObserver]()
