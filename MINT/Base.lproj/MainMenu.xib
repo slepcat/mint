@@ -14,10 +14,11 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="MINT" customModuleProvider="target">
             <connections>
-                <outlet property="mintController" destination="qTW-t7-DNO" id="FOV-lY-rcw"/>
-                <outlet property="modelViewController" destination="Y5y-Yc-Qt7" id="CAk-QK-vf1"/>
-                <outlet property="palleteController" destination="NAm-X9-eSI" id="JnO-S7-aYZ"/>
+                <outlet property="controller" destination="Mgp-eK-e3v" id="GaV-t1-0fd"/>
+                <outlet property="modelView" destination="Y5y-Yc-Qt7" id="AKI-x1-Gri"/>
+                <outlet property="toolbar" destination="NAm-X9-eSI" id="wk0-e5-mHF"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
+                <outlet property="workspace" destination="qTW-t7-DNO" id="WP6-YO-T9v"/>
             </connections>
         </customObject>
         <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
@@ -681,9 +682,13 @@
                 <subviews>
                     <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="a6P-RF-7to" customClass="WorkspaceView">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="700"/>
+                        <connections>
+                            <outlet property="controller" destination="Mgp-eK-e3v" id="b1S-iv-Hxf"/>
+                            <outlet property="workspace" destination="qTW-t7-DNO" id="HNJ-LV-Bzp"/>
+                        </connections>
                     </customView>
                     <openGLView autoresizesSubviews="NO" fixedFrame="YES" depthSize="16bit" antiAliasingType="supersample" samplingRate="8" useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Fk8-ER-HQe" customClass="MintModelView">
-                        <rect key="frame" x="450" y="0.0" width="750" height="300"/>
+                        <rect key="frame" x="450" y="0.0" width="750" height="700"/>
                     </openGLView>
                 </subviews>
             </view>
@@ -787,15 +792,21 @@
                 <outlet property="modelview" destination="Fk8-ER-HQe" id="bxW-Zx-rXa"/>
             </connections>
         </customObject>
-        <customObject id="qTW-t7-DNO" customClass="MintController" customModule="MINT" customModuleProvider="target">
+        <customObject id="qTW-t7-DNO" customClass="MintWorkspaceController" customModule="MINT" customModuleProvider="target">
             <connections>
                 <outlet property="modelViewController" destination="Y5y-Yc-Qt7" id="n2z-0I-512"/>
                 <outlet property="workspace" destination="a6P-RF-7to" id="rDG-qC-qD9"/>
             </connections>
         </customObject>
-        <customObject id="NAm-X9-eSI" customClass="MintPalleteController" customModule="MINT" customModuleProvider="target">
+        <customObject id="NAm-X9-eSI" customClass="MintToolbarController" customModule="MINT" customModuleProvider="target">
             <connections>
                 <outlet property="toolbar" destination="ofU-33-grL" id="4Yt-kx-K9Y"/>
+            </connections>
+        </customObject>
+        <customObject id="Mgp-eK-e3v" customClass="MintController" customModule="MINT" customModuleProvider="target">
+            <connections>
+                <outlet property="modelView" destination="Y5y-Yc-Qt7" id="Apn-61-bb3"/>
+                <outlet property="workspace" destination="qTW-t7-DNO" id="ojk-RP-hsU"/>
             </connections>
         </customObject>
     </objects>

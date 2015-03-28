@@ -9,84 +9,122 @@
 import Foundation
 import Cocoa
 
+// Controller of Mint
+// Responsible to sync 'LeafView', 'GLMesh', and 'Leaf' instances
+// This mean 'MintController' manage interactions between 2 controllers and
+// a model: 'workspace', 'modelView', and 'interpreter'
+
 class MintController:NSObject {
-    @IBOutlet var workspace: WorkspaceView!
-    @IBOutlet var modelViewController: MintModelViewController!
-    var globalStack : MintGlobalStack!
+    @IBOutlet weak var workspace: MintWorkspaceController!
+    @IBOutlet weak var modelView: MintModelViewController!
+    var interpreter: MintInterpreter!
     
-    var mint : MintInterpreter
+    var undoStack : [MintCommand] = []
+    var redoStack : [MintCommand] = []
     
-    override init() {
-        mint = MintInterpreter()
-        super.init()
+    func sendCommand(newCommand: MintCommand) {
+        newCommand.prepare(workspace, modelView: modelView, interpreter: interpreter)
+        newCommand.excute()
+        
+        undoStack.append(newCommand)
+        redoStack.removeAll(keepCapacity: false)
+        
+        // Maximam undo is 10
+        if undoStack.count > 10 {
+            undoStack.removeAtIndex(0)
+        }
     }
     
-    func createLeaf() {
-        let leafFrame = NSRect(x: 50,y: 50,width: 100,height: 100)
-        var newLeafView = LeafView(frame: leafFrame)
-        var newLeaf = Cube() // How to determine concreate leaf type?
+    func undo() {
+        if let undo = undoStack.last {
+            undo.undo()
+            redoStack.append(undo)
+            undoStack.removeLast()
+        }
+    }
+    
+    func redo() {
+        if let redo = redoStack.last {
+            redo.redo()
+            undoStack.append(redo)
+            redoStack.removeLast()
+        }
+    }
+    
+    // testcode
+    func createTestLeaf() {
+        let command = AddLeaf(toolName: "Cube", setName: "3D Primitives", pos: NSPoint(x:100, y:400))
+        self.sendCommand(command)
+    }
+    
+}
+
+// Controller of workspace view
+// Responsible to interact user action and manage leaf views
+class MintWorkspaceController:NSObject {
+    @IBOutlet weak var workspace: WorkspaceView!
+    @IBOutlet weak var modelViewController: MintModelViewController!
+    
+    // Instantiate a leaf when tool dragged to workspace from toolbar.
+    // Responsible for create leaf's view and model.
+    func addLeaf(toolName:String, setName:String, pos:NSPoint) {
         
-        //create leaf models
-        mint.addLeaf(newLeaf)
-        globalStack.addLeaf(newLeaf)
+        // test code. require smart code to determine view appearance according with leafType
+        // need argument view
+        let newLeaf = LeafView(rect: NSRect(origin: pos, size: CGSize(width: 100, height: 60)), color:NSColor(calibratedRed: 0.5, green: 0.5, blue: 0.5, alpha: 1))
         
-        //create leaf views
-        workspace.addSubview(newLeafView)
-        modelViewController.addLeaf(newLeaf)
+        workspace.addSubview(newLeaf)
+        workspace.needsDisplay = true
     }
 }
 
+
+// Controller of Model View (openGL 3D View)
+// Responsible for providing GLMesh objects to global stack
 class MintModelViewController:NSObject {
     @IBOutlet var modelview: MintModelView!
-    var mint : MintInterpreter!
     
-    var globalStack : MintGlobalStack
+    var globalStack : MintGlobalStack!
     
-    override init() {
-        globalStack = MintGlobalStack()
-        super.init()
-    }
-    
-    func addLeaf(leaf: Leaf) {
+    // add mesh to model view and register to global stack as
+    // observer object
+    func addMesh() {
         var mesh = GLmesh()
         
+        // add mesh to model view
         modelview.stack.append(mesh)
-        globalStack.addLeaf(leaf)
+        // register mesh as observer
         globalStack.registerObserver(mesh as MintObserver)
-    }
-    
-    func drawStack() {
+        
+        // call solve() for stack leaves and update gl meshes of model view
         globalStack.solve()
+        
+        modelview.needsDisplay = true
     }
     
-    func testMesh() {
-        println("test leaf setup")
-        
-        var cube = Cube()
-        
-        cube.width = 50.0
-        cube.height = 30.0
-        cube.depth = 20.0
-        var mesh = GLmesh()
-        
-        modelview.stack.append(mesh)
-        globalStack.addLeaf(cube)
-        
-        globalStack.registerObserver(mesh as MintObserver)
+    // call solve() for stack leaves and update gl meshes of model view
+    func updateModelView() {
         globalStack.solve()
     }
 }
 
-class MintPalleteController:NSObject {
+enum MintToolSet : String {
+    case Prim3D = "3D Primitives"
+    case Prim2D = "2D Primitives"
+    case Operator = "Operator"
+    case Type = "Data Type"
+    case Transform = "Transfomer"
+}
+
+class MintToolbarController:NSObject {
     @IBOutlet weak var toolbar : NSToolbar!
     
     var toolSets : [MintToolListController] = []
     
     override func awakeFromNib() {
         if toolSets.count == 0 {
-            toolSets += [MintToolListController(toolSet: "3D Primitives")]
-            toolSets += [MintToolListController(toolSet: "3D Primitives")]
-            println("3D primitives tool set prepared")
+            toolSets += [MintToolListController(toolSet: MintToolSet.Prim3D.rawValue)]
+            toolSets += [MintToolListController(toolSet: MintToolSet.Prim3D.rawValue)]
         }
     }
     
@@ -105,12 +143,14 @@ class MintPalleteController:NSObject {
 class MintToolListController:NSObject, NSTableViewDataSource, NSTableViewDelegate {
     @IBOutlet weak var toolList : NSTableView!
     @IBOutlet weak var popover : NSPopover!
-    
     var xibObjects : NSArray?
+    
+    let toolSetName : String
     var toolNames : [String] = []
     var toolImages : [NSImage] = []
     
     init(toolSet: String) {
+        toolSetName = toolSet
         super.init()
         
         // load xib file
@@ -182,6 +222,7 @@ class MintToolListController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         return toolNames.count
     }
     
+    // Provide data for NSTableView
     func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
         let result: AnyObject? = tableView.makeViewWithIdentifier("toolView" , owner: self)
         
@@ -193,10 +234,17 @@ class MintToolListController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         return result as? NSView
     }
     
+    // Provide leaf type (=tool name) to NSPasteboard for dragging operation
     func tableView(tableView: NSTableView, writeRowsWithIndexes rowIndexes: NSIndexSet, toPasteboard pboard: NSPasteboard) -> Bool {
         pboard.clearContents()
-        if pboard.writeObjects([toolNames[rowIndexes.firstIndex]]) {
-            return true
+        pboard.declareTypes(["leaf", "type"], owner: self)
+        if pboard.setString(toolNames[rowIndexes.firstIndex], forType:"leaf" ) {
+            
+            if pboard.setString(toolSetName, forType: "type") {
+                return true
+            } else {
+                return false
+            }
         } else {
             return false
         }

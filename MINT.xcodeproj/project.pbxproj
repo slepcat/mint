@@ -30,8 +30,8 @@
 		A6B8B4471AB5C58300235759 /* Mint.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B8B4461AB5C58300235759 /* Mint.swift */; };
 		A6B8B4491AB7207300235759 /* WorkspaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B8B4481AB7207300235759 /* WorkspaceView.swift */; };
 		A6B8B44B1AB9D5E400235759 /* MintCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B8B44A1AB9D5E400235759 /* MintCommands.swift */; };
-		A6B8B44D1ABB84D300235759 /* PalleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B8B44C1ABB84D300235759 /* PalleteView.swift */; };
 		A6CA06741AC3711E00AB2135 /* MintPopoverPalleteView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A6CA06731AC3711E00AB2135 /* MintPopoverPalleteView.xib */; };
+		A6CA06761AC5B8DA00AB2135 /* LeafArgumentView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A6CA06751AC5B8DA00AB2135 /* LeafArgumentView.xib */; };
 		A6E1F5E21AABDDD700CE9EA3 /* MintLeaf.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E1F5E11AABDDD700CE9EA3 /* MintLeaf.swift */; };
 		A6E1F5E41AAC9EA000CE9EA3 /* MintLeafPrimitives.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E1F5E31AAC9EA000CE9EA3 /* MintLeafPrimitives.swift */; };
 /* End PBXBuildFile section */
@@ -76,8 +76,8 @@
 		A6B8B4461AB5C58300235759 /* Mint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mint.swift; sourceTree = "<group>"; };
 		A6B8B4481AB7207300235759 /* WorkspaceView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceView.swift; sourceTree = "<group>"; };
 		A6B8B44A1AB9D5E400235759 /* MintCommands.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintCommands.swift; sourceTree = "<group>"; };
-		A6B8B44C1ABB84D300235759 /* PalleteView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PalleteView.swift; sourceTree = "<group>"; };
 		A6CA06731AC3711E00AB2135 /* MintPopoverPalleteView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MintPopoverPalleteView.xib; sourceTree = "<group>"; };
+		A6CA06751AC5B8DA00AB2135 /* LeafArgumentView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LeafArgumentView.xib; sourceTree = "<group>"; };
 		A6E1F5E11AABDDD700CE9EA3 /* MintLeaf.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintLeaf.swift; sourceTree = "<group>"; };
 		A6E1F5E31AAC9EA000CE9EA3 /* MintLeafPrimitives.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintLeafPrimitives.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -150,7 +150,6 @@
 				A686081219F01791005E858A /* mint.playground */,
 				A686081019EEC93B005E858A /* ModelView.swift */,
 				A6B8B4481AB7207300235759 /* WorkspaceView.swift */,
-				A6B8B44C1ABB84D300235759 /* PalleteView.swift */,
 				A6AACFE61A99DBC500BE0724 /* MintProtocols.swift */,
 				A61596D51A3DE09C00B314B6 /* MintFoundation.swift */,
 				A6AACFE41A9999EF00BE0724 /* MintSingletons.swift */,
@@ -165,6 +164,7 @@
 				A68607F519EEC1E1005E858A /* Images.xcassets */,
 				A68607F719EEC1E1005E858A /* MainMenu.xib */,
 				A6CA06731AC3711E00AB2135 /* MintPopoverPalleteView.xib */,
+				A6CA06751AC5B8DA00AB2135 /* LeafArgumentView.xib */,
 				A68607EF19EEC1E1005E858A /* Supporting Files */,
 				A64660A11A234F0000648FD9 /* MINT-Bridging-Header.h */,
 			);
@@ -287,6 +287,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A64DDC6A1AC309EE00E9F9B7 /* 3D Primitives.toolset in Resources */,
+				A6CA06761AC5B8DA00AB2135 /* LeafArgumentView.xib in Resources */,
 				A64660B31A2CC77600648FD9 /* OpenJsCADLightingShader.fs in Resources */,
 				A64660B41A2CC77600648FD9 /* OpenJsCADLightingShader.vs in Resources */,
 				A64660A81A27771400648FD9 /* OpenJsCADBlackShader.fs in Resources */,
@@ -326,7 +327,6 @@
 				A61596D61A3DE09C00B314B6 /* MintFoundation.swift in Sources */,
 				A64660B01A2B3A7D00648FD9 /* Shader.swift in Sources */,
 				A6B8B4491AB7207300235759 /* WorkspaceView.swift in Sources */,
-				A6B8B44D1ABB84D300235759 /* PalleteView.swift in Sources */,
 				A6E1F5E21AABDDD700CE9EA3 /* MintLeaf.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
