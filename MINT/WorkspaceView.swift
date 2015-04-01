@@ -78,6 +78,9 @@ import AppKit
 
 // View of leaf instance
 @objc(LeafView) class LeafView : NSView {
+    var leafID : Int = -1
+    weak var controller : MintController!
+    
     var boundPath : NSBezierPath? = nil
     var focus : Bool = false
     var dragging : Bool = false
@@ -89,16 +92,70 @@ import AppKit
         }
     }
     
-    convenience init(rect: NSRect, color:NSColor) {
+    convenience init(rect: NSRect, color:NSColor, leafID:Int) {
         self.init(frame: rect)
         
+        if let delegate = NSApplication.sharedApplication().delegate as? AppDelegate {
+            controller = delegate.controller
+        }
+        self.leafID = leafID
         self.color = color
+        
         boundPath = NSBezierPath(roundedRect: self.bounds, xRadius: 6.0, yRadius: 6.0)
         boundPath?.lineWidth = 3.0
     }
     
-    func setArguments(args: [String], types:[String]) {
+    func setArgumentsView(args: [String], types:[String]) {
+        var labelRect = NSRect(x: 30, y: self.frame.height - 5, width: self.frame.width - 35, height: 16)
         
+        for var i = 0; args.count > i; i++ {
+            labelRect.origin.y -= 16
+            let argLabel = NSTextField(frame: labelRect)
+            
+            if color.brightnessComponent < 0.6 {
+                argLabel.textColor = NSColor(calibratedWhite: 1.0, alpha: 1.0)
+            } else {
+                argLabel.textColor = NSColor(calibratedWhite: 0.0, alpha: 1.0)
+            }
+            
+            argLabel.stringValue = args[i]
+            argLabel.backgroundColor = color
+            argLabel.bordered = false
+            argLabel.editable = false
+            argLabel.selectable = false
+            argLabel.font = NSFont.labelFontOfSize(10)
+            argLabel.alignment = NSTextAlignment.RightTextAlignment
+            
+            self.addSubview(argLabel)
+        }
+        
+        // need to setup popover for edit args
+    }
+    
+    
+    func viewForDataType(type: String) -> NSView? {
+        
+        switch type {
+        case "Double":
+            break
+        case "Int":
+            break
+        case "String":
+            break
+        case "Enum":
+            break
+        case "Vector":
+            break
+        case "Vertex":
+            break
+        case "Plane":
+            break
+        case "Mesh":
+            break
+        default:
+            return nil
+        }
+        return nil
     }
     
     override func drawRect(dirtyRect: NSRect) {
@@ -156,6 +213,28 @@ import AppKit
         }
     }
     
+    // trigger remove by delete keydown
+    override func keyDown(theEvent: NSEvent) {
+        
+        let keystroke = theEvent.charactersIgnoringModifiers
+        
+        if let key = keystroke {
+            if key.utf16Count == 1 {
+                let s = key.unicodeScalars
+                let v = s[s.startIndex].value
+                
+                if Int(v) == NSDeleteCharacter {
+                    let command = RemoveLeaf(removeID: leafID)
+                    
+                    controller.sendCommand(command)
+                    return
+                }
+            }
+        }
+        
+        super.keyDown(theEvent)
+    }
+    
     // focus ring management
     
     override func becomeFirstResponder() -> Bool {
@@ -173,4 +252,19 @@ import AppKit
         
         return super.resignFirstResponder()
     }
+}
+
+class MintArgumentCellView : NSTableCellView {
+    @IBOutlet weak var value: NSTextField!
+    @IBOutlet weak var rmbutton: NSButton!
+
+
+    
+}
+
+class MintVectorCellView : MintArgumentCellView {
+    @IBOutlet weak var value2: NSTextField!
+    @IBOutlet weak var value3: NSTextField!
+    
+    
 }

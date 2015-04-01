@@ -9,19 +9,59 @@
 import Foundation
 
 class Leaf:MintLeaf {
-    func eval(arg: Any) -> Any {
+    let leafID : Int
+    
+    var needUpdate : Bool = true
+    
+    var args : [Any?]
+    var argLabels : [String]
+    var argTypes : [String]
+    
+    init(newID: Int ){
+        leafID = newID
         
-        // If 'arg' is 'Leaf' instance, call solve() method.
-        // If 'arg' is value except 'Leaf', return it as 'Any' type.
-        switch arg {
-        case let someLeaf as Leaf:
-            return someLeaf.solve()
-        default:
-            return arg
+        args = []
+        argLabels = []
+        argTypes = []
+    }
+    
+    func getArgs() -> (argLabels: [String], argTypes: [String], args: [Any?]) {
+        return (argLabels: argLabels, argTypes: argTypes, args: args)
+    }
+    
+    func setArg(label: String, value: Any) {
+        for var i = 0; argLabels.count > i; i++ {
+            if argLabels[i] == label {
+                
+                
+                // need type check and exception
+                args[i] = value
+                
+                needUpdate = true
+                break
+            }
         }
     }
     
-    func solve() -> Any {
-        return NSNull()
+    func eval(arg: String) -> Any? {
+        
+        for var i = 0; argLabels.count > i; i++ {
+            if argLabels[i] == arg {
+                
+                let argValue = args[i]
+                switch argValue {
+                case let someLeaf as Leaf:
+                    return someLeaf.solve()
+                default:
+                    return argValue
+                }
+            }
+        }
+        
+        return nil
+    }
+    
+    func solve() -> Any? {
+        return nil
     }
 }

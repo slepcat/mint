@@ -329,12 +329,19 @@ struct ViewAngle {
 }
 
 class GLmesh:MintObserver {
+    // ID of leaf which is counterpart of GLmesh instance
+    let leafID : Int
+    
     //open gl buffer ids
     var vbufferid : GLuint = 0
     var nbufferid : GLuint = 0
     var cbufferid : GLuint = 0
     //length of mesh array
     var buffersize : GLsizei = 0
+    
+    init(leafID: Int) {
+        self.leafID = leafID
+    }
     
     // update open gl vertices & attribute array
     func update(subject: MintSubject, index: Int) {

@@ -32,12 +32,14 @@ class AddLeaf:MintCommand {
     }
     
     func excute() {
+        
+        let newID = LeafID.get.newID
         // add view
-        workspace.addLeaf(leafType, setName: category, pos: pos)
+        workspace.addLeaf(leafType, setName: category, pos: pos, leafID: newID)
         // add leaf
-        interpreter.addLeaf(leafType)
+        interpreter.addLeaf(leafType, leafID: newID)
         // add glmesh
-        modelView.addMesh()
+        modelView.addMesh(newID)
     }
     
     func undo() {
@@ -98,9 +100,15 @@ class RemoveArgument:MintCommand {
 }
 
 class RemoveLeaf:MintCommand {
+    let removeID : Int
+    
     weak var workspace:MintWorkspaceController!
     weak var modelView: MintModelViewController!
     weak var interpreter: MintInterpreter!
+    
+    init(removeID: Int) {
+        self.removeID = removeID
+    }
     
     func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
         self.workspace = workspace
@@ -109,7 +117,9 @@ class RemoveLeaf:MintCommand {
     }
     
     func excute() {
-        
+        workspace.removeLeaf(removeID)
+        modelView.removeMesh(removeID)
+        interpreter.removeLeaf(removeID)
     }
     
     func undo() {

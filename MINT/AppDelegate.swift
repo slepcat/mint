@@ -23,7 +23,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         controller.interpreter = MintInterpreter()
         modelView.globalStack = controller.interpreter.globalStack
         
-        test()
+        //test()
     }
 
     func applicationWillTerminate(aNotification: NSNotification?) {

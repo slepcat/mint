@@ -83,7 +83,7 @@
                 <outlet property="view" destination="Cqf-8o-dQa" id="BDX-xL-U8B"/>
             </connections>
         </viewController>
-        <popover behavior="t" id="58Z-xE-R8K">
+        <popover animates="NO" behavior="t" id="58Z-xE-R8K">
             <connections>
                 <outlet property="contentViewController" destination="wj1-41-BGV" id="bel-n7-y0g"/>
             </connections>

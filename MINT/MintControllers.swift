@@ -59,26 +59,6 @@ class MintController:NSObject {
     
 }
 
-// Controller of workspace view
-// Responsible to interact user action and manage leaf views
-class MintWorkspaceController:NSObject {
-    @IBOutlet weak var workspace: WorkspaceView!
-    @IBOutlet weak var modelViewController: MintModelViewController!
-    
-    // Instantiate a leaf when tool dragged to workspace from toolbar.
-    // Responsible for create leaf's view and model.
-    func addLeaf(toolName:String, setName:String, pos:NSPoint) {
-        
-        // test code. require smart code to determine view appearance according with leafType
-        // need argument view
-        let newLeaf = LeafView(rect: NSRect(origin: pos, size: CGSize(width: 100, height: 60)), color:NSColor(calibratedRed: 0.5, green: 0.5, blue: 0.5, alpha: 1))
-        
-        workspace.addSubview(newLeaf)
-        workspace.needsDisplay = true
-    }
-}
-
-
 // Controller of Model View (openGL 3D View)
 // Responsible for providing GLMesh objects to global stack
 class MintModelViewController:NSObject {
@@ -88,8 +68,8 @@ class MintModelViewController:NSObject {
     
     // add mesh to model view and register to global stack as
     // observer object
-    func addMesh() {
-        var mesh = GLmesh()
+    func addMesh(leafID: Int) {
+        var mesh = GLmesh(leafID: leafID)
         
         // add mesh to model view
         modelview.stack.append(mesh)
@@ -102,9 +82,20 @@ class MintModelViewController:NSObject {
         modelview.needsDisplay = true
     }
     
-    // call solve() for stack leaves and update gl meshes of model view
-    func updateModelView() {
-        globalStack.solve()
+    // remove the GLmesh from stack
+    func removeMesh(leafID: Int) {
+        for var i = 0 ; modelview.stack.count > i; i++ {
+            if modelview.stack[i].leafID == leafID {
+                //remove mesh from stack and unregister Observer
+                globalStack.removeObserver(modelview.stack[i])
+                modelview.stack.removeAtIndex(i)
+                
+                // call solve() for stack leaves and update gl meshes of model view
+                globalStack.solve()
+                modelview.needsDisplay = true
+                break
+            }
+        }
     }
 }
 

@@ -9,16 +9,42 @@
 import Foundation
 
 // Root level of Mint leaves chains. Should be 'Singleton'?
-class MintInterpreter {
+class MintInterpreter:MintLeafSubject {
     private var leafPool = [Leaf]()
     var globalStack = MintGlobalStack()
+    var observers:[MintLeafObserver] = []
     
-    func addLeaf(leafType: String) {
+    // register observer (mint leaf view) protocol
+    func registerObserver(observer: MintLeafObserver) {
+        observers.append(observer)
+    }
+    
+    // remove observer
+    func removeObserver(observer: MintLeafObserver) {
+        for var i = 0; observers.count > i; i++ {
+            if observers[i] === observer {
+                observers.removeAtIndex(i)
+                break
+            }
+        }
+    }
+    
+    func getArguments(leafID: Int) -> (argLabels: [String], argTypes:[String], args: [Any?]) {
+        for leaf in leafPool {
+            if leaf.leafID == leafID {
+                return leaf.getArgs()
+            }
+        }
+        
+        return ([], [], [])
+    }
+    
+    func addLeaf(leafType: String, leafID: Int) {
         var newLeaf : Leaf?
         
         switch leafType {
         case "Cube":
-            newLeaf = Cube()
+            newLeaf = Cube(newID: leafID)
         default:
             println("Unknown leaf type alloc requied!")
         }
@@ -26,6 +52,17 @@ class MintInterpreter {
         if let leaf = newLeaf {
             leafPool.append(leaf)
             globalStack.addLeaf(leaf)
+        }
+    }
+    
+    func removeLeaf(leafID: Int) {
+        globalStack.removeAtID(leafID)
+        
+        for var i = 0; leafPool.count > i; i++ {
+            if leafPool[i].leafID == leafID {
+                leafPool.removeAtIndex(i)
+                break
+            }
         }
     }
 }
@@ -83,17 +120,11 @@ class MintGlobalStack:MintSubject {
         rootStack.append(leaf)
     }
     
-    func removeLeaf(leaf: Leaf) {
-        for var i=0; i < rootStack.count; i++ {
-            if leaf === rootStack[i] {
+    func removeAtID(leafID: Int) {
+        for var i = 0; rootStack.count > i; i++ {
+            if rootStack[i].leafID == leafID {
                 rootStack.removeAtIndex(i)
             }
-        }
-    }
-    
-    func removeAtIndex(index: Int) {
-        if index < rootStack.count && index >= 0 {
-            rootStack.removeAtIndex(index)
         }
     }
 }
