@@ -28,3 +28,24 @@ class Tag {
         return Static.tagFactory
     }
 }
+
+
+// leaf id generator.
+// leafID factory: we can request a unique ID through leafID.get.newID
+// Singleton
+
+class LeafID {
+    private var count:Int = 0
+    private init(){}
+    
+    var newID: Int {
+        return count++
+    }
+    
+    class var get: LeafID {
+        struct Static{
+            static let idFactory = LeafID()
+        }
+        return Static.idFactory
+    }
+}

@@ -4,27 +4,24 @@ import Foundation
 import Cocoa
 
 
-let appBundle = NSBundle.mainBundle()
-let toolSetPath = appBundle.pathForResource("3D Primitives", ofType: "toolset")
-
-// read tool list of designated tool set name from NSBundle.
-if let path = toolSetPath {
-    let toolSetString = String(contentsOfFile: path, encoding:NSUTF8StringEncoding, error: nil)
+class LeafID {
+    private var count:Int = 0
+    private init(){}
     
-    if let string = toolSetString {
-        string.componentsSeparatedByString("\n")
+    var newID: Int {
+        return count++
     }
     
+    class var get: LeafID {
+        struct Static{
+            static let idFactory = LeafID()
+        }
+        return Static.idFactory
+    }
 }
 
 
-var a = "test like bug \n Jhon can start test"
-var c = a.componentsSeparatedByString("\n")
 
+let ad = LeafID.get.newID
 
-
-
-
-
-
-
+let ac = LeafID.get.newID

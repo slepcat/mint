@@ -794,7 +794,6 @@
         </customObject>
         <customObject id="qTW-t7-DNO" customClass="MintWorkspaceController" customModule="MINT" customModuleProvider="target">
             <connections>
-                <outlet property="modelViewController" destination="Y5y-Yc-Qt7" id="n2z-0I-512"/>
                 <outlet property="workspace" destination="a6P-RF-7to" id="rDG-qC-qD9"/>
             </connections>
         </customObject>

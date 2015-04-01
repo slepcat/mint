@@ -8,6 +8,8 @@
 
 import Foundation
 
+// Observer Pattern protocol for 'ModelView' and 'MintInterpreter'
+// Tell change of 'Leaf' model to 'ModelView' to update 3D model view.
 protocol MintObserver:class { // observer must be class type
     func update(subject: MintSubject, index: Int)//tell observer which leaves are updated
 }
@@ -23,8 +25,22 @@ protocol MintSubject:class {
 
 protocol MintLeaf {
     // For evaluation & solver
-    func eval(arg: Any) -> Any
-    func solve() -> Any
+    func eval(arg: String) -> Any?
+    func solve() -> Any?
+}
+
+
+// Observer Pattern ptrotocol for 'LeafView' and 'MintController'
+// Sync arguments values between 'LeafView' and 'leaf'
+protocol MintLeafObserver:class {
+    func update(subject: MintLeafSubject)
+}
+
+protocol MintLeafSubject:class{
+    
+    
+    func registerObserver(observer: MintLeafObserver)
+    func removeObserver(observer: MintLeafObserver)
 }
 
 protocol MintCommand {
