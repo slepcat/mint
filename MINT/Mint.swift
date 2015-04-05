@@ -17,6 +17,9 @@ class MintInterpreter:MintLeafSubject {
     // register observer (mint leaf view) protocol
     func registerObserver(observer: MintLeafObserver) {
         observers.append(observer)
+        let args = getArguments(observer.leafID)
+        
+        observer.initArgs(args.argLabels, argTypes: args.argTypes, args: args.args)
     }
     
     // remove observer
@@ -29,30 +32,65 @@ class MintInterpreter:MintLeafSubject {
         }
     }
     
+    // set argument
+    func setArgument(leafID:Int, label:String, arg:Any) {
+        for leaf in leafPool {
+            if leaf.leafID == leafID {
+                
+                leaf.setArg(label, value: arg)
+                
+                for obs in observers {
+                    if obs.leafID == leafID {
+                        obs.update(label, arg: arg)
+                        break
+                    }
+                }
+                
+                break
+            }
+        }
+    }
+    
+    // get all arguments of leaf
     func getArguments(leafID: Int) -> (argLabels: [String], argTypes:[String], args: [Any?]) {
         for leaf in leafPool {
             if leaf.leafID == leafID {
-                return leaf.getArgs()
+                var args = leaf.getArgs()
+                
+                for var i = 0; args.argTypes.count > i; i++  {
+                    switch args.argTypes[i] {
+                        case "Int", "Double", "String", "Vector":
+                        break
+                    default: // Reference Type
+                        args.args[i] = getLeafUniqueName(leafID) + ": \(leafID)"
+                    }
+                }
+                return args
             }
         }
         
         return ([], [], [])
     }
     
+    func getLeafUniqueName(leafID: Int) -> String {
+        // need implementation
+        
+        return "Noname"
+    }
+    
     func addLeaf(leafType: String, leafID: Int) {
-        var newLeaf : Leaf?
+        var newLeaf : Leaf
         
         switch leafType {
         case "Cube":
             newLeaf = Cube(newID: leafID)
         default:
             println("Unknown leaf type alloc requied!")
+            newLeaf = Cube(newID: leafID)
         }
         
-        if let leaf = newLeaf {
-            leafPool.append(leaf)
-            globalStack.addLeaf(leaf)
-        }
+        leafPool.append(newLeaf)
+        globalStack.addLeaf(newLeaf)
     }
     
     func removeLeaf(leafID: Int) {
@@ -124,6 +162,7 @@ class MintGlobalStack:MintSubject {
         for var i = 0; rootStack.count > i; i++ {
             if rootStack[i].leafID == leafID {
                 rootStack.removeAtIndex(i)
+                break
             }
         }
     }

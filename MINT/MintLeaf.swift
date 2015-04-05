@@ -38,6 +38,9 @@ class Leaf:MintLeaf {
                 args[i] = value
                 
                 needUpdate = true
+                
+                println("argument \(argLabels[i]) of leaf (leafID: \(leafID) is updated to \(value)")
+                
                 break
             }
         }

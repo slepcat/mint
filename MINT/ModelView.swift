@@ -271,7 +271,7 @@ struct ViewAngle {
             viewAngle.x += Float(theEvent.deltaY)// * rotateFactor
         }
         
-        println("viewAngle.X:\(viewAngle.x),Y:\(viewAngle.y), Z:\(viewAngle.z)")
+        //println("viewAngle.X:\(viewAngle.x),Y:\(viewAngle.y), Z:\(viewAngle.z)")
         
         self.needsDisplay = true
     }
@@ -316,11 +316,11 @@ struct ViewAngle {
             
             coeff = coeff * Float(factor)
             
-            println("Zoom with coeff:\(coeff)")
+            //println("Zoom with coeff:\(coeff)")
             
             self.viewPt.z = self.zoomMin + coeff * (self.zoomMax - self.zoomMin)
             
-            println("view point changed to: \(viewPt.z)")
+            //println("view point changed to: \(viewPt.z)")
             
             self.needsDisplay = true
         }
@@ -341,6 +341,18 @@ class GLmesh:MintObserver {
     
     init(leafID: Int) {
         self.leafID = leafID
+    }
+    
+    deinit {
+        if vbufferid != 0 {
+            glDeleteBuffers(1, &vbufferid)
+        }
+        if nbufferid != 0 {
+            glDeleteBuffers(1, &nbufferid)
+        }
+        if cbufferid != 0 {
+            glDeleteBuffers(1, &cbufferid)
+        }
     }
     
     // update open gl vertices & attribute array
@@ -370,9 +382,23 @@ class GLmesh:MintObserver {
                 glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
             }
         } else { // In case of update
-            // updating code here...
+            let result = subject.solveMesh(index)
+            var glmesh = [GLdouble](result.mesh)
+            var glnormal = [GLdouble](result.normals)
+            var glcolor = [GLfloat](result.colors)
+            
+            //mesh
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vbufferid)
+            glBufferData(GLenum(GL_ARRAY_BUFFER), glmesh.count * sizeof(GLdouble), &glmesh, GLenum(GL_STATIC_DRAW))
+            //normal
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.nbufferid)
+            glBufferData(GLenum(GL_ARRAY_BUFFER), glnormal.count * sizeof(GLdouble), &glnormal, GLenum(GL_STATIC_DRAW))
+            //color
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.cbufferid)
+            glBufferData(GLenum(GL_ARRAY_BUFFER), glcolor.count * sizeof(GLfloat), &glcolor, GLenum(GL_STATIC_DRAW))
+            
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
         }
-        
     }
 }
 

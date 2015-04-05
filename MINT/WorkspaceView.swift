@@ -78,8 +78,9 @@ import AppKit
 
 // View of leaf instance
 @objc(LeafView) class LeafView : NSView {
-    var leafID : Int = -1
-    weak var controller : MintController!
+    @IBOutlet weak var controller : MintLeafViewController!
+    //var leafID : Int = -1
+    //weak var controller : MintController!
     
     var boundPath : NSBezierPath? = nil
     var focus : Bool = false
@@ -92,70 +93,20 @@ import AppKit
         }
     }
     
-    convenience init(rect: NSRect, color:NSColor, leafID:Int) {
-        self.init(frame: rect)
+    override func awakeFromNib() {
+        //if let delegate = NSApplication.sharedApplication().delegate as? AppDelegate {
+        //    controller = delegate.controller
+        //}
         
-        if let delegate = NSApplication.sharedApplication().delegate as? AppDelegate {
-            controller = delegate.controller
+        switch controller.leafType {
+            case "Test":
+            color = NSColor(calibratedWhite: 0.5, alpha: 1)
+        default:
+            color = NSColor(calibratedWhite: 0.5, alpha: 1)
         }
-        self.leafID = leafID
-        self.color = color
         
         boundPath = NSBezierPath(roundedRect: self.bounds, xRadius: 6.0, yRadius: 6.0)
         boundPath?.lineWidth = 3.0
-    }
-    
-    func setArgumentsView(args: [String], types:[String]) {
-        var labelRect = NSRect(x: 30, y: self.frame.height - 5, width: self.frame.width - 35, height: 16)
-        
-        for var i = 0; args.count > i; i++ {
-            labelRect.origin.y -= 16
-            let argLabel = NSTextField(frame: labelRect)
-            
-            if color.brightnessComponent < 0.6 {
-                argLabel.textColor = NSColor(calibratedWhite: 1.0, alpha: 1.0)
-            } else {
-                argLabel.textColor = NSColor(calibratedWhite: 0.0, alpha: 1.0)
-            }
-            
-            argLabel.stringValue = args[i]
-            argLabel.backgroundColor = color
-            argLabel.bordered = false
-            argLabel.editable = false
-            argLabel.selectable = false
-            argLabel.font = NSFont.labelFontOfSize(10)
-            argLabel.alignment = NSTextAlignment.RightTextAlignment
-            
-            self.addSubview(argLabel)
-        }
-        
-        // need to setup popover for edit args
-    }
-    
-    
-    func viewForDataType(type: String) -> NSView? {
-        
-        switch type {
-        case "Double":
-            break
-        case "Int":
-            break
-        case "String":
-            break
-        case "Enum":
-            break
-        case "Vector":
-            break
-        case "Vertex":
-            break
-        case "Plane":
-            break
-        case "Mesh":
-            break
-        default:
-            return nil
-        }
-        return nil
     }
     
     override func drawRect(dirtyRect: NSRect) {
@@ -224,9 +175,7 @@ import AppKit
                 let v = s[s.startIndex].value
                 
                 if Int(v) == NSDeleteCharacter {
-                    let command = RemoveLeaf(removeID: leafID)
-                    
-                    controller.sendCommand(command)
+                    controller.removeSelf()
                     return
                 }
             }
@@ -254,17 +203,53 @@ import AppKit
     }
 }
 
-class MintArgumentCellView : NSTableCellView {
+class MintArgumentCellView : NSTableCellView, NSTextFieldDelegate {
     @IBOutlet weak var value: NSTextField!
     @IBOutlet weak var rmbutton: NSButton!
-
-
+    
+    weak var controller: MintLeafViewController!
+    
+    override func awakeFromNib() {
+        value.delegate = self
+    }
+    
+    func control(control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
+        
+        println("value edited at \(self.value.stringValue)")
+        
+        if let label = self.textField?.stringValue {
+            controller.argument(label, valueShouldEndEditing: control.stringValue)
+        }
+        
+        return true
+    }
     
 }
 
 class MintVectorCellView : MintArgumentCellView {
     @IBOutlet weak var value2: NSTextField!
     @IBOutlet weak var value3: NSTextField!
+        
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        value2.delegate = self
+        value3.delegate = self
+    }
     
-    
+    override func control(control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
+        
+        if var label = self.textField?.stringValue {
+            
+            if control === value {
+                println("value edited at \(self.value.stringValue)")
+                controller.argument(label + "/x", valueShouldEndEditing: control.stringValue)
+            } else if control === value2 {
+                controller.argument(label + "/y", valueShouldEndEditing: control.stringValue)
+            } else if control === value3 {
+                controller.argument(label + "/z", valueShouldEndEditing: control.stringValue)
+            }
+        }
+        
+        return true
+    }
 }

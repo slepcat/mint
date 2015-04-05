@@ -34,10 +34,11 @@ class AddLeaf:MintCommand {
     func excute() {
         
         let newID = LeafID.get.newID
-        // add view
-        workspace.addLeaf(leafType, setName: category, pos: pos, leafID: newID)
         // add leaf
         interpreter.addLeaf(leafType, leafID: newID)
+        // add view
+        workspace.addLeaf(leafType, setName: category, pos: pos, leafID: newID)
+
         // add glmesh
         modelView.addMesh(newID)
     }
@@ -52,9 +53,19 @@ class AddLeaf:MintCommand {
 }
 
 class SetArgument:MintCommand {
+    let leafID : Int
+    let argLabel : String
+    let newArg : Any
+    
     weak var workspace:MintWorkspaceController!
     weak var modelView: MintModelViewController!
     weak var interpreter: MintInterpreter!
+    
+    init(updateID: Int, label: String, arg:Any) {
+        leafID = updateID
+        argLabel = label
+        newArg = arg
+    }
     
     func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
         self.workspace = workspace
@@ -63,7 +74,8 @@ class SetArgument:MintCommand {
     }
     
     func excute() {
-        
+        interpreter.setArgument(leafID, label: argLabel, arg: newArg)
+        modelView.setNeedDisplay()
     }
     
     func undo() {
@@ -75,10 +87,20 @@ class SetArgument:MintCommand {
     }
 }
 
-class RemoveArgument:MintCommand {
+class RemoveLink:MintCommand {
+    let leafID : Int
+    let argLabel : String
+    
     weak var workspace:MintWorkspaceController!
     weak var modelView: MintModelViewController!
     weak var interpreter: MintInterpreter!
+    
+    init(rmLinkID: Int, label: String, type: String, arg:Any) {
+        leafID = rmLinkID
+        argLabel = label
+        
+        
+    }
     
     func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
         self.workspace = workspace

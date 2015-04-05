@@ -97,6 +97,12 @@ class MintModelViewController:NSObject {
             }
         }
     }
+    
+    // update mesh & redraw
+    func setNeedDisplay() {
+        globalStack.solve()
+        modelview.needsDisplay = true
+    }
 }
 
 enum MintToolSet : String {
