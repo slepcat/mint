@@ -33,7 +33,10 @@ protocol MintLeaf {
 // Observer Pattern ptrotocol for 'LeafView' and 'MintController'
 // Sync arguments values between 'LeafView' and 'leaf'
 protocol MintLeafObserver:class {
-    func update(subject: MintLeafSubject)
+    var leafID : Int {get set}
+    
+    func initArgs(argLabels: [String], argTypes:[String], args: [Any?])
+    func update(argLabel: String, arg: Any?)
 }
 
 protocol MintLeafSubject:class{

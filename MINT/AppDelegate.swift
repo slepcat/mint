@@ -20,7 +20,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(aNotification: NSNotification?) {
         // Insert code here to initialize your application
-        controller.interpreter = MintInterpreter()
+        // prepare MintInterpreter
+        let interpreter = MintInterpreter()
+        
+        controller.interpreter = interpreter
+        workspace.interpreter = interpreter
+        
+        // prepare references
         modelView.globalStack = controller.interpreter.globalStack
         
         //test()
