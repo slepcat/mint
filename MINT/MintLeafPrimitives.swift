@@ -10,7 +10,7 @@ import Foundation
 
 // Primitive class
 // Base class for all primitive solids. For example, cube, sphere, cylinder, and so on.
-
+// This class itself will not be instantiated
 class Primitive:Leaf, MintLeaf {
     
     var mesh : Mesh?
@@ -21,6 +21,10 @@ class Primitive:Leaf, MintLeaf {
         args = [Vector(x: 0, y: 0, z: 0)]
         argLabels = ["center"]
         argTypes = ["Vector"]
+        
+        returnType = "Mesh"
+        
+        name = "null_mesh"
     }
     
     func reInitArg(label: String) {
@@ -34,12 +38,18 @@ class Primitive:Leaf, MintLeaf {
 
 class Cube:Primitive ,MintLeaf{
     
+    var bornCount : Int = 0
+    
     override init(newID: Int) {
         super.init(newID: newID)
         
         args += [10.0, 10.0, 10.0]
         argLabels += ["width", "height", "depth"]
         argTypes += ["Double", "Double", "Double"]
+        
+        let count = BirthCount.get.count("Cube")
+        
+        name = "Cube\(count)"
     }
     
     override func reInitArg(label: String) {

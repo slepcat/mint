@@ -26,8 +26,8 @@
                     </buttonCell>
                 </button>
                 <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QRY-od-rqg">
-                    <rect key="frame" x="0.0" y="39" width="85" height="19"/>
-                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" drawsBackground="YES" id="uQx-Fc-1UV">
+                    <rect key="frame" x="0.0" y="38" width="85" height="19"/>
+                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="center" drawsBackground="YES" id="uQx-Fc-1UV">
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
@@ -46,6 +46,7 @@
             </subviews>
             <connections>
                 <outlet property="controller" destination="-2" id="jwd-pt-nqH"/>
+                <outlet property="nameTag" destination="QRY-od-rqg" id="i4a-Gy-T8b"/>
             </connections>
             <point key="canvasLocation" x="350" y="324"/>
         </customView>
@@ -121,6 +122,56 @@
                                             <outlet property="rmbutton" destination="YTd-ql-bDl" id="het-iJ-iSk"/>
                                             <outlet property="textField" destination="8ib-FF-60G" id="tI1-9d-wbc"/>
                                             <outlet property="value" destination="oaa-3P-Pvj" id="Wi4-xy-sVi"/>
+                                        </connections>
+                                    </tableCellView>
+                                    <tableCellView identifier="Bool" id="wUP-Hw-uyv" customClass="MintBoolCellView" customModule="MINT" customModuleProvider="target">
+                                        <rect key="frame" x="1" y="1" width="205" height="22"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <subviews>
+                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="czu-aI-0cb">
+                                                <rect key="frame" x="3" y="3" width="64" height="14"/>
+                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="Mf1-bb-kcb">
+                                                    <font key="font" metaFont="smallSystem"/>
+                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
+                                                </textFieldCell>
+                                            </textField>
+                                            <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Oex-zQ-KVG">
+                                                <rect key="frame" x="173" y="-8" width="30" height="30"/>
+                                                <buttonCell key="cell" type="round" title="✖️" bezelStyle="circular" imagePosition="above" alignment="center" controlSize="mini" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" id="KVB-GW-uGX">
+                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                    <font key="font" metaFont="miniSystem"/>
+                                                </buttonCell>
+                                            </button>
+                                            <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Acv-KO-bU2">
+                                                <rect key="frame" x="75" y="1" width="96" height="18"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                <size key="cellSize" width="46" height="18"/>
+                                                <size key="intercellSpacing" width="4" height="2"/>
+                                                <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="small" inset="2" id="Bh9-FL-xUV">
+                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                    <font key="font" metaFont="smallSystem"/>
+                                                </buttonCell>
+                                                <cells>
+                                                    <column>
+                                                        <buttonCell type="radio" title="true" imagePosition="left" alignment="left" controlSize="small" state="on" tag="1" inset="2" id="Q5B-zo-KQs">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="smallSystem"/>
+                                                        </buttonCell>
+                                                    </column>
+                                                    <column>
+                                                        <buttonCell type="radio" title="false" imagePosition="left" alignment="left" controlSize="small" inset="2" id="azP-fz-RFB">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="smallSystem"/>
+                                                        </buttonCell>
+                                                    </column>
+                                                </cells>
+                                            </matrix>
+                                        </subviews>
+                                        <connections>
+                                            <outlet property="rmbutton" destination="Oex-zQ-KVG" id="2UE-dn-FsN"/>
+                                            <outlet property="textField" destination="czu-aI-0cb" id="6de-Y5-Mbr"/>
+                                            <outlet property="value" destination="Acv-KO-bU2" id="t81-xw-wvQ"/>
                                         </connections>
                                     </tableCellView>
                                     <tableCellView identifier="Reference" id="xi9-kK-JJ3" customClass="MintArgumentCellView" customModule="MINT" customModuleProvider="target">

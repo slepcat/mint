@@ -18,8 +18,12 @@ class MintInterpreter:MintLeafSubject {
     func registerObserver(observer: MintLeafObserver) {
         observers.append(observer)
         let args = getArguments(observer.leafID)
+        let ret = getReturnType(observer.leafID)
+        let name = getLeafUniqueName(observer.leafID)
         
         observer.initArgs(args.argLabels, argTypes: args.argTypes, args: args.args)
+        observer.initReturnValueType(ret)
+        observer.setUniqueName(name)
     }
     
     // remove observer
@@ -72,8 +76,40 @@ class MintInterpreter:MintLeafSubject {
         return ([], [], [])
     }
     
+    func getReturnType(leafID: Int) -> String {
+        for leaf in leafPool {
+            if leaf.leafID == leafID {
+                return leaf.returnType
+            }
+        }
+        
+        return "nil"
+    }
+    
+    func setNewUniqueName(leafID: Int, newName:String) -> Bool {
+        // check 'newName' is unique
+        for leaf in leafPool {
+            if leaf.name == newName {
+                return false
+            }
+        }
+        
+        for leaf in leafPool {
+            if leaf.leafID == leafID {
+                leaf.name = newName
+                return true
+            }
+        }
+        
+        return false
+    }
+    
     func getLeafUniqueName(leafID: Int) -> String {
-        // need implementation
+        for leaf in leafPool {
+            if leaf.leafID == leafID {
+                return leaf.name
+            }
+        }
         
         return "Noname"
     }
@@ -90,6 +126,8 @@ class MintInterpreter:MintLeafSubject {
             newLeaf = IntLeaf(newID: leafID)
         case "String":
             newLeaf = StringLeaf(newID: leafID)
+        case "Bool":
+            newLeaf = BoolLeaf(newID: leafID)
         default:
             println("Unknown leaf type alloc requied!")
             newLeaf = Cube(newID: leafID)

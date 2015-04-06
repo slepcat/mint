@@ -44,6 +44,15 @@ class MintWorkspaceController:NSObject {
         workspace.needsDisplay = true
     }
     
+    func setNewName(leafID: Int, newName: String) {
+        for var i = 0; viewStack.count > i; i++ {
+            if viewStack[i].leafID == leafID {
+                viewStack[i].setUniqueName(newName)
+                break
+            }
+        }
+    }
+    
     func removeLeaf(removeID: Int) {
         for var i = 0; viewStack.count > i; i++ {
             if viewStack[i].leafID == removeID {
@@ -61,7 +70,7 @@ class MintWorkspaceController:NSObject {
 
 // Controller of leaf view
 // Manage user actions: Arguments inputs and link.
-class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegate, MintLeafObserver {
+class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegate, NSTextFieldDelegate, MintLeafObserver {
     @IBOutlet weak var argsPopover:NSPopover!
     @IBOutlet weak var leafview:LeafView!
     @IBOutlet weak var argList:NSTableView!
@@ -69,6 +78,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     weak var controller:MintController!
     var leafID : Int = -1
     var leafType : String = "Test"
+    var leafName : String = ""
     
     // Xib Top level objects detain
     var xibObjects : NSArray?
@@ -77,6 +87,9 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     var argLabels:[String] = []
     var argTypes:[String] = []
     var argValues:[Any?] = []
+    
+    // Type of return value
+    var returnType: String = ""
     
     // management of view. commmand receivers
     /// setup leafview with xib file
@@ -94,6 +107,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
             
             // set drag operation mask
             argList.setDraggingSourceOperationMask(NSDragOperation.Link, forLocal: true)
+
         }
         
         leafview.frame.origin = pos
@@ -136,6 +150,18 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         self.argLabels = argLabels
         self.argTypes = argTypes
     }
+    
+    /// init observer's name
+    func setUniqueName(name: String) {
+        leafName = name
+        leafview.nameTag.stringValue = name
+    }
+    
+    /// init observer's return value type
+    func initReturnValueType(type: String) {
+        returnType = type
+    }
+    
     
     // hand over 'MintCommand' from view to 'MintController'
     /// tell 'controller' to remove a Leaf
@@ -195,6 +221,12 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         }
     }
     
+    /// tell 'controller' when leaf name is changed
+    func nameChanged(newName: String) {
+        let nameChange = SetNewName(leafID: leafID, newName: newName)
+        controller.sendCommand(nameChange)
+    }
+    
     // Provide arguments list. NSTableView delegate & data source implementation
     /// Provide number of list
     func numberOfRowsInTableView(tableView: NSTableView) -> Int {
@@ -207,7 +239,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         var identifier : String
         
         switch argTypes[row] {
-            case "Double", "Int", "String", "Vector":
+            case "Double", "Int", "String", "Bool", "Vector":
             identifier = argTypes[row]
             /*
             case "Vertex":
@@ -266,6 +298,15 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                     
                     if let value = argValues[row] as? String {
                         toolView.value?.stringValue = value
+                    }
+                }
+            
+            case "Bool":
+                if let toolView = result as? MintArgumentCellView {
+                    toolView.textField?.stringValue = argLabels[row]
+                    
+                    if let value = argValues[row] as? Bool {
+                        
                     }
                 }
                 

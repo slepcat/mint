@@ -36,6 +36,8 @@ protocol MintLeafObserver:class {
     var leafID : Int {get set}
     
     func initArgs(argLabels: [String], argTypes:[String], args: [Any?])
+    func initReturnValueType(type: String)
+    func setUniqueName(name: String)
     func update(argLabel: String, arg: Any?)
 }
 

@@ -49,3 +49,33 @@ class LeafID {
         return Static.idFactory
     }
 }
+
+// leaf born count generator.
+// record called leaf type & return count for each type
+
+class BirthCount {
+    private var counts:[Int] = []
+    private var types:[String] = []
+    private init(){}
+    
+    func count(type: String) -> Int {
+        for var i = 0; types.count > i; i++ {
+            if types[i] == type {
+                return counts[i]++
+            }
+        }
+        
+        // in case of no such type in past
+        types += [type]
+        counts += [1]
+        
+        return counts.last! - 1
+    }
+    
+    class var get: BirthCount {
+        struct Static{
+            static let idFactory = BirthCount()
+        }
+        return Static.idFactory
+    }
+}
