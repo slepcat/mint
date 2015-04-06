@@ -84,6 +84,12 @@ class MintInterpreter:MintLeafSubject {
         switch leafType {
         case "Cube":
             newLeaf = Cube(newID: leafID)
+        case "Double":
+            newLeaf = DoubleLeaf(newID: leafID)
+        case "Int":
+            newLeaf = IntLeaf(newID: leafID)
+        case "String":
+            newLeaf = StringLeaf(newID: leafID)
         default:
             println("Unknown leaf type alloc requied!")
             newLeaf = Cube(newID: leafID)
