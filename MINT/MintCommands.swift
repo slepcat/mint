@@ -87,6 +87,43 @@ class SetArgument:MintCommand {
     }
 }
 
+class SetNewName:MintCommand {
+    let leafID : Int
+    let name : String
+    var oldName : String = ""
+    
+    weak var workspace:MintWorkspaceController!
+    weak var modelView: MintModelViewController!
+    weak var interpreter: MintInterpreter!
+    
+    init(leafID: Int, newName: String) {
+        self.leafID = leafID
+        name = newName
+    }
+    
+    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
+        self.workspace = workspace
+        self.modelView = modelView
+        self.interpreter = interpreter
+    }
+    
+    func excute() {
+        oldName = interpreter.getLeafUniqueName(leafID)
+        if !interpreter.setNewUniqueName(leafID, newName: name) {
+            // if new name is not unique, back view name old one
+            workspace.setNewName(leafID, newName: oldName)
+        }
+    }
+    
+    func undo() {
+        
+    }
+    
+    func redo() {
+        
+    }
+}
+
 class RemoveLink:MintCommand {
     let leafID : Int
     let argLabel : String

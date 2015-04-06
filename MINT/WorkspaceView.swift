@@ -79,10 +79,9 @@ import AppKit
 
 
 // View of leaf instance
-@objc(LeafView) class LeafView : NSView {
+@objc(LeafView) class LeafView : NSView, NSTextFieldDelegate {
     @IBOutlet weak var controller : MintLeafViewController!
-    //var leafID : Int = -1
-    //weak var controller : MintController!
+    @IBOutlet weak var nameTag : NSTextField!
     
     var boundPath : NSBezierPath? = nil
     var focus : Bool = false
@@ -106,6 +105,8 @@ import AppKit
         default:
             color = NSColor(calibratedWhite: 0.5, alpha: 1)
         }
+        
+        nameTag.delegate = self
         
         boundPath = NSBezierPath(roundedRect: self.bounds, xRadius: 6.0, yRadius: 6.0)
         boundPath?.lineWidth = 3.0
@@ -203,6 +204,18 @@ import AppKit
         
         return super.resignFirstResponder()
     }
+    
+    // name edit event handling
+    func control(control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
+        
+        println("leaf name edited at \(self.nameTag.stringValue)")
+        
+        if let name = self.nameTag?.stringValue {
+            controller.nameChanged(name)
+        }
+        
+        return true
+    }
 }
 
 class MintArgumentCellView : NSTableCellView, NSTextFieldDelegate {
@@ -254,6 +267,18 @@ class MintVectorCellView : MintArgumentCellView {
         
         return true
     }
+}
+
+class MintBoolCellView : NSTableCellView, NSMatrixDelegate {
+    @IBOutlet weak var value: NSMatrix!
+    @IBOutlet weak var rmbutton: NSButton!
+    
+    weak var controller: MintLeafViewController!
+    
+    override func awakeFromNib() {
+        value.delegate = self
+    }
+    
 }
 
 // Return value button represent return value of leaf in LeafView

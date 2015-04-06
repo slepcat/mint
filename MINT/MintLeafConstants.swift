@@ -18,6 +18,12 @@ class BoolLeaf: Leaf {
         argLabels = ["bool"]
         argTypes = ["Bool"]
         args = [true]
+        
+        returnType = "Bool"
+        
+        let count = BirthCount.get.count("Bool")
+        
+        name = "Bool\(count)"
     }
     
     func reInitArg(label: String) {
@@ -44,6 +50,12 @@ class DoubleLeaf: Leaf {
         argLabels = ["double"]
         argTypes = ["Double"]
         args = [0.0]
+        
+        returnType = "Double"
+        
+        let count = BirthCount.get.count("Double")
+        
+        name = "Double\(count)"
     }
     
     func reInitArg(label: String) {
@@ -70,6 +82,12 @@ class IntLeaf: Leaf {
         argLabels = ["int"]
         argTypes = ["Int"]
         args = [0]
+        
+        returnType = "Int"
+        
+        let count = BirthCount.get.count("Int")
+        
+        name = "Int\(count)"
     }
     
     func reInitArg(label: String) {
@@ -96,6 +114,12 @@ class StringLeaf: Leaf {
         argLabels = ["string"]
         argTypes = ["String"]
         args = [""]
+        
+        returnType = "String"
+        
+        let count = BirthCount.get.count("String")
+        
+        name = "String\(count)"
     }
     
     func reInitArg(label: String) {
@@ -122,6 +146,12 @@ class VectorLeaf: Leaf {
         args = [Vector(x: 0, y: 0, z: 0)]
         argLabels = ["vector"]
         argTypes = ["Vector"]
+        
+        returnType = "Vector"
+        
+        let count = BirthCount.get.count("Vector")
+        
+        name = "Vector\(count)"
     }
     
     func reInitArg(label: String) {

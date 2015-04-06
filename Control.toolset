@@ -3,6 +3,7 @@
 Double
 Int
 String
+Bool
 Vector
 If
 Recursive

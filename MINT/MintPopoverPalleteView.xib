@@ -80,7 +80,7 @@
         </scrollView>
         <viewController id="wj1-41-BGV" userLabel="Popover View Controller">
             <connections>
-                <outlet property="view" destination="NCR-wP-h8Q" id="SHh-kD-8GH"/>
+                <outlet property="view" destination="NCR-wP-h8Q" id="vsa-uu-x1G"/>
             </connections>
         </viewController>
         <popover animates="NO" behavior="t" id="58Z-xE-R8K">

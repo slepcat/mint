@@ -10,6 +10,7 @@ import Foundation
 
 class Leaf:MintLeaf {
     let leafID : Int
+    var name: String
     
     var needUpdate : Bool = true
     
@@ -30,6 +31,8 @@ class Leaf:MintLeaf {
         argTypes = []
         
         returnType = "nil"
+        
+        name = "null_leaf"
     }
     
     func getArgs() -> (argLabels: [String], argTypes: [String], args: [Any?]) {
