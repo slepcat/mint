@@ -14,13 +14,13 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <scrollView autohidesScrollers="YES" horizontalLineScroll="43" horizontalPageScroll="10" verticalLineScroll="43" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="NCR-wP-h8Q">
-            <rect key="frame" x="0.0" y="0.0" width="196" height="168"/>
+            <rect key="frame" x="0.0" y="0.0" width="196" height="235"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <clipView key="contentView" drawsBackground="NO" id="OAf-9w-6gG">
                 <rect key="frame" x="1" y="0.0" width="238" height="134"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
-                    <tableView appearanceType="vibrantLight" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="none" multipleSelection="NO" autosaveColumns="NO" rowHeight="41" rowSizeStyle="automatic" viewBased="YES" id="Cqf-8o-dQa">
+                    <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="none" multipleSelection="NO" autosaveColumns="NO" rowHeight="41" rowSizeStyle="automatic" viewBased="YES" id="Cqf-8o-dQa">
                         <autoresizingMask key="autoresizingMask"/>
                         <size key="intercellSpacing" width="3" height="2"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -76,11 +76,11 @@
                 <rect key="frame" x="224" y="17" width="15" height="102"/>
                 <autoresizingMask key="autoresizingMask"/>
             </scroller>
-            <point key="canvasLocation" x="-352" y="-372"/>
+            <point key="canvasLocation" x="-352" y="-338.5"/>
         </scrollView>
         <viewController id="wj1-41-BGV" userLabel="Popover View Controller">
             <connections>
-                <outlet property="view" destination="Cqf-8o-dQa" id="BDX-xL-U8B"/>
+                <outlet property="view" destination="NCR-wP-h8Q" id="SHh-kD-8GH"/>
             </connections>
         </viewController>
         <popover animates="NO" behavior="t" id="58Z-xE-R8K">

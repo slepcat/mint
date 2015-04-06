@@ -110,10 +110,6 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     
     /// setting argument value is implemented as observer 'update' protocol
     
-    /// setLink
-    
-    /// removeLink
-    
     
     // Show popover
     @IBAction func showArgPopover(sender: AnyObject) {
@@ -298,39 +294,59 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         }
     }
     
-    /*
-    // Provide type of return value to NSPasteboard for dragging operation
+    //'Link' operations
+    
+    // Dragging source for tableview
+    /// Provide type of return value to NSPasteboard for dragging operation
     func tableView(tableView: NSTableView, writeRowsWithIndexes rowIndexes: NSIndexSet, toPasteboard pboard: NSPasteboard) -> Bool {
         pboard.clearContents()
-        pboard.declareTypes(["leaf", "type"], owner: self)
-        if pboard.setString(argLabels[rowIndexes.firstIndex], forType:"leaf" ) {
+        pboard.declareTypes(["type", "sourceLeafID", "argument"], owner: self)
+        if pboard.setString("argumentLink", forType:"type" ) {
             
-            if pboard.setString(argTypes[0], forType: "type") {
-                return true
-            } else {
-                return false
+            if pboard.setString("\(leafID)", forType: "sourceLeafID") {
+                let row = rowIndexes.firstIndex
+                if row != NSNotFound {
+                    if pboard.setString(argLabels[row], forType: "argument") {
+                        return true
+                    }
+                }
             }
-        } else {
-            return false
         }
-    }*/
+        return false
+    }
     
-    //'Link' operations
-    //when "return" button dragged, generate drag as source
+    // when "return" button dragged, generate drag as source
+    // called by MintReturnButton
+    func beginDraggingReturn() -> (leafID: Int, type: String) {
+        
+        
+        return (-1,"")
+    }
     
+    // when dragged "argument" dropped in return button, generate link command for controller
+    // called by MintReturnButton
+    func acceptLinkFrom(leafID: Int , withArg: String) -> Bool {
+        
+        
+        return false
+    }
     
-    //when "arguments" button clicked, show popover
+    // when dragged "return" entered in arguments button, show popover
+    // called by 'MintArgumentCellView' and it's subclasses
+    func showPopoverForLink() {
+        
+    }
     
+    // when dragged "return" dropped in arguments button, generate link command for controller
+    // called by 'MintArgumentCellView' and it's subclasses
+    func acceptLinkFrom(leafID: Int, withReturn: String) -> Bool {
+        return false
+    }
     
-    //when dragged "return" entered in arguments button, show popover
-    
-    
-    //when dragged "return" dropped in arguments button, generate link command for controller
-    
-    
-    //remove link when 'remove' button clicked
-    
+    // remove link when 'remove' button clicked
+    // called by 'MintArgumentCellView' and it's subclasses
+    func removeLinkWith(leafID: Int, withArg: String) {
+        
+    }
     
 }
-
-

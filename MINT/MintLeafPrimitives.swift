@@ -23,8 +23,10 @@ class Primitive:Leaf, MintLeaf {
         argTypes = ["Vector"]
     }
     
-    func reInitArg() {
-        setArg("center", value: Vector(x: 0, y: 0, z: 0))
+    func reInitArg(label: String) {
+        if label == "center" {
+            setArg("center", value: Vector(x: 0, y: 0, z: 0))
+        }
     }
     
     
@@ -40,12 +42,25 @@ class Cube:Primitive ,MintLeaf{
         argTypes += ["Double", "Double", "Double"]
     }
     
-    override func reInitArg() {
-        super.reInitArg()
+    override func reInitArg(label: String) {
+        super.reInitArg(label)
         
-        setArg("width", value:10.0)
-        setArg("height", value:10.0)
-        setArg("depth", value:10.0)
+        switch label {
+        case "width":
+            setArg("width", value:10.0)
+        case "height":
+            setArg("height", value:10.0)
+        case "depth":
+            setArg("depth", value:10.0)
+        case "all":
+            super.reInitArg("center")
+            setArg("width", value:10.0)
+            setArg("height", value:10.0)
+            setArg("depth", value:10.0)
+        default:
+            break
+        }
+        
     }
     
     override func solve() -> Any? {

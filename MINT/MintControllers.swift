@@ -109,7 +109,7 @@ enum MintToolSet : String {
     case Prim3D = "3D Primitives"
     case Prim2D = "2D Primitives"
     case Operator = "Operator"
-    case Type = "Data Type"
+    case Control = "Control"
     case Transform = "Transfomer"
 }
 
@@ -121,7 +121,7 @@ class MintToolbarController:NSObject {
     override func awakeFromNib() {
         if toolSets.count == 0 {
             toolSets += [MintToolListController(toolSet: MintToolSet.Prim3D.rawValue)]
-            toolSets += [MintToolListController(toolSet: MintToolSet.Prim3D.rawValue)]
+            toolSets += [MintToolListController(toolSet: MintToolSet.Control.rawValue)]
         }
     }
     

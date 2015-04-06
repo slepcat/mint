@@ -13,9 +13,14 @@ class Leaf:MintLeaf {
     
     var needUpdate : Bool = true
     
+    // arguments value
     var args : [Any?]
     var argLabels : [String]
     var argTypes : [String]
+    
+    // return value
+    var returnTo : [Leaf] = []
+    var returnType : String
     
     init(newID: Int ){
         leafID = newID
@@ -23,6 +28,8 @@ class Leaf:MintLeaf {
         args = []
         argLabels = []
         argTypes = []
+        
+        returnType = "nil"
     }
     
     func getArgs() -> (argLabels: [String], argTypes: [String], args: [Any?]) {
