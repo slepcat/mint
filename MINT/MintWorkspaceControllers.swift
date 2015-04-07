@@ -184,7 +184,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                     setArg = SetArgument(updateID: leafID, label: argLabels[i], arg: arg)
                     controller.sendCommand(setArg)
                 case "Int":
-                    let arg = NSString(string: value).intValue
+                    let arg = Int(NSString(string: value).intValue)
                     setArg = SetArgument(updateID: leafID, label: argLabels[i], arg: arg)
                     controller.sendCommand(setArg)
                 case "String":
@@ -212,7 +212,8 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                             controller.sendCommand(setArg)
                         }
                     }
-
+                case "Bool":
+                    break
                 default:
                     break
                 }
@@ -367,6 +368,10 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     // when dragged "argument" dropped in return button, generate link command for controller
     // called by MintReturnButton
     func acceptLinkFrom(leafID: Int , withArg: String) -> Bool {
+        
+        println("link argument \(withArg) from leafID: \(leafID)")
+        
+        //let command = LinkLeaves()
         
         
         return false

@@ -124,6 +124,41 @@ class SetNewName:MintCommand {
     }
 }
 
+
+class LinkArgument:MintCommand {
+    let returnLeafID : Int
+    let argumentLeafID : Int
+    let argLabel : String
+    
+    weak var workspace:MintWorkspaceController!
+    weak var modelView: MintModelViewController!
+    weak var interpreter: MintInterpreter!
+    
+    init(returnID: Int, argumentID: Int, label: String) {
+        returnLeafID = returnID
+        argumentLeafID = argumentID
+        argLabel = label
+    }
+    
+    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
+        self.workspace = workspace
+        self.modelView = modelView
+        self.interpreter = interpreter
+    }
+    
+    func excute() {
+        
+    }
+    
+    func undo() {
+        
+    }
+    
+    func redo() {
+        
+    }
+}
+
 class RemoveLink:MintCommand {
     let leafID : Int
     let argLabel : String

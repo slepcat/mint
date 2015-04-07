@@ -18,12 +18,15 @@
             <rect key="frame" x="0.0" y="0.0" width="85" height="58"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
-                <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6nA-t8-YZA">
+                <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6nA-t8-YZA" customClass="MintReturnButton" customModule="MINT" customModuleProvider="target">
                     <rect key="frame" x="0.0" y="0.0" width="30" height="41"/>
                     <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ork-SD-NTJ">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system" size="10"/>
                     </buttonCell>
+                    <connections>
+                        <outlet property="controller" destination="-2" id="3xZ-G9-ElL"/>
+                    </connections>
                 </button>
                 <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QRY-od-rqg">
                     <rect key="frame" x="0.0" y="38" width="85" height="19"/>
