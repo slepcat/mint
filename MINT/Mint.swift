@@ -36,6 +36,23 @@ class MintInterpreter:MintLeafSubject {
         }
     }
     
+    // establish link between return value of leaf and argument value of another leaf
+    
+    func linkArgument(argLeafID: Int, label: String, retLeafID: Int) -> Bool {
+        
+        if argLeafID != retLeafID {
+            
+            for leaf in leafPool {
+                if leaf.leafID == retLeafID {
+                    setArgument(argLeafID, label: label, arg: leaf)
+                }
+            }
+            
+        }
+        
+        return false
+    }
+    
     // set argument
     func setArgument(leafID:Int, label:String, arg:Any) {
         for leaf in leafPool {
@@ -128,6 +145,8 @@ class MintInterpreter:MintLeafSubject {
             newLeaf = StringLeaf(newID: leafID)
         case "Bool":
             newLeaf = BoolLeaf(newID: leafID)
+        case "Vector":
+            newLeaf = VectorLeaf(newID: leafID)
         default:
             println("Unknown leaf type alloc requied!")
             newLeaf = Cube(newID: leafID)

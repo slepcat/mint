@@ -43,9 +43,71 @@ class Leaf:MintLeaf {
         for var i = 0; argLabels.count > i; i++ {
             if argLabels[i] == label {
                 
-                
-                // need type check and exception
-                args[i] = value
+                // type check and exception
+                switch value {
+                case let val as Double:
+                    if argTypes[i] == "Double" {
+                        args[i] = val
+                    } else {
+                        println("type error")
+                    }
+                case let val as Int:
+                    if argTypes[i] == "Int" {
+                        args[i] = val
+                    } else {
+                        println("type error")
+                    }
+                case let val as String:
+                    if argTypes[i] == "String" {
+                        args[i] = val
+                    } else {
+                        println("type error")
+                    }
+                case let val as Bool:
+                    if argTypes[i] == "Bool" {
+                        args[i] = val
+                    } else {
+                        println("type error")
+                    }
+                case let val as Vector:
+                    if argTypes[i] == "Vector" {
+                        args[i] = val
+                    } else {
+                        println("type error")
+                    }
+                case let val as Vertex:
+                    if argTypes[i] == "Vertex" {
+                        args[i] = val
+                    } else {
+                        println("type error")
+                    }
+                case let val as Plane:
+                    if argTypes[i] == "Plane" {
+                        args[i] = val
+                    } else {
+                        println("type error")
+                    }
+                case let val as Polygon:
+                    if argTypes[i] == "Polygon" {
+                        args[i] = val
+                    } else {
+                        println("type error")
+                    }
+                case let val as Mesh:
+                    if argTypes[i] == "Mesh" {
+                        args[i] = val
+                    } else {
+                        println("type error")
+                    }
+                case let val as Leaf:
+                    if argTypes[i] == val.returnType {
+                        args[i] = val
+                    } else {
+                        println("type error")
+                    }
+                default:
+                    println("type error")
+                }
                 
                 needUpdate = true
                 

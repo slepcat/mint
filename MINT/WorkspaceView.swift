@@ -284,7 +284,7 @@ class MintBoolCellView : NSTableCellView, NSMatrixDelegate {
 // Return value button represent return value of leaf in LeafView
 // Accept drag & drop from 'MintArgumentCellView'
 // Source of drag & drop to 'MintArgumentCellView'
-class MintReturnButton : NSButton {
+class MintReturnButton : NSButton, NSDraggingDestination {
     @IBOutlet weak var controller : MintLeafViewController!
     
     // drag from argument
@@ -307,16 +307,19 @@ class MintReturnButton : NSButton {
     override func performDragOperation(sender: NSDraggingInfo) -> Bool {
         
         let pboad = sender.draggingPasteboard()?
-        if let argument = pboad {
+        if let arg = pboad {
             switch sender.draggingSourceOperationMask() {
-            case NSDragOperation.Link:// from toolbar
-                if let type = argument.stringForType("type") {
+            case NSDragOperation.Link:
+                if let type = arg.stringForType("type") {
                     if type == "argumentLink" {
-                        if let argString = argument.stringForType("content") {
-                            
-                            //controller.acceptLinkFrom()
-                            
-                            return true
+                        if let arglabel = arg.stringForType("argument") {
+                            if let leafIDstr = arg.stringForType("sourceLeafID") {
+                                let leafID = NSString(string: leafIDstr).intValue
+                                
+                                controller.acceptLinkFrom(Int(leafID), withArg: arglabel)
+                                
+                                return true
+                            }
                         }
                     }
                 }
