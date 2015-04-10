@@ -14,6 +14,7 @@ import Foundation
 enum MintEXC {
     case TypeInvalid(leafName: String, leafID: Int, required: String, invalid:String) // type of variable is invalid
     case ArgNotExist(leafName: String, leafID: Int, reguired: String) // required name of argument does not exist
+    case SolverFailed(leafName: String, leafID: Int) // Leaf failed to solve()
     case LeafIDNotExist(leafID: Int)// leafID is not exist. Critical error & should kill the app
 }
 
@@ -31,7 +32,7 @@ class MintErr {
         return nil
     }
     
-    func rise(newErr: MintEXC) {
+    func raise(newErr: MintEXC) {
         exceptions.append(newErr)
     }
     
