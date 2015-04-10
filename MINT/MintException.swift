@@ -11,30 +11,31 @@ import Foundation
 // Mint exception class
 // Exception stack for Mint, manage invalid user operation.
 
-enum MintException {
-    case None// No error
-    case TypeInvalid(leafName: String, leafID: Int, requiredType: String, invalidType:String) // type of variable is invalid
+enum MintEXC {
+    case TypeInvalid(leafName: String, leafID: Int, required: String, invalid:String) // type of variable is invalid
+    case ArgNotExist(leafName: String, leafID: Int, reguired: String) // required name of argument does not exist
+    case LeafIDNotExist(leafID: Int)// leafID is not exist. Critical error & should kill the app
 }
 
 class MintErr {
-    private var exceptions : [MintException] = []
-    private weak var interpreter : MintInterpreter!
+    private var exceptions : [MintEXC] = []
+    //private weak var interpreter : MintInterpreter!
     private init(){}
     
-    var catch: MintException {
+    var catch: MintEXC? {
         if let err = exceptions.last {
             exceptions.removeLast()
             return err
         }
         
-        return MintException.None
+        return nil
     }
     
-    func rise(newErr: MintException) {
+    func rise(newErr: MintEXC) {
         exceptions.append(newErr)
     }
     
-    class var stack: MintErr {
+    class var exc: MintErr {
         struct Static{
             static let exception = MintErr()
         }

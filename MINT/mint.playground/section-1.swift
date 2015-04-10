@@ -7,6 +7,11 @@ import Cocoa
 struct ValWrap { var value: Int = 0 }
 class RefWrap { var value: Int = 0 }
 
+var test = RefWrap()
+
+NSStringFromClass(test.dynamicType)
+
+
 //値の値渡し
 func swapAndEdit(var left: ValWrap, var right: ValWrap) {
     var tmp = left

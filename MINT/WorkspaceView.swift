@@ -40,7 +40,7 @@ import AppKit
     /// accept drop & tell 'controller' to generate new leaf
     override func performDragOperation(sender: NSDraggingInfo) -> Bool {
         
-        let pboad = sender.draggingPasteboard()?
+        let pboad = sender.draggingPasteboard()
         if let leaf = pboad {
             switch sender.draggingSourceOperationMask() {
             case NSDragOperation.Generic:// from toolbar
@@ -173,7 +173,7 @@ import AppKit
         let keystroke = theEvent.charactersIgnoringModifiers
         
         if let key = keystroke {
-            if key.utf16Count == 1 {
+            if count(key.utf16) == 1 {
                 let s = key.unicodeScalars
                 let v = s[s.startIndex].value
                 
@@ -219,18 +219,18 @@ import AppKit
 }
 
 class MintArgumentCellView : NSTableCellView, NSTextFieldDelegate {
-    @IBOutlet weak var value: NSTextField!
+    @IBOutlet weak var value1: NSTextField!
     @IBOutlet weak var rmbutton: NSButton!
     
     weak var controller: MintLeafViewController!
     
     override func awakeFromNib() {
-        value.delegate = self
+        value1.delegate = self
     }
     
     func control(control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
         
-        println("value edited at \(self.value.stringValue)")
+        println("value edited at \(self.value1.stringValue)")
         
         if let label = self.textField?.stringValue {
             controller.argument(label, valueShouldEndEditing: control.stringValue)
@@ -255,8 +255,8 @@ class MintVectorCellView : MintArgumentCellView {
         
         if var label = self.textField?.stringValue {
             
-            if control === value {
-                println("value edited at \(self.value.stringValue)")
+            if control === value1 {
+                println("value edited at \(self.value1.stringValue)")
                 controller.argument(label + "/x", valueShouldEndEditing: control.stringValue)
             } else if control === value2 {
                 controller.argument(label + "/y", valueShouldEndEditing: control.stringValue)
@@ -270,13 +270,13 @@ class MintVectorCellView : MintArgumentCellView {
 }
 
 class MintBoolCellView : NSTableCellView, NSMatrixDelegate {
-    @IBOutlet weak var value: NSMatrix!
+    @IBOutlet weak var value1: NSMatrix!
     @IBOutlet weak var rmbutton: NSButton!
     
     weak var controller: MintLeafViewController!
     
     override func awakeFromNib() {
-        value.delegate = self
+        value1.delegate = self
     }
     
 }
@@ -306,7 +306,7 @@ class MintReturnButton : NSButton, NSDraggingDestination {
     /// accept drop & tell 'controller' to generate new link
     override func performDragOperation(sender: NSDraggingInfo) -> Bool {
         
-        let pboad = sender.draggingPasteboard()?
+        let pboad = sender.draggingPasteboard()
         if let arg = pboad {
             switch sender.draggingSourceOperationMask() {
             case NSDragOperation.Link:

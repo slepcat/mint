@@ -80,10 +80,10 @@ class Cube:Primitive ,MintLeaf{
         }
         
         //type cast args
-        let width = eval("width") as Double
-        let height = eval("height") as Double
-        let depth = eval("depth") as Double
-        let center = eval("center") as Vector
+        let width = eval("width") as! Double
+        let height = eval("height") as! Double
+        let depth = eval("depth") as! Double
+        let center = eval("center") as! Vector
         
         let left = -width/2 + center.x
         let right = width/2 + center.x

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1514" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7531" systemVersion="14D131" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6751"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7531"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="MintLeafViewController" customModule="MINT" customModuleProvider="target">
@@ -64,13 +64,14 @@
             </connections>
         </popover>
         <scrollView autohidesScrollers="YES" horizontalLineScroll="24" horizontalPageScroll="10" verticalLineScroll="24" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="0fC-k9-qt5">
-            <rect key="frame" x="0.0" y="0.0" width="210" height="135"/>
+            <rect key="frame" x="0.0" y="4" width="210" height="255"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <clipView key="contentView" drawsBackground="NO" id="ixJ-Dr-3Wi">
                 <rect key="frame" x="1" y="0.0" width="238" height="134"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" autosaveColumns="NO" rowHeight="22" rowSizeStyle="automatic" viewBased="YES" id="qCx-JS-iXd">
+                        <rect key="frame" x="0.0" y="0.0" width="208" height="0.0"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <size key="intercellSpacing" width="3" height="2"/>
                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -124,7 +125,7 @@
                                         <connections>
                                             <outlet property="rmbutton" destination="YTd-ql-bDl" id="het-iJ-iSk"/>
                                             <outlet property="textField" destination="8ib-FF-60G" id="tI1-9d-wbc"/>
-                                            <outlet property="value" destination="oaa-3P-Pvj" id="Wi4-xy-sVi"/>
+                                            <outlet property="value1" destination="oaa-3P-Pvj" id="5ZD-0R-J8S"/>
                                         </connections>
                                     </tableCellView>
                                     <tableCellView identifier="Bool" id="wUP-Hw-uyv" customClass="MintBoolCellView" customModule="MINT" customModuleProvider="target">
@@ -149,7 +150,7 @@
                                             <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Acv-KO-bU2">
                                                 <rect key="frame" x="75" y="1" width="96" height="18"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                <size key="cellSize" width="46" height="18"/>
+                                                <size key="cellSize" width="47" height="18"/>
                                                 <size key="intercellSpacing" width="4" height="2"/>
                                                 <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="small" inset="2" id="Bh9-FL-xUV">
                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -174,7 +175,7 @@
                                         <connections>
                                             <outlet property="rmbutton" destination="Oex-zQ-KVG" id="2UE-dn-FsN"/>
                                             <outlet property="textField" destination="czu-aI-0cb" id="6de-Y5-Mbr"/>
-                                            <outlet property="value" destination="Acv-KO-bU2" id="t81-xw-wvQ"/>
+                                            <outlet property="value1" destination="Acv-KO-bU2" id="LDc-BM-Y1g"/>
                                         </connections>
                                     </tableCellView>
                                     <tableCellView identifier="Reference" id="xi9-kK-JJ3" customClass="MintArgumentCellView" customModule="MINT" customModuleProvider="target">
@@ -208,7 +209,7 @@
                                         <connections>
                                             <outlet property="rmbutton" destination="btc-dp-BJz" id="zZF-g0-AXT"/>
                                             <outlet property="textField" destination="JSd-ns-90F" id="n9a-Xh-LA7"/>
-                                            <outlet property="value" destination="T2L-64-e07" id="rgm-OS-pYe"/>
+                                            <outlet property="value1" destination="T2L-64-e07" id="WIg-iJ-0LP"/>
                                         </connections>
                                     </tableCellView>
                                     <tableCellView identifier="Int" id="mzN-wC-ET9" customClass="MintArgumentCellView" customModule="MINT" customModuleProvider="target">
@@ -243,7 +244,7 @@
                                         <connections>
                                             <outlet property="rmbutton" destination="EDw-dc-SPS" id="Aly-lq-eZz"/>
                                             <outlet property="textField" destination="alT-JK-hYY" id="uvQ-Iw-n9b"/>
-                                            <outlet property="value" destination="MG4-xg-MrQ" id="MzF-zh-g0k"/>
+                                            <outlet property="value1" destination="MG4-xg-MrQ" id="Tks-Rl-84h"/>
                                         </connections>
                                     </tableCellView>
                                     <tableCellView identifier="String" id="9ZF-uu-HQk" customClass="MintArgumentCellView" customModule="MINT" customModuleProvider="target">
@@ -277,7 +278,7 @@
                                         <connections>
                                             <outlet property="rmbutton" destination="AxV-hH-5I7" id="Fhn-VD-JZ2"/>
                                             <outlet property="textField" destination="5k6-hz-bJT" id="1v3-W2-kqY"/>
-                                            <outlet property="value" destination="FSA-xf-RdC" id="VKh-C5-99n"/>
+                                            <outlet property="value1" destination="FSA-xf-RdC" id="NiP-Rj-Ks2"/>
                                         </connections>
                                     </tableCellView>
                                     <tableCellView identifier="Vector" id="Ok6-Oc-FVP" customClass="MintVectorCellView" customModule="MINT" customModuleProvider="target">
@@ -354,7 +355,7 @@
                                         <connections>
                                             <outlet property="rmbutton" destination="fjE-iC-4z1" id="sDE-kp-uY9"/>
                                             <outlet property="textField" destination="Jow-JQ-kPx" id="5aZ-u8-YOG"/>
-                                            <outlet property="value" destination="P4m-3a-QDY" id="xbN-WY-Srh"/>
+                                            <outlet property="value1" destination="P4m-3a-QDY" id="ARg-0t-5e3"/>
                                             <outlet property="value2" destination="mJn-Zo-xvV" id="Gut-kJ-bcy"/>
                                             <outlet property="value3" destination="1uc-0a-xdd" id="tZ0-hf-NJi"/>
                                         </connections>
@@ -374,7 +375,7 @@
                 <rect key="frame" x="224" y="17" width="15" height="102"/>
                 <autoresizingMask key="autoresizingMask"/>
             </scroller>
-            <point key="canvasLocation" x="574" y="366.5"/>
+            <point key="canvasLocation" x="574" y="426.5"/>
         </scrollView>
     </objects>
 </document>
