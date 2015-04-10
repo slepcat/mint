@@ -179,7 +179,7 @@ class MintToolListController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                 // Check each line and add to toolNames except comment line : '#' prefix
                 // If the line have tool name, load icon from NSBundle
                 for line in lines {
-                    if !line.hasPrefix("#") && (countElements(line) > 0) {
+                    if !line.hasPrefix("#") && (count(line) > 0) {
                         toolNames += [line]
                         
                         // load icon

@@ -269,9 +269,9 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                     let vector = argValues[row] as? Vector
                     
                     if let vec = vector {
-                        toolView.value?.stringValue = "\(vec.x)"
-                        toolView.value2?.stringValue = "\(vec.y)"
-                        toolView.value3?.stringValue = "\(vec.z)"
+                        toolView.value1.stringValue = "\(vec.x)"
+                        toolView.value2.stringValue = "\(vec.y)"
+                        toolView.value3.stringValue = "\(vec.z)"
                     }
                 }
                 
@@ -280,7 +280,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                     toolView.textField?.stringValue = argLabels[row]
                     
                     if let value = argValues[row] as? Double {
-                        toolView.value?.stringValue = "\(value)"
+                        toolView.value1.stringValue = "\(value)"
                     }
                 }
                 
@@ -289,7 +289,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                     toolView.textField?.stringValue = argLabels[row]
                     
                     if let value = argValues[row] as? Int {
-                        toolView.value?.stringValue = "\(value)"
+                        toolView.value1.stringValue = "\(value)"
                     }
                 }
                 
@@ -298,7 +298,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                     toolView.textField?.stringValue = argLabels[row]
                     
                     if let value = argValues[row] as? String {
-                        toolView.value?.stringValue = value
+                        toolView.value1.stringValue = value
                     }
                 }
             
@@ -316,7 +316,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                     toolView.textField?.stringValue = argLabels[row]
                     
                     if let value = argValues[row] as? String {
-                        toolView.value?.stringValue = value
+                        toolView.value1.stringValue = value
                     }
                 }
             }
