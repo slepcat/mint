@@ -47,7 +47,7 @@ class Leaf:MintLeaf {
                     args[i] = value
                 } else {
                     println("type error")
-                    MintErr.exc.rise(MintEXC.TypeInvalid(leafName: name, leafID: leafID, required: argTypes[i], invalid: typestr(value)))
+                    MintErr.exc.raise(MintEXC.TypeInvalid(leafName: name, leafID: leafID, required: argTypes[i], invalid: typestr(value)))
                     return
                 }
                 
@@ -59,6 +59,7 @@ class Leaf:MintLeaf {
             }
         }
         
+        MintErr.exc.raise(MintEXC.ArgNotExist(leafName: name, leafID: leafID, reguired: label))
     }
     
     func eval(arg: String) -> Any? {

@@ -29,6 +29,8 @@ class BoolLeaf: Leaf {
     func reInitArg(label: String) {
         if label == "bool" {
             setArg(label, value: 0.0)
+        } else {
+            MintErr.exc.raise(MintEXC.ArgNotExist(leafName: name, leafID: leafID, reguired: label))
         }
     }
     
@@ -36,7 +38,9 @@ class BoolLeaf: Leaf {
         if let result = eval("bool") as? Bool {
             return result
         }
-    
+        
+        MintErr.exc.raise(MintEXC.SolverFailed(leafName: name, leafID: leafID))
+        
         return nil
     }
 }
@@ -61,6 +65,8 @@ class DoubleLeaf: Leaf {
     func reInitArg(label: String) {
         if label == "double" {
             setArg(label, value: 0.0)
+        } else {
+            MintErr.exc.raise(MintEXC.ArgNotExist(leafName: name, leafID: leafID, reguired: label))
         }
     }
     
@@ -68,6 +74,8 @@ class DoubleLeaf: Leaf {
         if let result = eval("double") as? Double {
             return result
         }
+        
+        MintErr.exc.raise(MintEXC.SolverFailed(leafName: name, leafID: leafID))
         
         return nil
     }
@@ -93,6 +101,8 @@ class IntLeaf: Leaf {
     func reInitArg(label: String) {
         if label == "int" {
             setArg(label, value: 0)
+        } else {
+            MintErr.exc.raise(MintEXC.ArgNotExist(leafName: name, leafID: leafID, reguired: label))
         }
     }
     
@@ -100,6 +110,8 @@ class IntLeaf: Leaf {
         if let result = eval("int") as? Int {
             return result
         }
+        
+        MintErr.exc.raise(MintEXC.SolverFailed(leafName: name, leafID: leafID))
         
         return nil
     }
@@ -125,6 +137,8 @@ class StringLeaf: Leaf {
     func reInitArg(label: String) {
         if label == "string" {
             setArg(label, value: "")
+        } else {
+            MintErr.exc.raise(MintEXC.ArgNotExist(leafName: name, leafID: leafID, reguired: label))
         }
     }
     
@@ -132,6 +146,8 @@ class StringLeaf: Leaf {
         if let result = eval("string") as? String {
             return result
         }
+        
+        MintErr.exc.raise(MintEXC.SolverFailed(leafName: name, leafID: leafID))
         
         return nil
     }
@@ -157,6 +173,8 @@ class VectorLeaf: Leaf {
     func reInitArg(label: String) {
         if label == "vector" {
             setArg(label, value: Vector(x: 0, y: 0, z: 0))
+        } else {
+            MintErr.exc.raise(MintEXC.ArgNotExist(leafName: name, leafID: leafID, reguired: label))
         }
     }
     
@@ -164,6 +182,8 @@ class VectorLeaf: Leaf {
         if let result = eval("vector") as? Vector {
             return result
         }
+        
+        MintErr.exc.raise(MintEXC.SolverFailed(leafName: name, leafID: leafID))
         
         return nil
     }
