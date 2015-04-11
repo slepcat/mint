@@ -109,9 +109,18 @@ class SetNewName:MintCommand {
     
     func excute() {
         oldName = interpreter.getLeafUniqueName(leafID)
-        if !interpreter.setNewUniqueName(leafID, newName: name) {
+        interpreter.setNewUniqueName(leafID, newName: name)
+        
+        if let err = MintErr.exc.catch {
             // if new name is not unique, back view name old one
-            workspace.setNewName(leafID, newName: oldName)
+            
+            switch err {
+            case .NameNotUnique(newName: let name, leafID: let leafid):
+                println("New name: \(name)(ID: \(leafid)) is not unique")
+                workspace.setNewName(leafID, newName: oldName)
+            default:
+                MintErr.exc.raise(err)
+            }
         }
     }
     

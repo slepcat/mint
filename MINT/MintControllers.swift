@@ -26,6 +26,21 @@ class MintController:NSObject {
         newCommand.prepare(workspace, modelView: modelView, interpreter: interpreter)
         newCommand.excute()
         
+        while let err = MintErr.exc.catch {
+            switch err {
+            case .ArgNotExist(leafName: let name, leafID: let leafid, reguired: let arglabel):
+                println("Leaf \(name)(ID: \(leafid)) does not have argument: \(arglabel)")
+            case .TypeInvalid(leafName: let name, leafID: let leafid, argname: let label, required: let correct, invalid: let invalid):
+                println("Argument \(label) of leaf \(name)(ID: \(leafid)) must be \(correct) type, not \(invalid) type.")
+            case .SolverFailed(leafName: let name, leafID: let leafid):
+                println("Leaf \(name)(ID: \(leafid)) failed to solve arguments.")
+            case .LeafIDNotExist(leafID: let leafid):
+                println("Serious error detected. Leaf ID: \(leafid) not found.")
+            case .NameNotUnique(newName: let name, leafID: let leafid):
+                println("New name: \(name)(ID: \(leafid)) is not unique")
+            }
+        }
+        
         undoStack.append(newCommand)
         redoStack.removeAll(keepCapacity: false)
         
@@ -69,17 +84,21 @@ class MintModelViewController:NSObject {
     // add mesh to model view and register to global stack as
     // observer object
     func addMesh(leafID: Int) {
-        var mesh = GLmesh(leafID: leafID)
         
-        // add mesh to model view
-        modelview.stack.append(mesh)
-        // register mesh as observer
-        globalStack.registerObserver(mesh as MintObserver)
-        
-        // call solve() for stack leaves and update gl meshes of model view
-        globalStack.solve()
-        
-        modelview.needsDisplay = true
+        if globalStack.hasLeaf(leafID) {
+            
+            var mesh = GLmesh(leafID: leafID)
+            
+            // add mesh to model view
+            modelview.stack.append(mesh)
+            // register mesh as observer
+            globalStack.registerObserver(mesh as MintObserver)
+            
+            // call solve() for stack leaves and update gl meshes of model view
+            globalStack.solve()
+            
+            modelview.needsDisplay = true
+        }
     }
     
     // remove the GLmesh from stack
