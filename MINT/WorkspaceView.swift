@@ -330,3 +330,27 @@ class MintReturnButton : NSButton, NSDraggingDestination {
         return false
     }
 }
+
+class linkView : NSView {
+    
+    override func drawRect(dirtyRect: NSRect) {
+        
+        let path : NSBezierPath = NSBezierPath()
+        
+        path.moveToPoint(self.bounds.origin)
+        
+        if self.frame.size.width < 0 {
+            
+            let endpt = NSPoint(x: self.bounds.width, y: self.bounds.height)
+            let ctpt1 = NSPoint(x: self.bounds.width * 0.55, y: self.bounds.origin.y)
+            let ctpt2 = NSPoint(x: self.bounds.width * 0.45, y: self.bounds.origin.y)
+            path.curveToPoint(endpt, controlPoint1: ctpt1, controlPoint2: ctpt2)
+        } else {
+            
+            let endpt = NSPoint(x: self.bounds.width, y: self.bounds.height)
+            let ctpt1 = NSPoint(x: self.bounds.origin.x, y: self.bounds.height * 0.55)
+            let ctpt2 = NSPoint(x: self.bounds.origin.x, y: self.bounds.height * 0.45)
+            path.curveToPoint(endpt, controlPoint1: ctpt1, controlPoint2: ctpt2)
+        }
+    }
+}

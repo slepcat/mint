@@ -4,11 +4,8 @@ import Foundation
 import Cocoa
 
 
-enum Type {
-    case TypeA(user: Int)
-    case TypeB
-}
+let p = NSBezierPath()
 
-let a = Type.TypeA(user: 100)
-let b = Type.TypeB
+p.moveToPoint(NSPoint(x: 30, y: 30))
+p.curveToPoint(NSPoint(x: 90, y: 90), controlPoint1: NSPoint(x: 65,y: 30), controlPoint2: NSPoint(x: 55, y:90))
 

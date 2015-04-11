@@ -38,19 +38,19 @@ class MintInterpreter:MintLeafSubject {
     
     // establish link between return value of leaf and argument value of another leaf
     
-    func linkArgument(argLeafID: Int, label: String, retLeafID: Int) -> Bool {
+    func linkArgument(argLeafID: Int, label: String, retLeafID: Int) {
         
         if argLeafID != retLeafID {
             
             for leaf in leafPool {
                 if leaf.leafID == retLeafID {
                     setArgument(argLeafID, label: label, arg: leaf)
+                    return
                 }
             }
-            
         }
         
-        return false
+        MintErr.exc.raise(MintEXC.LeafIDNotExist(leafID: retLeafID))
     }
     
     // set argument
@@ -67,9 +67,11 @@ class MintInterpreter:MintLeafSubject {
                     }
                 }
                 
-                break
+                return
             }
         }
+        
+        MintErr.exc.raise(MintEXC.LeafIDNotExist(leafID: leafID))
     }
     
     // get all arguments of leaf
@@ -90,6 +92,7 @@ class MintInterpreter:MintLeafSubject {
             }
         }
         
+        MintErr.exc.raise(MintEXC.LeafIDNotExist(leafID: leafID))
         return ([], [], [])
     }
     
@@ -100,25 +103,28 @@ class MintInterpreter:MintLeafSubject {
             }
         }
         
-        return "nil"
+        MintErr.exc.raise(MintEXC.LeafIDNotExist(leafID: leafID))
+        return ""
     }
     
-    func setNewUniqueName(leafID: Int, newName:String) -> Bool {
+    func setNewUniqueName(leafID: Int, newName:String) {
         // check 'newName' is unique
         for leaf in leafPool {
             if leaf.name == newName {
-                return false
+                
+                MintErr.exc.raise(MintEXC.NameNotUnique(newName: newName, leafID: leafID))
+                return
             }
         }
         
         for leaf in leafPool {
             if leaf.leafID == leafID {
                 leaf.name = newName
-                return true
+                return
             }
         }
         
-        return false
+        MintErr.exc.raise(MintEXC.LeafIDNotExist(leafID: leafID))
     }
     
     func getLeafUniqueName(leafID: Int) -> String {
@@ -153,7 +159,9 @@ class MintInterpreter:MintLeafSubject {
         }
         
         leafPool.append(newLeaf)
-        globalStack.addLeaf(newLeaf)
+        if newLeaf.returnType == "Mesh" {
+            globalStack.addLeaf(newLeaf)
+        }
     }
     
     func removeLeaf(leafID: Int) {
@@ -228,5 +236,15 @@ class MintGlobalStack:MintSubject {
                 break
             }
         }
+    }
+    
+    func hasLeaf(leafID: Int) -> Bool {
+        for leaf in rootStack {
+            if leaf.leafID == leafID {
+                return true
+            }
+        }
+        
+        return false
     }
 }

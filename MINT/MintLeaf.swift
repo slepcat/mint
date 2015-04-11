@@ -47,7 +47,7 @@ class Leaf:MintLeaf {
                     args[i] = value
                 } else {
                     println("type error")
-                    MintErr.exc.raise(MintEXC.TypeInvalid(leafName: name, leafID: leafID, required: argTypes[i], invalid: typestr(value)))
+                    MintErr.exc.raise(MintEXC.TypeInvalid(leafName: name, leafID: leafID, argname: argLabels[i],required: argTypes[i], invalid: typestr(value)))
                     return
                 }
                 
@@ -108,7 +108,7 @@ extension Leaf {
         case let val as Mesh:
             return "Mesh"
         case let val as Leaf:
-            return "Leaf"
+            return val.returnType
         default:
             return "unknown"
         }
