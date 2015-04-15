@@ -53,7 +53,7 @@ class MintInterpreter:MintLeafSubject {
         MintErr.exc.raise(MintEXC.LeafIDNotExist(leafID: retLeafID))
     }
     
-    // set argument
+    // set argument or link
     func setArgument(leafID:Int, label:String, arg:Any) {
         for leaf in leafPool {
             if leaf.leafID == leafID {
@@ -63,6 +63,27 @@ class MintInterpreter:MintLeafSubject {
                 for obs in observers {
                     if obs.leafID == leafID {
                         obs.update(label, arg: arg)
+                        break
+                    }
+                }
+                
+                return
+            }
+        }
+        
+        MintErr.exc.raise(MintEXC.LeafIDNotExist(leafID: leafID))
+    }
+    
+    // init argument or link
+    func initArgument(leafID:Int, label:String) {
+        for leaf in leafPool {
+            if leaf.leafID == leafID {
+                
+                leaf.initArg(label)
+                
+                for obs in observers {
+                    if obs.leafID == leafID {
+                        obs.update(label, arg: leaf.getArg(label))
                         break
                     }
                 }
@@ -105,6 +126,39 @@ class MintInterpreter:MintLeafSubject {
         
         MintErr.exc.raise(MintEXC.LeafIDNotExist(leafID: leafID))
         return ""
+    }
+    
+    // remove link
+    // called when argument link deleted
+    func removeLink(retleafID: Int, argleafID:Int, label: String) {
+        
+        var is2nd : Bool = false
+        
+        for leaf in leafPool {
+            if leaf.leafID == argleafID {
+                leaf.initArg(label)
+                
+                if is2nd {
+                    return
+                } else {
+                    is2nd = true
+                }
+            }
+            
+            if leaf.leafID == retleafID {
+                if leaf.returnType == "Mesh" {
+                    globalStack.addLeaf(leaf)
+                }
+                
+                if is2nd {
+                    return
+                } else {
+                    is2nd = true
+                }
+            }
+        }
+        
+        MintErr.exc.raise(MintEXC.LeafIDNotExist(leafID: argleafID))
     }
     
     func setNewUniqueName(leafID: Int, newName:String) {
@@ -165,10 +219,23 @@ class MintInterpreter:MintLeafSubject {
     }
     
     func removeLeaf(leafID: Int) {
-        globalStack.removeAtID(leafID)
         
         for var i = 0; leafPool.count > i; i++ {
             if leafPool[i].leafID == leafID {
+                
+                if leafPool[i].returnType == "Mesh" {
+                    globalStack.removeAtID(leafID)
+                }
+                
+                let retLeafID = leafPool[i].retLeafID
+                let labels = leafPool[i].retLeafArg
+                
+                for var i = 0; retLeafID.count > i; i++ {
+                    initArgument(retLeafID[i], label: labels[i])
+                }
+                
+                leafPool[i].tellRemoveAllLink()
+                
                 leafPool.removeAtIndex(i)
                 break
             }

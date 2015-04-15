@@ -27,7 +27,7 @@ class Primitive:Leaf, MintLeaf {
         name = "null_mesh"
     }
     
-    func reInitArg(label: String) {
+    override func initArg(label: String) {
         if label == "center" {
             setArg("center", value: Vector(x: 0, y: 0, z: 0))
         }
@@ -52,8 +52,8 @@ class Cube:Primitive ,MintLeaf{
         name = "Cube\(count)"
     }
     
-    override func reInitArg(label: String) {
-        super.reInitArg(label)
+    override func initArg(label: String) {
+        super.initArg(label)
         
         switch label {
         case "width":
@@ -63,7 +63,7 @@ class Cube:Primitive ,MintLeaf{
         case "depth":
             setArg("depth", value:10.0)
         case "all":
-            super.reInitArg("center")
+            super.initArg("center")
             setArg("width", value:10.0)
             setArg("height", value:10.0)
             setArg("depth", value:10.0)

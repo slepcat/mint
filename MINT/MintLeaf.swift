@@ -19,8 +19,11 @@ class Leaf:MintLeaf {
     var argLabels : [String]
     var argTypes : [String]
     
+    //var args : [(label: String, type: String, value: Any?)]
+    
     // return value
-    var returnTo : [Leaf] = []
+    var retLeafID : [Int] = []
+    var retLeafArg : [String] = []
     var returnType : String
     
     init(newID: Int ){
@@ -35,16 +38,72 @@ class Leaf:MintLeaf {
         name = "null_leaf"
     }
     
+    // init argument value. When argument is reference, remove link.
+    func initArg(label: String) {
+        
+        for var i = 0; argLabels.count > i; i++ {
+            if argLabels[i] == label {
+                if let leaf = args[i] as? Leaf {
+                    leaf.linkRemoved(leafID, label:label)
+                }
+            }
+        }
+    }
+    
+    // remove reference to leaf which have reference to this instance.
+    // Called when link removed
+    func linkRemoved(leafID: Int, label: String) {
+        for var i = 0; retLeafID.count > i; i++ {
+            if retLeafID[i] == leafID && retLeafArg[i] == label {
+                retLeafID.removeAtIndex(i)
+                retLeafArg.removeAtIndex(i)
+                
+                return
+            }
+        }
+    }
+    
+    // remove all reference from other leaves when self will be removed.
+    // Tell leaves which link to this leaf's return value to kill link.
+    func tellRemoveAllLink() {
+        for var i = 0; args.count > i; i++ {
+            if let leaf = args[i] as? Leaf {
+                leaf.linkRemoved(leafID, label: argLabels[i])
+            }
+        }
+    }
+    
+    // return all arguments
     func getArgs() -> (argLabels: [String], argTypes: [String], args: [Any?]) {
         return (argLabels: argLabels, argTypes: argTypes, args: args)
     }
     
+    // set argument value for label
+    func getArg(label: String) -> Any? {
+        
+        for var i = 0; argLabels.count > i; i++ {
+            if argLabels[i] == label {
+                return args[i]
+            }
+        }
+        
+        MintErr.exc.raise(MintEXC.ArgNotExist(leafName: name, leafID: leafID, reguired: label))
+        return nil
+    }
+    
+    // set argument value for label
     func setArg(label: String, value: Any) {
         for var i = 0; argLabels.count > i; i++ {
             if argLabels[i] == label {
                 
                 if argTypes[i] == typestr(value) {
                     args[i] = value
+                    
+                    if let leaf = value as? Leaf {
+                        leaf.retLeafID.append(self.leafID)
+                        leaf.retLeafArg.append(argLabels[i])
+                    }
+                    
                 } else {
                     println("type error")
                     MintErr.exc.raise(MintEXC.TypeInvalid(leafName: name, leafID: leafID, argname: argLabels[i],required: argTypes[i], invalid: typestr(value)))
