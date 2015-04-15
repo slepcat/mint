@@ -17,6 +17,7 @@ class MintWorkspaceController:NSObject {
     var leafViewXib : NSNib!
     
     var viewStack : [MintLeafViewController] = []
+    var linkviews : [LinkView] = []
     
     // Instantiate a leaf when tool dragged to workspace from toolbar.
     // Responsible for create leaf's view and model.
@@ -42,6 +43,94 @@ class MintWorkspaceController:NSObject {
         }
         
         workspace.needsDisplay = true
+    }
+    
+    func addLinkBetween(argleafID: Int, retleafID: Int) {
+        
+        for link in linkviews {
+            if link.argleafID == argleafID && link.retleafID == retleafID {
+                // we have a linkview arleady. Increment 'linkcounter'
+                link.linkcounter++
+                return
+            }
+        }
+        
+        var argpt = NSPoint()
+        var retpt = NSPoint()
+        
+        // get leaves points from 'viewStack'
+        for leafctrl in viewStack {
+            var is2ndhit : Bool = false
+            
+            if leafctrl.leafID == argleafID {
+                
+                let origin = leafctrl.leafview.frame.origin
+                argpt = NSPoint(x: origin.x + 85, y: origin.y + 21)
+                
+                if is2ndhit {
+                    break
+                } else {
+                    is2ndhit = true
+                }
+            }
+            
+            if leafctrl.leafID == retleafID {
+                
+                let origin = leafctrl.leafview.frame.origin
+                retpt = NSPoint(x: origin.x, y: origin.y + 21)
+                
+                if is2ndhit {
+                    break
+                } else {
+                    is2ndhit = true
+                }
+            }
+        }
+        
+        let origin = NSPoint(x: min(argpt.x, retpt.x), y:min(argpt.y, retpt.y))
+        let size = NSSize(width: max(argpt.x, retpt.x) - min(argpt.x, retpt.x), height: max(argpt.y, retpt.y) - min(argpt.y, retpt.y))
+        
+        let newlink = LinkView(frame: NSRect(origin: origin, size: size))
+        
+        newlink.argPoint = argpt
+        newlink.retPoint = retpt
+        newlink.argleafID = argleafID
+        newlink.retleafID = retleafID
+        newlink.linkcounter++
+        
+        linkviews.append(newlink)
+        
+        workspace.addSubview(newlink)
+    }
+    
+    func removeLinkBetween(argleafID: Int, retleafID: Int) {
+        // Remove link between designated leaf IDs.
+        // Only removed if 'linkcounter' = 0
+        
+        for var i = 0; linkviews.count > i; i++ {
+            if linkviews[i].argleafID == argleafID && linkviews[i].retleafID == retleafID {
+                
+                linkviews[i].linkcounter--
+                
+                if linkviews[i].linkcounter <= 0 {
+                    linkviews[i].removeFromSuperview()
+                    linkviews.removeAtIndex(i)
+                }
+                return
+            }
+        }
+    }
+    
+    func removeLinkFrom(leafID: Int) {
+        // Remove link when the leaf is deleted.
+        // search links from 'linkviews' and call 'removeLinkBetween()'
+        
+        for var i = 0; linkviews.count > i; i++ {
+            if linkviews[i].argleafID == leafID || linkviews[i].retleafID == leafID {
+                
+                removeLinkBetween(linkviews[i].argleafID, retleafID: linkviews[i].retleafID)
+            }
+        }
     }
     
     func setNewName(leafID: Int, newName: String) {
@@ -242,16 +331,6 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         switch argTypes[row] {
             case "Double", "Int", "String", "Bool", "Vector":
             identifier = argTypes[row]
-            /*
-            case "Vertex":
-            break
-            case "Plane":
-            break
-            case "Polygon":
-            break
-            case "Mesh":
-            break
-            */
         default:
             identifier = "Reference"
         }
@@ -275,20 +354,11 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                     }
                 }
                 
-            case "Double":
+            case "Double", "Int":
                 if let toolView = result as? MintArgumentCellView {
                     toolView.textField?.stringValue = argLabels[row]
                     
-                    if let value = argValues[row] as? Double {
-                        toolView.value1.stringValue = "\(value)"
-                    }
-                }
-                
-            case "Int":
-                if let toolView = result as? MintArgumentCellView {
-                    toolView.textField?.stringValue = argLabels[row]
-                    
-                    if let value = argValues[row] as? Int {
+                    if let value = argValues[row] {
                         toolView.value1.stringValue = "\(value)"
                     }
                 }
@@ -315,8 +385,8 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                 if let toolView = result as? MintArgumentCellView {
                     toolView.textField?.stringValue = argLabels[row]
                     
-                    if let value = argValues[row] as? String {
-                        toolView.value1.stringValue = value
+                    if let value = argValues[row] {
+                        toolView.value1.stringValue = "\(value)"
                     }
                 }
             }
@@ -362,19 +432,17 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     func beginDraggingReturn() -> (leafID: Int, type: String) {
         
         
-        return (-1,"")
+        return (leafID, "")
     }
     
     // when dragged "argument" dropped in return button, generate link command for controller
     // called by MintReturnButton
-    func acceptLinkFrom(leafID: Int , withArg: String) -> Bool {
+    func setLinkFrom(leafID: Int , withArg: String) {
         
         println("link argument \(withArg) from leafID: \(leafID)")
         
         //let command = LinkLeaves()
         
-        
-        return false
     }
     
     // when dragged "return" entered in arguments button, show popover
@@ -385,8 +453,8 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     
     // when dragged "return" dropped in arguments button, generate link command for controller
     // called by 'MintArgumentCellView' and it's subclasses
-    func acceptLinkFrom(leafID: Int, withReturn: String) -> Bool {
-        return false
+    func acceptLinkFrom(leafID: Int, withReturn: String) {
+        
     }
     
     // remove link when 'remove' button clicked

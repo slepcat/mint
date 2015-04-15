@@ -26,7 +26,7 @@ class BoolLeaf: Leaf {
         name = "Bool\(count)"
     }
     
-    func reInitArg(label: String) {
+    override func initArg(label: String) {
         if label == "bool" {
             setArg(label, value: 0.0)
         } else {
@@ -62,7 +62,7 @@ class DoubleLeaf: Leaf {
         name = "Double\(count)"
     }
     
-    func reInitArg(label: String) {
+    override func initArg(label: String) {
         if label == "double" {
             setArg(label, value: 0.0)
         } else {
@@ -98,7 +98,7 @@ class IntLeaf: Leaf {
         name = "Int\(count)"
     }
     
-    func reInitArg(label: String) {
+    override func initArg(label: String) {
         if label == "int" {
             setArg(label, value: 0)
         } else {
@@ -134,7 +134,7 @@ class StringLeaf: Leaf {
         name = "String\(count)"
     }
     
-    func reInitArg(label: String) {
+    override func initArg(label: String) {
         if label == "string" {
             setArg(label, value: "")
         } else {
@@ -170,7 +170,7 @@ class VectorLeaf: Leaf {
         name = "Vector\(count)"
     }
     
-    func reInitArg(label: String) {
+    override func initArg(label: String) {
         if label == "vector" {
             setArg(label, value: Vector(x: 0, y: 0, z: 0))
         } else {

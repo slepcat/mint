@@ -316,7 +316,7 @@ class MintReturnButton : NSButton, NSDraggingDestination {
                             if let leafIDstr = arg.stringForType("sourceLeafID") {
                                 let leafID = NSString(string: leafIDstr).intValue
                                 
-                                controller.acceptLinkFrom(Int(leafID), withArg: arglabel)
+                                controller.setLinkFrom(Int(leafID), withArg: arglabel)
                                 
                                 return true
                             }
@@ -331,7 +331,15 @@ class MintReturnButton : NSButton, NSDraggingDestination {
     }
 }
 
-class linkView : NSView {
+class LinkView : NSView {
+    
+    var argleafID : Int = -1
+    var retleafID : Int = -1
+    
+    var linkcounter : Int = 0
+    
+    var argPoint = NSPoint()
+    var retPoint = NSPoint()
     
     override func drawRect(dirtyRect: NSRect) {
         
