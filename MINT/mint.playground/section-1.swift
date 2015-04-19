@@ -4,8 +4,34 @@ import Foundation
 import Cocoa
 
 
-let p = NSBezierPath()
+var argPoint = NSPoint()
+var retPoint = NSPoint()
 
-p.moveToPoint(NSPoint(x: 30, y: 30))
-p.curveToPoint(NSPoint(x: 90, y: 90), controlPoint1: NSPoint(x: 65,y: 30), controlPoint2: NSPoint(x: 55, y:90))
+
+let path : NSBezierPath = NSBezierPath()
+    
+let argPtLocal = NSPoint(x: 0, y: 50)
+let retPtLocal = NSPoint(x: 80, y: 0)
+
+let bounds : NSRect = NSRect(origin: NSPoint(x: 0, y: 0), size: CGSize(width: 80, height: 50))
+
+path.moveToPoint(argPtLocal)
+    
+let ctpt1 : NSPoint
+let ctpt2 : NSPoint
+    
+if argPtLocal.x <= retPtLocal.x {
+    ctpt1 = NSPoint(x: bounds.width * 0.55, y: argPtLocal.y)
+    ctpt2 = NSPoint(x: bounds.width * 0.45, y: retPtLocal.y)
+} else {
+    if argPtLocal.y <= retPtLocal.y {
+        ctpt1 = NSPoint(x: argPtLocal.x, y: bounds.height * 0.55)
+        ctpt2 = NSPoint(x: retPtLocal.x, y: bounds.height * 0.45)
+    } else {
+        ctpt1 = NSPoint(x: argPtLocal.x, y: bounds.height * 0.45)
+        ctpt2 = NSPoint(x: retPtLocal.x, y: bounds.height * 0.55)
+    }
+}
+
+path.curveToPoint(retPtLocal, controlPoint1: ctpt1, controlPoint2: ctpt2)
 

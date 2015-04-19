@@ -59,9 +59,10 @@ class MintWorkspaceController:NSObject {
         var retpt = NSPoint()
         
         // get leaves points from 'viewStack'
+        
+        var is2ndhit : Bool = false
+        
         for leafctrl in viewStack {
-            var is2ndhit : Bool = false
-            
             if leafctrl.leafID == argleafID {
                 
                 let origin = leafctrl.leafview.frame.origin
@@ -101,6 +102,8 @@ class MintWorkspaceController:NSObject {
         linkviews.append(newlink)
         
         workspace.addSubview(newlink)
+        
+        workspace.needsDisplay = true
     }
     
     func removeLinkBetween(argleafID: Int, retleafID: Int) {
@@ -128,7 +131,12 @@ class MintWorkspaceController:NSObject {
         for var i = 0; linkviews.count > i; i++ {
             if linkviews[i].argleafID == leafID || linkviews[i].retleafID == leafID {
                 
-                removeLinkBetween(linkviews[i].argleafID, retleafID: linkviews[i].retleafID)
+                linkviews[i].linkcounter--
+                
+                if linkviews[i].linkcounter <= 0 {
+                    linkviews[i].removeFromSuperview()
+                    linkviews.removeAtIndex(i)
+                }
             }
         }
     }
@@ -441,8 +449,8 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         
         println("link argument \(withArg) from leafID: \(leafID)")
         
-        //let command = LinkLeaves()
-        
+        let command = LinkArgument(returnID: self.leafID, argumentID: leafID, label: withArg)
+        controller.sendCommand(command)
     }
     
     // when dragged "return" entered in arguments button, show popover
