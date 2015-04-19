@@ -42,10 +42,18 @@ protocol MintLeafObserver:class {
 }
 
 protocol MintLeafSubject:class{
-    
-    
     func registerObserver(observer: MintLeafObserver)
     func removeObserver(observer: MintLeafObserver)
+}
+
+// Observer Pattern protocol for 'LinkView' to update link path
+protocol MintLinkObserver:class {
+    func update(leafID: Int, pos: NSPoint)
+}
+
+protocol MintLinkSubject: class {
+    func registerObserver(observer: MintLinkObserver)
+    func removeObserver(observer: MintLinkObserver)
 }
 
 protocol MintCommand {
