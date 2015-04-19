@@ -12,7 +12,21 @@ class Leaf:MintLeaf {
     let leafID : Int
     var name: String
     
-    var needUpdate : Bool = true
+    var needUpdate : Bool {
+        set(isUpdate) {
+            dirty = isUpdate
+        }
+        get {
+            for arg in args {
+                if let leaf = arg as? Leaf {
+                    dirty = dirty || leaf.needUpdate
+                }
+            }
+            
+            return dirty
+        }
+    }
+    private var dirty : Bool = true
     
     // arguments value
     var args : [Any?]
@@ -46,6 +60,8 @@ class Leaf:MintLeaf {
                 if let leaf = args[i] as? Leaf {
                     leaf.linkRemoved(leafID, label:label)
                 }
+                
+                needUpdate = true
             }
         }
     }
@@ -57,6 +73,8 @@ class Leaf:MintLeaf {
             if retLeafID[i] == leafID && retLeafArg[i] == label {
                 retLeafID.removeAtIndex(i)
                 retLeafArg.removeAtIndex(i)
+                
+                needUpdate = true
                 
                 return
             }

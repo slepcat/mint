@@ -32,6 +32,11 @@ class MintArgumentCellView : NSTableCellView, NSTextFieldDelegate {
         return true
     }
     
+    @IBAction func removeLink(sender: AnyObject) {
+        if let label = textField {
+            controller.removeLink(label.stringValue)
+        }
+    }
 }
 
 class MintVectorCellView : MintArgumentCellView {

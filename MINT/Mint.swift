@@ -138,6 +138,13 @@ class MintInterpreter:MintLeafSubject {
             if leaf.leafID == argleafID {
                 leaf.initArg(label)
                 
+                for obs in observers {
+                    if obs.leafID == argleafID {
+                        obs.update(label, arg: leaf.getArg(label))
+                        break
+                    }
+                }
+                
                 if is2nd {
                     return
                 } else {

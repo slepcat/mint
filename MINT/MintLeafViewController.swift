@@ -80,6 +80,9 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         for var i = 0; argLabels.count > i; i++ {
             if argLabels[i] == argLabel {
                 argValues[i] = arg
+                
+                argList.reloadData()
+                
                 break
             }
         }
@@ -102,6 +105,8 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     func initReturnValueType(type: String) {
         returnType = type
     }
+    
+    
     
 
     
@@ -172,7 +177,6 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         controller.sendCommand(nameChange)
     }
     
-    
     /// when dragged "argument" dropped in return button, generate link command for controller
     /// called by MintReturnButton
     func setLinkFrom(leafID: Int , withArg: String) {
@@ -182,6 +186,26 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         let command = LinkArgument(returnID: self.leafID, argumentID: leafID, label: withArg)
         controller.sendCommand(command)
     }
+    
+    /// remove link when 'remove' button clicked
+    /// called by 'MintArgumentCellView' and it's subclasses
+    func removeLink(label: String) {
+        for var i = 0; argLabels.count > i; i++ {
+            if argLabels[i] == label {
+                if let leaf = argValues[i] as? Leaf {
+                    let removeID = leaf.leafID
+                    
+                    let command = RemoveLink(rmRetID: removeID, rmArgID: leafID, label: argLabels[i])
+                    controller.sendCommand(command)
+                }
+                break
+            }
+        }
+    }
+    
+    
+    
+    
     
     ///////// Interact with Table View ////////////
     
@@ -213,34 +237,39 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                 if let toolView = result as? MintVectorCellView {
                     toolView.textField?.stringValue = argLabels[row]
                     
-                    let vector = argValues[row] as? Vector
-                    
-                    if let vec = vector {
-                        toolView.value1.stringValue = "\(vec.x)"
-                        toolView.value2.stringValue = "\(vec.y)"
-                        toolView.value3.stringValue = "\(vec.z)"
+                    if let leaf = argValues[row] as? Leaf {
+                        toolView.value1.stringValue = leaf.name
+                        toolView.value2.stringValue = leaf.name
+                        toolView.value3.stringValue = leaf.name
+                        
+                        toolView.rmbutton.enabled = true
+                    } else {
+                        if let vec = argValues[row] as? Vector {
+                            toolView.value1.stringValue = "\(vec.x)"
+                            toolView.value2.stringValue = "\(vec.y)"
+                            toolView.value3.stringValue = "\(vec.z)"
+                        }
+                        
+                        toolView.rmbutton.enabled = false
                     }
                 }
                 
-            case "Double", "Int":
+            case "Double", "Int", "String":
                 if let toolView = result as? MintArgumentCellView {
                     toolView.textField?.stringValue = argLabels[row]
                     
-                    if let value = argValues[row] {
-                        toolView.value1.stringValue = "\(value)"
+                    if let value = argValues[row] as? Leaf {
+                        toolView.value1.stringValue = value.name
+                        toolView.rmbutton.enabled = true
+                    } else {
+                        if let value = argValues[row] {
+                            toolView.value1.stringValue = "\(value)"
+                            toolView.rmbutton.enabled = false
+                        }
                     }
                 }
-                
-            case "String":
-                if let toolView = result as? MintArgumentCellView {
-                    toolView.textField?.stringValue = argLabels[row]
-                    
-                    if let value = argValues[row] as? String {
-                        toolView.value1.stringValue = value
-                    }
-                }
-                
-            case "Bool":
+
+            case "Bool": // need implementation
                 if let toolView = result as? MintArgumentCellView {
                     toolView.textField?.stringValue = argLabels[row]
                     
@@ -253,8 +282,14 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                 if let toolView = result as? MintArgumentCellView {
                     toolView.textField?.stringValue = argLabels[row]
                     
-                    if let value = argValues[row] {
-                        toolView.value1.stringValue = "\(value)"
+                    if let value = argValues[row] as? Leaf {
+                        toolView.value1.stringValue = value.name
+                        toolView.rmbutton.enabled = true
+                    } else {
+                        if let value = argValues[row] {
+                            toolView.value1.stringValue = "\(value)"
+                            toolView.rmbutton.enabled = false
+                        }
                     }
                 }
             }
@@ -273,6 +308,8 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
             return 24.0
         }
     }
+    
+    
     
     
     
@@ -317,18 +354,13 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         
     }
     
-    // remove link when 'remove' button clicked
-    // called by 'MintArgumentCellView' and it's subclasses
-    func removeLinkWith(leafID: Int, withArg: String) {
-        
-    }
-    
-    // register 'Observer' for view
+    // 'LinkView' observer pattern implementation
+    /// register 'Observer' for view
     func registerLinkObserverForView(obs: MintLinkObserver) {
         leafview.registerObserver(obs)
     }
     
-    // remove 'Observer' from view
+    /// remove 'Observer' from view
     func removeLinkObserverFromView(obs: MintLinkObserver) {
         leafview.removeObserver(obs)
     }
