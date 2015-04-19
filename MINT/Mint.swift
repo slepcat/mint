@@ -279,6 +279,7 @@ class MintGlobalStack:MintSubject {
             
             if observers[i] === observer  {
                 observers.removeAtIndex(i)
+                break
             }
         }
     }

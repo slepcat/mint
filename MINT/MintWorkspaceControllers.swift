@@ -145,20 +145,16 @@ class MintWorkspaceController:NSObject {
         
         for var i = 0; linkviews.count > i; i++ {
             if linkviews[i].argleafID == leafID || linkviews[i].retleafID == leafID {
-                
-                linkviews[i].linkcounter--
-                
-                if linkviews[i].linkcounter <= 0 {
-                    
-                    if linkviews[i].argleafID == leafID {
-                        removeLinkObserver(linkviews[i].argleafID ,link: linkviews[i])
-                    } else {
-                        removeLinkObserver(linkviews[i].retleafID ,link: linkviews[i])
-                    }
-                    
-                    linkviews[i].removeFromSuperview()
-                    linkviews.removeAtIndex(i)
+                if linkviews[i].argleafID == leafID {
+                    removeLinkObserver(linkviews[i].argleafID ,link: linkviews[i])
+                } else {
+                    removeLinkObserver(linkviews[i].retleafID ,link: linkviews[i])
                 }
+                
+                linkviews[i].removeFromSuperview()
+                linkviews.removeAtIndex(i)
+                
+                i-- // decrement counter because length of array is modified by 'removeAtIndex()'
             }
         }
     }
@@ -185,6 +181,8 @@ class MintWorkspaceController:NSObject {
         for var i = 0; viewStack.count > i; i++ {
             if viewStack[i].leafID == removeID {
                 viewStack[i].removeView()
+                
+                removeLinkFrom(removeID)
                 
                 interpreter.removeObserver(viewStack[i])
                 
