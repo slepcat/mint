@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7531" systemVersion="14D131" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7531" systemVersion="14D136" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7531"/>
@@ -120,6 +120,9 @@
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="miniSystem"/>
                                                 </buttonCell>
+                                                <connections>
+                                                    <action selector="removeLink:" target="gPG-Nb-5c3" id="vUX-qV-X2J"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <connections>
@@ -204,12 +207,52 @@
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="miniSystem"/>
                                                 </buttonCell>
+                                                <connections>
+                                                    <action selector="removeLink:" target="xi9-kK-JJ3" id="rsW-zk-Idg"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <connections>
                                             <outlet property="rmbutton" destination="btc-dp-BJz" id="zZF-g0-AXT"/>
                                             <outlet property="textField" destination="JSd-ns-90F" id="n9a-Xh-LA7"/>
                                             <outlet property="value1" destination="T2L-64-e07" id="WIg-iJ-0LP"/>
+                                        </connections>
+                                    </tableCellView>
+                                    <tableCellView identifier="String" id="9ZF-uu-HQk" customClass="MintArgumentCellView" customModule="MINT" customModuleProvider="target">
+                                        <rect key="frame" x="1" y="1" width="205" height="22"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <subviews>
+                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5k6-hz-bJT">
+                                                <rect key="frame" x="3" y="3" width="80" height="14"/>
+                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="T1v-sh-Cah">
+                                                    <font key="font" metaFont="smallSystem"/>
+                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
+                                                </textFieldCell>
+                                            </textField>
+                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FSA-xf-RdC">
+                                                <rect key="frame" x="98" y="2" width="76" height="19"/>
+                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="cy6-Gy-rkk">
+                                                    <font key="font" metaFont="smallSystem"/>
+                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
+                                                </textFieldCell>
+                                            </textField>
+                                            <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AxV-hH-5I7">
+                                                <rect key="frame" x="173" y="-8" width="30" height="30"/>
+                                                <buttonCell key="cell" type="round" title="✖️" bezelStyle="circular" imagePosition="above" alignment="center" controlSize="mini" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" id="RZ9-cd-JMl">
+                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                    <font key="font" metaFont="miniSystem"/>
+                                                </buttonCell>
+                                                <connections>
+                                                    <action selector="removeLink:" target="9ZF-uu-HQk" id="0OX-D2-pf9"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <connections>
+                                            <outlet property="rmbutton" destination="AxV-hH-5I7" id="Fhn-VD-JZ2"/>
+                                            <outlet property="textField" destination="5k6-hz-bJT" id="1v3-W2-kqY"/>
+                                            <outlet property="value1" destination="FSA-xf-RdC" id="NiP-Rj-Ks2"/>
                                         </connections>
                                     </tableCellView>
                                     <tableCellView identifier="Int" id="mzN-wC-ET9" customClass="MintArgumentCellView" customModule="MINT" customModuleProvider="target">
@@ -239,46 +282,15 @@
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="miniSystem"/>
                                                 </buttonCell>
+                                                <connections>
+                                                    <action selector="removeLink:" target="mzN-wC-ET9" id="Cne-O4-XKz"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <connections>
                                             <outlet property="rmbutton" destination="EDw-dc-SPS" id="Aly-lq-eZz"/>
                                             <outlet property="textField" destination="alT-JK-hYY" id="uvQ-Iw-n9b"/>
                                             <outlet property="value1" destination="MG4-xg-MrQ" id="Tks-Rl-84h"/>
-                                        </connections>
-                                    </tableCellView>
-                                    <tableCellView identifier="String" id="9ZF-uu-HQk" customClass="MintArgumentCellView" customModule="MINT" customModuleProvider="target">
-                                        <rect key="frame" x="1" y="1" width="205" height="22"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <subviews>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5k6-hz-bJT">
-                                                <rect key="frame" x="3" y="3" width="80" height="14"/>
-                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="T1v-sh-Cah">
-                                                    <font key="font" metaFont="smallSystem"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
-                                                </textFieldCell>
-                                            </textField>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FSA-xf-RdC">
-                                                <rect key="frame" x="98" y="2" width="76" height="19"/>
-                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="cy6-Gy-rkk">
-                                                    <font key="font" metaFont="smallSystem"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
-                                                </textFieldCell>
-                                            </textField>
-                                            <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AxV-hH-5I7">
-                                                <rect key="frame" x="173" y="-8" width="30" height="30"/>
-                                                <buttonCell key="cell" type="round" title="✖️" bezelStyle="circular" imagePosition="above" alignment="center" controlSize="mini" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" id="RZ9-cd-JMl">
-                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                    <font key="font" metaFont="miniSystem"/>
-                                                </buttonCell>
-                                            </button>
-                                        </subviews>
-                                        <connections>
-                                            <outlet property="rmbutton" destination="AxV-hH-5I7" id="Fhn-VD-JZ2"/>
-                                            <outlet property="textField" destination="5k6-hz-bJT" id="1v3-W2-kqY"/>
-                                            <outlet property="value1" destination="FSA-xf-RdC" id="NiP-Rj-Ks2"/>
                                         </connections>
                                     </tableCellView>
                                     <tableCellView identifier="Vector" id="Ok6-Oc-FVP" customClass="MintVectorCellView" customModule="MINT" customModuleProvider="target">
@@ -350,6 +362,9 @@
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="miniSystem"/>
                                                 </buttonCell>
+                                                <connections>
+                                                    <action selector="removeLink:" target="Ok6-Oc-FVP" id="4Pz-CV-28a"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <connections>

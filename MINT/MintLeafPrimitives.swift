@@ -28,8 +28,12 @@ class Primitive:Leaf, MintLeaf {
     }
     
     override func initArg(label: String) {
+        super.initArg(label)
+        
         if label == "center" {
             setArg("center", value: Vector(x: 0, y: 0, z: 0))
+        } else {
+            MintErr.exc.raise(MintEXC.ArgNotExist(leafName: name, leafID: leafID, reguired: label))
         }
     }
     
@@ -55,22 +59,23 @@ class Cube:Primitive ,MintLeaf{
     override func initArg(label: String) {
         super.initArg(label)
         
-        switch label {
-        case "width":
-            setArg("width", value:10.0)
-        case "height":
-            setArg("height", value:10.0)
-        case "depth":
-            setArg("depth", value:10.0)
-        case "all":
-            super.initArg("center")
-            setArg("width", value:10.0)
-            setArg("height", value:10.0)
-            setArg("depth", value:10.0)
-        default:
-            MintErr.exc.raise(MintEXC.ArgNotExist(leafName: name, leafID: leafID, reguired: label))
+        if let err = MintErr.exc.catch {
+            switch label {
+            case "width":
+                setArg("width", value:10.0)
+            case "height":
+                setArg("height", value:10.0)
+            case "depth":
+                setArg("depth", value:10.0)
+            case "all":
+                super.initArg("center")
+                setArg("width", value:10.0)
+                setArg("height", value:10.0)
+                setArg("depth", value:10.0)
+            default:
+                MintErr.exc.raise(err)
+            }
         }
-        
     }
     
     override func solve() -> Any? {

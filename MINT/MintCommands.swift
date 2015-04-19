@@ -170,18 +170,18 @@ class LinkArgument:MintCommand {
 }
 
 class RemoveLink:MintCommand {
-    let leafID : Int
+    let argleafID : Int
+    let retleafID : Int
     let argLabel : String
     
     weak var workspace:MintWorkspaceController!
     weak var modelView: MintModelViewController!
     weak var interpreter: MintInterpreter!
     
-    init(rmLinkID: Int, label: String, type: String, arg:Any) {
-        leafID = rmLinkID
+    init(rmRetID: Int, rmArgID: Int, label: String) {
+        argleafID = rmArgID
+        retleafID = rmRetID
         argLabel = label
-        
-        
     }
     
     func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
@@ -191,7 +191,9 @@ class RemoveLink:MintCommand {
     }
     
     func excute() {
-        
+        interpreter.removeLink(retleafID, argleafID: argleafID, label: argLabel)
+        workspace.removeLinkBetween(argleafID, retleafID: retleafID)
+        modelView.setNeedDisplay()
     }
     
     func undo() {
@@ -224,6 +226,8 @@ class RemoveLeaf:MintCommand {
         workspace.removeLeaf(removeID)
         modelView.removeMesh(removeID)
         interpreter.removeLeaf(removeID)
+        
+        modelView.setNeedDisplay()
     }
     
     func undo() {
