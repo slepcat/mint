@@ -341,24 +341,41 @@ class LinkView : NSView {
     var argPoint = NSPoint()
     var retPoint = NSPoint()
     
+    var path : NSBezierPath = NSBezierPath()
+    var color : NSColor = NSColor(calibratedRed: 0, green: 0.3, blue: 0.6, alpha: 0.7)
+    
     override func drawRect(dirtyRect: NSRect) {
         
-        let path : NSBezierPath = NSBezierPath()
+        calcLinkPath()
         
-        path.moveToPoint(self.bounds.origin)
+        color.setStroke()
+        path.lineWidth = 3.0
+        path.stroke()
+    }
+    
+    func calcLinkPath() {
         
-        if self.frame.size.width < 0 {
-            
-            let endpt = NSPoint(x: self.bounds.width, y: self.bounds.height)
-            let ctpt1 = NSPoint(x: self.bounds.width * 0.55, y: self.bounds.origin.y)
-            let ctpt2 = NSPoint(x: self.bounds.width * 0.45, y: self.bounds.origin.y)
-            path.curveToPoint(endpt, controlPoint1: ctpt1, controlPoint2: ctpt2)
+        let argPtLocal = self.convertPoint(argPoint, fromView:nil)
+        let retPtLocal = self.convertPoint(retPoint, fromView:nil)
+        
+        path.moveToPoint(argPtLocal)
+        
+        let ctpt1 : NSPoint
+        let ctpt2 : NSPoint
+        
+        if argPtLocal.x <= retPtLocal.x {
+            ctpt1 = NSPoint(x: bounds.width * 0.55, y: argPtLocal.y)
+            ctpt2 = NSPoint(x: bounds.width * 0.45, y: retPtLocal.y)
         } else {
-            
-            let endpt = NSPoint(x: self.bounds.width, y: self.bounds.height)
-            let ctpt1 = NSPoint(x: self.bounds.origin.x, y: self.bounds.height * 0.55)
-            let ctpt2 = NSPoint(x: self.bounds.origin.x, y: self.bounds.height * 0.45)
-            path.curveToPoint(endpt, controlPoint1: ctpt1, controlPoint2: ctpt2)
+            if argPtLocal.y <= retPtLocal.y {
+                ctpt1 = NSPoint(x: argPtLocal.x, y: bounds.height * 0.55)
+                ctpt2 = NSPoint(x: retPtLocal.x, y: bounds.height * 0.45)
+            } else {
+                ctpt1 = NSPoint(x: argPtLocal.x, y: bounds.height * 0.45)
+                ctpt2 = NSPoint(x: retPtLocal.x, y: bounds.height * 0.55)
+            }
         }
+        
+        path.curveToPoint(retPtLocal, controlPoint1: ctpt1, controlPoint2: ctpt2)
     }
 }

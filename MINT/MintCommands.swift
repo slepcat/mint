@@ -156,7 +156,8 @@ class LinkArgument:MintCommand {
     }
     
     func excute() {
-        
+        workspace.addLinkBetween(argumentLeafID, retleafID: returnLeafID)
+        interpreter.linkArgument(argumentLeafID, label: argLabel, retLeafID: returnLeafID)
     }
     
     func undo() {
