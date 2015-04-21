@@ -175,7 +175,7 @@ import Cocoa
 // Return value button represent return value of leaf in LeafView
 // Accept drag & drop from 'MintArgumentCellView'
 // Source of drag & drop to 'MintArgumentCellView'
-class MintReturnButton : NSButton, NSDraggingDestination {
+class MintReturnButton : NSButton, NSDraggingDestination, NSDraggingSource, NSPasteboardItemDataProvider {
     @IBOutlet weak var controller : MintLeafViewController!
     
     // drag from argument
@@ -220,6 +220,41 @@ class MintReturnButton : NSButton, NSDraggingDestination {
         }
         return false
     }
+    
+    //  source drag operation to argument
+    /// override mousedown()
+    override func mouseDown(theEvent: NSEvent) {
+        let pbItem = NSPasteboardItem()
+        pbItem.setDataProvider(self, forTypes: [NSPasteboardTypeString])
+        
+        let dragItem = NSDraggingItem(pasteboardWriter:pbItem)
+        let draggingRect = self.bounds
+        dragItem.setDraggingFrame(draggingRect, contents: self.image!)
+        let draggingSession = self.beginDraggingSessionWithItems([dragItem], event:theEvent, source:self)
+        draggingSession.animatesToStartingPositionsOnCancelOrFail = true
+        draggingSession.draggingFormation = NSDraggingFormation.None
+    }
+    
+    // provide pasteboard self 'leafID' and value type 'returnLink'
+    func pasteboard(pasteboard: NSPasteboard!, item: NSPasteboardItem!, provideDataForType type: String!) {
+        if type == NSPasteboardTypeString {
+            pasteboard.clearContents()
+            pasteboard.declareTypes(["type", "sourceLeafID"], owner: self)
+            if pasteboard.setString("returnLink", forType: "type") {
+                pasteboard.setString("\(controller.leafID)", forType: "sourceLeafID")
+            }
+        }
+    }
+    
+    /// drag operation type
+    func draggingSession(session: NSDraggingSession, sourceOperationMaskForDraggingContext context: NSDraggingContext) -> NSDragOperation {
+        switch context {
+        case .WithinApplication:
+            return NSDragOperation.Link
+        default:
+            return NSDragOperation.None
+        }
+    }
 }
 
 
@@ -236,16 +271,12 @@ class LinkView : NSView, MintLinkObserver {
     var needCalc : Bool = true
     var path : NSBezierPath = NSBezierPath()
     var color : NSColor = NSColor(calibratedRed: 0, green: 0.5, blue: 0.6, alpha: 0.6)
-    let background : NSColor = NSColor.windowBackgroundColor()
     
     override func drawRect(dirtyRect: NSRect) {
         
         if needCalc {
             calcLinkPath()
         }
-        
-        //background.setFill()
-        //NSRectFill(dirtyRect)
         
         color.setStroke()
         path.lineWidth = 3.0
