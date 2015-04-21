@@ -20,7 +20,7 @@
             <subviews>
                 <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6nA-t8-YZA" customClass="MintReturnButton" customModule="MINT" customModuleProvider="target">
                     <rect key="frame" x="0.0" y="0.0" width="30" height="41"/>
-                    <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ork-SD-NTJ">
+                    <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="Cube" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ork-SD-NTJ">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system" size="10"/>
                     </buttonCell>
@@ -36,11 +36,11 @@
                         <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
                     </textFieldCell>
                 </textField>
-                <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gie-wI-25b">
-                    <rect key="frame" x="55" y="0.0" width="30" height="41"/>
-                    <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="cvv-hc-ybV">
+                <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gie-wI-25b">
+                    <rect key="frame" x="53" y="0.0" width="39" height="38"/>
+                    <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="cvv-hc-ybV">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system" size="10"/>
+                        <font key="font" metaFont="system"/>
                     </buttonCell>
                     <connections>
                         <action selector="showArgPopover:" target="-2" id="9iB-TL-512"/>
@@ -393,4 +393,7 @@
             <point key="canvasLocation" x="574" y="426.5"/>
         </scrollView>
     </objects>
+    <resources>
+        <image name="Cube" width="40" height="40"/>
+    </resources>
 </document>
