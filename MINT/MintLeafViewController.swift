@@ -11,7 +11,7 @@ import Cocoa
 
 // Controller of leaf view
 // Manage user actions: Arguments inputs and link.
-class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegate, NSTextFieldDelegate, MintLeafObserver {
+class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegate, NSTextFieldDelegate, NSDraggingDestination, MintLeafObserver {
     @IBOutlet weak var argsPopover:NSPopover!
     @IBOutlet weak var leafview:LeafView!
     @IBOutlet weak var argList:NSTableView!
@@ -187,6 +187,15 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         controller.sendCommand(command)
     }
     
+    // when dragged "return" dropped in arguments button, generate link command for controller
+    // called by 'MintArgumentCellView' and it's subclasses
+    func acceptLinkFrom(leafID: Int, toArg: String) {
+        println("link argument \(toArg) from leafID: \(leafID)")
+        
+        let command = LinkArgument(returnID: leafID, argumentID: self.leafID, label: toArg)
+        controller.sendCommand(command)
+    }
+    
     /// remove link when 'remove' button clicked
     /// called by 'MintArgumentCellView' and it's subclasses
     func removeLink(label: String) {
@@ -334,6 +343,11 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         return false
     }
     
+    // accept drop from return button
+    func tableView(tableView: NSTableView, acceptDrop info: NSDraggingInfo, row: Int, dropOperation: NSTableViewDropOperation) -> Bool {
+        return true
+    }
+    
     // when "return" button dragged, generate drag as source
     // called by MintReturnButton
     func beginDraggingReturn() -> (leafID: Int, type: String) {
@@ -343,15 +357,11 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     }
     
     // when dragged "return" entered in arguments button, show popover
-    // called by 'MintArgumentCellView' and it's subclasses
-    func showPopoverForLink() {
+    // called by 'MintArgumentCellView' and it's subclasses or 'MintArgumentButton'
+    func isLinkReqAcceptable() -> Bool {
         
-    }
-    
-    // when dragged "return" dropped in arguments button, generate link command for controller
-    // called by 'MintArgumentCellView' and it's subclasses
-    func acceptLinkFrom(leafID: Int, withReturn: String) {
         
+        return true
     }
     
     // 'LinkView' observer pattern implementation

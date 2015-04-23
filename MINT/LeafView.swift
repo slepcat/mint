@@ -224,10 +224,11 @@ class MintReturnButton : NSButton, NSDraggingDestination, NSDraggingSource, NSPa
     //  source drag operation to argument
     /// override mousedown()
     override func mouseDown(theEvent: NSEvent) {
-        let pbItem = NSPasteboardItem()
-        pbItem.setDataProvider(self, forTypes: [NSPasteboardTypeString])
+        let pbItem : NSPasteboardItem = NSPasteboardItem()
+        pbItem.setDataProvider(self, forTypes: ["com.mint.mint.returnLeafID"])
         
         let dragItem = NSDraggingItem(pasteboardWriter:pbItem)
+        
         let draggingRect = self.bounds
         dragItem.setDraggingFrame(draggingRect, contents: self.image!)
         let draggingSession = self.beginDraggingSessionWithItems([dragItem], event:theEvent, source:self)
@@ -237,12 +238,15 @@ class MintReturnButton : NSButton, NSDraggingDestination, NSDraggingSource, NSPa
     
     // provide pasteboard self 'leafID' and value type 'returnLink'
     func pasteboard(pasteboard: NSPasteboard!, item: NSPasteboardItem!, provideDataForType type: String!) {
-        if type == NSPasteboardTypeString {
-            pasteboard.clearContents()
-            pasteboard.declareTypes(["type", "sourceLeafID"], owner: self)
-            if pasteboard.setString("returnLink", forType: "type") {
-                pasteboard.setString("\(controller.leafID)", forType: "sourceLeafID")
-            }
+        pasteboard.clearContents()
+        pasteboard.declareTypes(["com.mint.mint.returnLeafID"], owner: self)
+        
+        switch type {
+        case "com.mint.mint.returnLeafID":
+            pasteboard.setString("\(controller.leafID)", forType: "com.mint.mint.returnLeafID")
+            item.setString("\(controller.leafID)", forType: "com.mint.mint.returnLeafID")
+        default:
+            break
         }
     }
     
@@ -254,6 +258,36 @@ class MintReturnButton : NSButton, NSDraggingDestination, NSDraggingSource, NSPa
         default:
             return NSDragOperation.None
         }
+    }
+}
+
+class MintArgumentButton : NSButton, NSDraggingDestination {
+    @IBOutlet weak var controller : MintLeafViewController!
+    
+    // drag from return value
+    /// set acceptable drag items
+    override func awakeFromNib() {
+        self.registerForDraggedTypes(["com.mint.mint.returnLeafID"])
+    }
+    
+    // 'MintArgumentButton just show argument list. Drop will be catched by 'MintArgumentCell'
+    override func draggingEntered(sender: NSDraggingInfo) -> NSDragOperation {
+        
+        switch sender.draggingSourceOperationMask() {
+        case NSDragOperation.Link:
+            if controller.isLinkReqAcceptable() {
+                
+                controller.showArgPopover(self)
+                return NSDragOperation.Link
+            }
+        default:
+            break
+        }
+        return NSDragOperation.None
+    }
+    
+    override func performDragOperation(sender: NSDraggingInfo) -> Bool {
+        return false
     }
 }
 
@@ -322,8 +356,8 @@ class LinkView : NSView, MintLinkObserver {
             retPoint = NSPoint(x: pos.x, y: pos.y + 21)
         }
         
-        let origin = NSPoint(x: min(argPoint.x, retPoint.x), y:min(argPoint.y, retPoint.y))
-        let size = NSSize(width: max(argPoint.x, retPoint.x) - min(argPoint.x, retPoint.x), height: max(argPoint.y, retPoint.y) - min(argPoint.y, retPoint.y))
+        let origin = NSPoint(x: min(argPoint.x, retPoint.x) - 1.5, y:min(argPoint.y, retPoint.y) - 1.5)
+        let size = NSSize(width: max(argPoint.x, retPoint.x) - min(argPoint.x, retPoint.x) + 3, height: max(argPoint.y, retPoint.y) - min(argPoint.y, retPoint.y) + 3)
         
         self.frame = NSRect(origin: origin, size: size)
         
