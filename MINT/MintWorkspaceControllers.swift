@@ -94,8 +94,8 @@ class MintWorkspaceController:NSObject {
             }
         }
         
-        let origin = NSPoint(x: min(argpt.x, retpt.x), y:min(argpt.y, retpt.y))
-        let size = NSSize(width: max(argpt.x, retpt.x) - min(argpt.x, retpt.x), height: max(argpt.y, retpt.y) - min(argpt.y, retpt.y))
+        let origin = NSPoint(x: min(argpt.x, retpt.x) - 1.5, y:min(argpt.y, retpt.y) - 1.5)
+        let size = NSSize(width: max(argpt.x, retpt.x) - min(argpt.x, retpt.x) + 3, height: max(argpt.y, retpt.y) - min(argpt.y, retpt.y) + 3)  // -1.5 & + 3　are margin for link view
         
         let newlink = LinkView(frame: NSRect(origin: origin, size: size))
         

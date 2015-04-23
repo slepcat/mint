@@ -36,7 +36,7 @@
                         <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
                     </textFieldCell>
                 </textField>
-                <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gie-wI-25b">
+                <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gie-wI-25b" customClass="MintArgumentButton" customModule="MINT" customModuleProvider="target">
                     <rect key="frame" x="53" y="0.0" width="39" height="38"/>
                     <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="cvv-hc-ybV">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -44,6 +44,7 @@
                     </buttonCell>
                     <connections>
                         <action selector="showArgPopover:" target="-2" id="9iB-TL-512"/>
+                        <outlet property="controller" destination="-2" id="Pt1-W6-15z"/>
                     </connections>
                 </button>
             </subviews>
