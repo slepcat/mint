@@ -31,7 +31,9 @@ class MintController:NSObject {
             case .ArgNotExist(leafName: let name, leafID: let leafid, reguired: let arglabel):
                 println("Leaf \(name)(ID: \(leafid)) does not have argument: \(arglabel)")
             case .TypeInvalid(leafName: let name, leafID: let leafid, argname: let label, required: let correct, invalid: let invalid):
-                println("Argument \(label) of leaf \(name)(ID: \(leafid)) must be \(correct) type, not \(invalid) type.")
+                println("Argument \"\(label)\" of leaf \(name)(ID: \(leafid)) must be \"\(correct)\" type, not \"\(invalid)\" type.")
+            case .ReferenceLoop(leafName: let name, leafID: let leafid, argname: let arg):
+                println("Loop of reference is detected at argument \"\(arg)\" of Leaf \(name)(ID: \(leafid)).")
             case .SolverFailed(leafName: let name, leafID: let leafid):
                 println("Leaf \(name)(ID: \(leafid)) failed to solve arguments.")
             case .LeafIDNotExist(leafID: let leafid):

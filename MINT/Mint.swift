@@ -40,13 +40,15 @@ class MintInterpreter:MintLeafSubject {
     
     func linkArgument(argLeafID: Int, label: String, retLeafID: Int) {
         
-        if argLeafID != retLeafID {
-            
-            for leaf in leafPool {
-                if leaf.leafID == retLeafID {
-                    setArgument(argLeafID, label: label, arg: leaf)
-                    return
+        for leaf in leafPool {
+            if leaf.leafID == retLeafID {
+                setArgument(argLeafID, label: label, arg: leaf)
+                
+                if leaf.returnType == "Mesh" {
+                    globalStack.removeAtID(retLeafID)
                 }
+                
+                return
             }
         }
         
@@ -115,6 +117,20 @@ class MintInterpreter:MintLeafSubject {
         
         MintErr.exc.raise(MintEXC.LeafIDNotExist(leafID: leafID))
         return ([], [], [])
+    }
+    
+    // get a arguments of leaf
+    func getArgument(leafID: Int, argLabel: String) -> Any? {
+        for leaf in leafPool {
+            if leaf.leafID == leafID {
+                var arg = leaf.getArg(argLabel)
+                
+                return arg
+            }
+        }
+        
+        MintErr.exc.raise(MintEXC.LeafIDNotExist(leafID: leafID))
+        return nil
     }
     
     func getReturnType(leafID: Int) -> String {
@@ -246,6 +262,13 @@ class MintInterpreter:MintLeafSubject {
                 leafPool.removeAtIndex(i)
                 break
             }
+        }
+    }
+    
+    // loop of reference removed. reset loop check counter
+    func loopCleared() {
+        for leaf in leafPool {
+            leaf.clearLoopCheck()
         }
     }
 }

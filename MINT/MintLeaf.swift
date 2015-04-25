@@ -28,6 +28,41 @@ class Leaf:MintLeaf {
     }
     private var dirty : Bool = true
     
+    var loopCheck : Bool {
+        get {
+            loopCount++
+            
+            if loopCount > 1 {
+                return true
+            }
+            
+            for arg in args {
+                if let leaf = arg as? Leaf {
+                    if leaf.loopCheck {
+                        return true
+                    }
+                }
+            }
+            return false
+        }
+    }
+    private var loopCount : Int = 0
+    
+    private func clearLoopCount() {
+        // Dont call when loopCheck is true. It make app crash.
+        loopCount = 0
+        
+        for arg in args {
+            if let leaf = arg as? Leaf {
+                leaf.clearLoopCount()
+            }
+        }
+    }
+    
+    func clearLoopCheck() {
+        loopCount = 0
+    }
+    
     // arguments value
     var args : [Any?]
     var argLabels : [String]
@@ -118,6 +153,13 @@ class Leaf:MintLeaf {
                     args[i] = value
                     
                     if let leaf = value as? Leaf {
+                        
+                        if loopCheck {
+                            MintErr.exc.raise(MintEXC.ReferenceLoop(leafName: name, leafID: leafID, argname: argLabels[i]))
+                        } else {
+                            clearLoopCount()
+                        }
+                        
                         leaf.retLeafID.append(self.leafID)
                         leaf.retLeafArg.append(argLabels[i])
                     }
