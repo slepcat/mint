@@ -57,6 +57,8 @@ class SetArgument:MintCommand {
     let argLabel : String
     let newArg : Any
     
+    var oldvalue : Any? = nil
+    
     weak var workspace:MintWorkspaceController!
     weak var modelView: MintModelViewController!
     weak var interpreter: MintInterpreter!
@@ -74,7 +76,23 @@ class SetArgument:MintCommand {
     }
     
     func excute() {
+        // save old value for undo or exception restre operation
+        oldvalue = interpreter.getArgument(leafID, argLabel: argLabel)
+        
         interpreter.setArgument(leafID, label: argLabel, arg: newArg)
+        
+        // catch exception
+        if let err = MintErr.exc.catch {
+            switch err {
+            case .TypeInvalid(leafName: let name, leafID: let leafID, argname: let argname, required: let correcttype, invalid: let errtype):
+                println("Argument \"\(argname)\" of leaf \(name)(ID: \(leafID)) must be \"\(correcttype)\" type, not \"\(errtype)\" type.")
+                if let value = oldvalue {
+                    interpreter.setArgument(leafID, label: argLabel, arg: value)
+                }
+            default:
+                MintErr.exc.raise(err)
+            }
+        }
         modelView.setNeedDisplay()
     }
     
@@ -139,6 +157,8 @@ class LinkArgument:MintCommand {
     let argumentLeafID : Int
     let argLabel : String
     
+    var oldvalue : Any? = nil
+    
     weak var workspace:MintWorkspaceController!
     weak var modelView: MintModelViewController!
     weak var interpreter: MintInterpreter!
@@ -156,9 +176,34 @@ class LinkArgument:MintCommand {
     }
     
     func excute() {
+        // save old value for undo or exception restre operation
+        oldvalue = interpreter.getArgument(argumentLeafID, argLabel: argLabel)
+        
         workspace.addLinkBetween(argumentLeafID, retleafID: returnLeafID)
         interpreter.linkArgument(argumentLeafID, label: argLabel, retLeafID: returnLeafID)
         
+        // catch exception
+        if let err = MintErr.exc.catch {
+            switch err {
+            case .TypeInvalid(leafName: let name, leafID: let leafID, argname: let argname, required: let correcttype, invalid: let errtype):
+                println("Argument \"\(argname)\" of leaf \(name)(ID: \(leafID)) must be \"\(correcttype)\" type, not \"\(errtype)\" type.")
+                interpreter.removeLink(returnLeafID, argleafID: argumentLeafID, label: argLabel)
+                if let value = oldvalue {
+                    interpreter.setArgument(argumentLeafID, label: argLabel, arg: value)
+                }
+                workspace.removeLinkBetween(argumentLeafID, retleafID: returnLeafID)
+            case .ReferenceLoop(leafName: let name, leafID: let leafID, argname: let argname):
+                println("Loop of reference is detected at argument \"\(argname)\" of Leaf \(name)(ID: \(leafID)).")
+                interpreter.removeLink(returnLeafID, argleafID: argumentLeafID, label: argLabel)
+                interpreter.loopCleared()
+                if let value = oldvalue {
+                    interpreter.setArgument(argumentLeafID, label: argLabel, arg: value)
+                }
+                workspace.removeLinkBetween(argumentLeafID, retleafID: returnLeafID)
+            default:
+                MintErr.exc.raise(err)
+            }
+        }
         modelView.setNeedDisplay()
     }
     

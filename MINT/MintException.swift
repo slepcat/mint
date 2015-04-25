@@ -14,6 +14,7 @@ import Foundation
 enum MintEXC {
     case TypeInvalid(leafName: String, leafID: Int, argname: String, required: String, invalid:String) // type of variable is invalid
     case ArgNotExist(leafName: String, leafID: Int, reguired: String) // required name of argument does not exist
+    case ReferenceLoop(leafName: String, leafID: Int, argname: String) // loop of reference is detected.
     case SolverFailed(leafName: String, leafID: Int) // Leaf failed to solve()
     case LeafIDNotExist(leafID: Int)// leafID is not exist. Critical error & should kill the app
     case NameNotUnique(newName: String, leafID: Int)
