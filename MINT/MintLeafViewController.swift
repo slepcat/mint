@@ -316,13 +316,26 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                         toolView.rmbutton.enabled = true
                     } else {
                         if let value = argValues[row] as? Color {
-                            toolView.colorWell.color = NSColor(red: CGFloat(value.r), green: CGFloat(value.g), blue: CGFloat(value.b), alpha: CGFloat(value.a))
+                            //toolView.colorWell.color = NSColor(red: CGFloat(value.r), green: CGFloat(value.g), blue: CGFloat(value.b), alpha: CGFloat(value.a))
                             toolView.value1.stringValue = ""
                             toolView.rmbutton.enabled = false
                         }
                     }
                 }
-                
+            
+            case "Reference":
+                if let toolView = result as? MintArgumentCellView {
+                    toolView.textField?.stringValue = argLabels[row]
+                    
+                    if let value = argValues[row] as? Leaf {
+                        toolView.value1.stringValue = value.name
+                        toolView.rmbutton.enabled = true
+                    } else {
+                        toolView.value1.stringValue = "nil"
+                        toolView.rmbutton.enabled = false
+                    }
+                }
+
             default:
                 if let toolView = result as? MintArgumentCellView {
                     toolView.textField?.stringValue = argLabels[row]

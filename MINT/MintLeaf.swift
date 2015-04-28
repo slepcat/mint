@@ -32,7 +32,7 @@ class Leaf:MintLeaf {
         get {
             loopCount++
             
-            if loopCount > 1 {
+            if loopCount > retLeafID.count + 1 { // Allow link to multi argument of same leaf
                 return true
             }
             

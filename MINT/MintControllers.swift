@@ -105,16 +105,19 @@ class MintModelViewController:NSObject {
     
     // remove the GLmesh from stack
     func removeMesh(leafID: Int) {
-        for var i = 0 ; modelview.stack.count > i; i++ {
-            if modelview.stack[i].leafID == leafID {
-                //remove mesh from stack and unregister Observer
-                globalStack.removeObserver(modelview.stack[i])
-                modelview.stack.removeAtIndex(i)
-                
-                // call solve() for stack leaves and update gl meshes of model view
-                globalStack.solve()
-                modelview.needsDisplay = true
-                break
+        if globalStack.hasLeaf(leafID) {
+            
+            for var i = 0 ; modelview.stack.count > i; i++ {
+                if modelview.stack[i].leafID == leafID {
+                    //remove mesh from stack and unregister Observer
+                    globalStack.removeObserver(modelview.stack[i])
+                    modelview.stack.removeAtIndex(i)
+                    
+                    // call solve() for stack leaves and update gl meshes of model view
+                    globalStack.solve()
+                    modelview.needsDisplay = true
+                    break
+                }
             }
         }
     }

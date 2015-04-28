@@ -13,14 +13,16 @@ class SetColor : Leaf, MintLeaf {
     override init(newID: Int) {
         super.init(newID: newID)
         
-        let color = Color(r: 0.5, g: 0.5, b: 0.5, a: 1)
-        
-        args.append(color)
+        args = [Color(r: 0.5, g: 0.5, b: 0.5, a: 1.0)]
         args.append(nil)
         argLabels += ["color", "mesh"]
         argTypes += ["Color", "Mesh"]
         
         returnType = "Mesh"
+        
+        let count = BirthCount.get.count("SetColor")
+        
+        name = "SetColor\(count)"
     }
     
     override func initArg(label: String) {
@@ -28,7 +30,7 @@ class SetColor : Leaf, MintLeaf {
         
         switch label {
         case "color":
-            let color = Color(r: 0.5, g: 0.5, b: 0.5, a: 1)
+            let color = Color(r: 0.5, g: 0.5, b: 0.5, a: 1.0)
             setArg("color", value: color)
         case "mesh":
             for var i = 0; argLabels.count > i; i++ {

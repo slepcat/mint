@@ -180,6 +180,7 @@ class LinkArgument:MintCommand {
         oldvalue = interpreter.getArgument(argumentLeafID, argLabel: argLabel)
         
         workspace.addLinkBetween(argumentLeafID, retleafID: returnLeafID)
+        modelView.removeMesh(returnLeafID)
         interpreter.linkArgument(argumentLeafID, label: argLabel, retLeafID: returnLeafID)
         
         // catch exception
@@ -192,6 +193,7 @@ class LinkArgument:MintCommand {
                     interpreter.setArgument(argumentLeafID, label: argLabel, arg: value)
                 }
                 workspace.removeLinkBetween(argumentLeafID, retleafID: returnLeafID)
+                modelView.addMesh(returnLeafID)
             case .ReferenceLoop(leafName: let name, leafID: let leafID, argname: let argname):
                 println("Loop of reference is detected at argument \"\(argname)\" of Leaf \(name)(ID: \(leafID)).")
                 interpreter.removeLink(returnLeafID, argleafID: argumentLeafID, label: argLabel)
@@ -200,6 +202,7 @@ class LinkArgument:MintCommand {
                     interpreter.setArgument(argumentLeafID, label: argLabel, arg: value)
                 }
                 workspace.removeLinkBetween(argumentLeafID, retleafID: returnLeafID)
+                modelView.addMesh(returnLeafID)
             default:
                 MintErr.exc.raise(err)
             }
@@ -240,6 +243,7 @@ class RemoveLink:MintCommand {
     func execute() {
         interpreter.removeLink(retleafID, argleafID: argleafID, label: argLabel)
         workspace.removeLinkBetween(argleafID, retleafID: retleafID)
+        modelView.addMesh(retleafID)
         modelView.setNeedDisplay()
     }
     
