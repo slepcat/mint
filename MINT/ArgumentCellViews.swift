@@ -121,3 +121,14 @@ class MintBoolCellView : NSTableCellView, NSMatrixDelegate {
     }
     
 }
+
+class MintColorCellView : MintArgumentCellView {
+    @IBOutlet weak var colorWell : NSColorWell!
+    
+    @IBAction func setColor(sender: AnyObject) {
+        
+        if let label = self.textField?.stringValue {
+            controller.argument(label, color: colorWell.color)
+        }
+    }
+}

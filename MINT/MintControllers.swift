@@ -24,7 +24,7 @@ class MintController:NSObject {
     
     func sendCommand(newCommand: MintCommand) {
         newCommand.prepare(workspace, modelView: modelView, interpreter: interpreter)
-        newCommand.excute()
+        newCommand.execute()
         
         while let err = MintErr.exc.catch {
             switch err {
@@ -143,6 +143,8 @@ class MintToolbarController:NSObject {
         if toolSets.count == 0 {
             toolSets += [MintToolListController(toolSet: MintToolSet.Prim3D.rawValue)]
             toolSets += [MintToolListController(toolSet: MintToolSet.Control.rawValue)]
+            toolSets += [MintToolListController(toolSet: MintToolSet.Operator.rawValue)]
+
         }
     }
     

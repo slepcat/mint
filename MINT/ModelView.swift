@@ -387,6 +387,8 @@ class GLmesh:MintObserver {
             var glnormal = [GLdouble](result.normals)
             var glcolor = [GLfloat](result.colors)
             
+            buffersize = GLsizei(glmesh.count)
+            
             //mesh
             glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vbufferid)
             glBufferData(GLenum(GL_ARRAY_BUFFER), glmesh.count * sizeof(GLdouble), &glmesh, GLenum(GL_STATIC_DRAW))

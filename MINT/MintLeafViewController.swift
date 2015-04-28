@@ -171,6 +171,26 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         }
     }
     
+    /// tell 'controller' when a argument is modified. case of NSColor
+    func argument(label: String, color: NSColor) {
+        var setArg : SetArgument
+        
+        // Convert argument value from string to primitives
+        for var i = 0; argLabels.count > i; i++ {
+            if argLabels[i] == label.pathComponents[0] {
+                switch argTypes[i] {
+                case "Color":
+                    let mintcolor = Color(r: Float(color.redComponent), g: Float(color.greenComponent), b: Float(color.blueComponent), a: Float(1.0))
+                    setArg = SetArgument(updateID: leafID, label: label, arg: mintcolor)
+                    controller.sendCommand(setArg)
+                default:
+                    break
+                }
+                break
+            }
+        }
+    }
+    
     /// tell 'controller' when leaf name is changed
     func nameChanged(newName: String) {
         let nameChange = SetNewName(leafID: leafID, newName: newName)
@@ -230,7 +250,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         var identifier : String
         
         switch argTypes[row] {
-        case "Double", "Int", "String", "Bool", "Vector":
+        case "Double", "Int", "String", "Bool", "Vector", "Color":
             identifier = argTypes[row]
         default:
             identifier = "Reference"
@@ -287,6 +307,22 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                     }
                 }
                 
+            case "Color":
+                if let toolView = result as? MintColorCellView {
+                    toolView.textField?.stringValue = argLabels[row]
+                    
+                    if let value = argValues[row] as? Leaf {
+                        toolView.value1.stringValue = value.name
+                        toolView.rmbutton.enabled = true
+                    } else {
+                        if let value = argValues[row] as? Color {
+                            toolView.colorWell.color = NSColor(red: CGFloat(value.r), green: CGFloat(value.g), blue: CGFloat(value.b), alpha: CGFloat(value.a))
+                            toolView.value1.stringValue = ""
+                            toolView.rmbutton.enabled = false
+                        }
+                    }
+                }
+                
             default:
                 if let toolView = result as? MintArgumentCellView {
                     toolView.textField?.stringValue = argLabels[row]
@@ -313,6 +349,8 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         switch argTypes[row] {
         case "Vector":
             return 64.0
+        case "Color":
+            return 32.0
         default:
             return 24.0
         }

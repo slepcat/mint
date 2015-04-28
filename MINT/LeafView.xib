@@ -294,6 +294,51 @@
                                             <outlet property="value1" destination="MG4-xg-MrQ" id="Tks-Rl-84h"/>
                                         </connections>
                                     </tableCellView>
+                                    <tableCellView identifier="Color" id="m6I-c2-tha" customClass="MintColorCellView" customModule="MINT" customModuleProvider="target">
+                                        <rect key="frame" x="1" y="121" width="205" height="32"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <subviews>
+                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fld-2c-514">
+                                                <rect key="frame" x="3" y="9" width="60" height="14"/>
+                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="Hsn-Zn-zTO">
+                                                    <font key="font" metaFont="smallSystem"/>
+                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
+                                                </textFieldCell>
+                                            </textField>
+                                            <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mH8-HN-APc">
+                                                <rect key="frame" x="173" y="-2" width="30" height="30"/>
+                                                <buttonCell key="cell" type="round" title="✖️" bezelStyle="circular" imagePosition="above" alignment="center" controlSize="mini" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" id="alG-pu-rnh">
+                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                    <font key="font" metaFont="miniSystem"/>
+                                                </buttonCell>
+                                                <connections>
+                                                    <action selector="removeLink:" target="m6I-c2-tha" id="1Bj-l9-Y86"/>
+                                                </connections>
+                                            </button>
+                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TAL-Kd-ma3">
+                                                <rect key="frame" x="71" y="9" width="60" height="14"/>
+                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="Nkf-ei-IGe">
+                                                    <font key="font" metaFont="smallSystem"/>
+                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
+                                                </textFieldCell>
+                                            </textField>
+                                            <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FiN-X4-E3w">
+                                                <rect key="frame" x="143" y="2" width="28" height="28"/>
+                                                <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <connections>
+                                                    <action selector="setColor:" target="m6I-c2-tha" id="Xqq-0Q-VF4"/>
+                                                </connections>
+                                            </colorWell>
+                                        </subviews>
+                                        <connections>
+                                            <outlet property="colorWell" destination="FiN-X4-E3w" id="G37-wp-Xaf"/>
+                                            <outlet property="rmbutton" destination="mH8-HN-APc" id="S9e-bi-mQy"/>
+                                            <outlet property="textField" destination="fld-2c-514" id="7a5-K1-oKC"/>
+                                            <outlet property="value1" destination="TAL-Kd-ma3" id="wvi-yN-HEj"/>
+                                        </connections>
+                                    </tableCellView>
                                     <tableCellView identifier="Vector" id="Ok6-Oc-FVP" customClass="MintVectorCellView" customModule="MINT" customModuleProvider="target">
                                         <rect key="frame" x="1" y="73" width="205" height="62"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

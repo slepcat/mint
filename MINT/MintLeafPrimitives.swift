@@ -42,8 +42,6 @@ class Primitive:Leaf, MintLeaf {
 
 class Cube:Primitive ,MintLeaf{
     
-    var bornCount : Int = 0
-    
     override init(newID: Int) {
         super.init(newID: newID)
         

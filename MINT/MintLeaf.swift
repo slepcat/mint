@@ -226,6 +226,8 @@ extension Leaf {
             return "Polygon"
         case let val as Mesh:
             return "Mesh"
+        case let val as Color:
+            return "Color"
         case let val as Leaf:
             return val.returnType
         default:
