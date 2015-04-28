@@ -16,6 +16,29 @@
 
 import Foundation
 
+// Collection struct for mint
+/*
+struct MintArray {
+    var array : [Any] = []
+}
+
+struct MintDictionary {
+    var dict : [String : Any] = [:]
+}
+
+struct MintStruct {
+    let type : String
+    var dict : [String : Any] = [:]
+}
+*/
+
+struct Color {
+    let r : Float
+    let g : Float
+    let b : Float
+    let a : Float
+}
+
 // Enum difinition for BSP /Boolean operation
 // You cannot change order of cases because Planer.splitPolygon use it.
 enum BSP : Int {

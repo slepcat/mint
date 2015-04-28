@@ -31,7 +31,7 @@ class AddLeaf:MintCommand {
         self.interpreter = interpreter
     }
     
-    func excute() {
+    func execute() {
         
         let newID = LeafID.get.newID
         // add leaf
@@ -75,7 +75,7 @@ class SetArgument:MintCommand {
         self.interpreter = interpreter
     }
     
-    func excute() {
+    func execute() {
         // save old value for undo or exception restre operation
         oldvalue = interpreter.getArgument(leafID, argLabel: argLabel)
         
@@ -125,7 +125,7 @@ class SetNewName:MintCommand {
         self.interpreter = interpreter
     }
     
-    func excute() {
+    func execute() {
         oldName = interpreter.getLeafUniqueName(leafID)
         interpreter.setNewUniqueName(leafID, newName: name)
         
@@ -175,7 +175,7 @@ class LinkArgument:MintCommand {
         self.interpreter = interpreter
     }
     
-    func excute() {
+    func execute() {
         // save old value for undo or exception restre operation
         oldvalue = interpreter.getArgument(argumentLeafID, argLabel: argLabel)
         
@@ -237,7 +237,7 @@ class RemoveLink:MintCommand {
         self.interpreter = interpreter
     }
     
-    func excute() {
+    func execute() {
         interpreter.removeLink(retleafID, argleafID: argleafID, label: argLabel)
         workspace.removeLinkBetween(argleafID, retleafID: retleafID)
         modelView.setNeedDisplay()
@@ -269,7 +269,7 @@ class RemoveLeaf:MintCommand {
         self.interpreter = interpreter
     }
     
-    func excute() {
+    func execute() {
         workspace.removeLeaf(removeID)
         modelView.removeMesh(removeID)
         interpreter.removeLeaf(removeID)

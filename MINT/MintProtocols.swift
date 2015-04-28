@@ -58,7 +58,7 @@ protocol MintLinkSubject: class {
 
 protocol MintCommand {
     func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter)
-    func excute()
+    func execute()
     func undo()
     func redo()
 }
