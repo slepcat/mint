@@ -195,8 +195,8 @@
                                                 </textFieldCell>
                                             </textField>
                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="T2L-64-e07">
-                                                <rect key="frame" x="98" y="1" width="76" height="19"/>
-                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" borderStyle="bezel" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="O5d-Gw-mXI">
+                                                <rect key="frame" x="98" y="3" width="76" height="14"/>
+                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="O5d-Gw-mXI">
                                                     <font key="font" metaFont="smallSystem"/>
                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
@@ -318,7 +318,7 @@
                                             </button>
                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TAL-Kd-ma3">
                                                 <rect key="frame" x="71" y="9" width="60" height="14"/>
-                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="Nkf-ei-IGe">
+                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" drawsBackground="YES" usesSingleLineMode="YES" id="Nkf-ei-IGe">
                                                     <font key="font" metaFont="smallSystem"/>
                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
@@ -326,7 +326,7 @@
                                             </textField>
                                             <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FiN-X4-E3w">
                                                 <rect key="frame" x="143" y="2" width="28" height="28"/>
-                                                <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="color" white="0.4950832648026316" alpha="1" colorSpace="calibratedWhite"/>
                                                 <connections>
                                                     <action selector="setColor:" target="m6I-c2-tha" id="Xqq-0Q-VF4"/>
                                                 </connections>
