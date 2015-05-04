@@ -232,6 +232,8 @@ class MintInterpreter:MintLeafSubject {
             newLeaf = VectorLeaf(newID: leafID)
         case "SetColor":
             newLeaf = SetColor(newID: leafID)
+        case "Subtract":
+            newLeaf = Subtract(newID: leafID)
         default:
             println("Unknown leaf type alloc requied!")
             newLeaf = Cube(newID: leafID)

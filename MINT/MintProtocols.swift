@@ -23,13 +23,6 @@ protocol MintSubject:class {
     func removeObserver(observer: MintObserver)
 }
 
-protocol MintLeaf {
-    // For evaluation & solver
-    func eval(arg: String) -> Any?
-    func solve() -> Any?
-}
-
-
 // Observer Pattern ptrotocol for 'LeafView' and 'MintController'
 // Sync arguments values between 'LeafView' and 'leaf'
 protocol MintLeafObserver:class {

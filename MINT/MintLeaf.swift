@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Leaf:MintLeaf {
+class Leaf {
     let leafID : Int
     var name: String
     
@@ -145,7 +145,7 @@ class Leaf:MintLeaf {
     }
     
     // set argument value for label
-    func setArg(label: String, value: Any) {
+    func setArg(label: String, value: Any?) {
         for var i = 0; argLabels.count > i; i++ {
             if argLabels[i] == label {
                 
@@ -205,7 +205,7 @@ class Leaf:MintLeaf {
 }
 
 extension Leaf {
-    func typestr(value: Any) -> String {
+    func typestr(value: Any?) -> String {
         
         switch value {
         case let val as Double:
