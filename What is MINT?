@@ -1,0 +1,19 @@
+#What is MINT?
+
+1. MINT is interpretor of graphical modeling lanugage, Mechanica.
+2. Mechanica can describe 3D models in parametric way. So you can use it as parametric CAD.
+3. Mechanica can manipulate 3D models. So you can use it as 3D graphic processor. You may be able to use it as CAE or CAM.
+4. Mechanica can cupsulate it's code. In other words, Mechanica is 'Objective'. So you can reuse it's code for other project.
+
+If I explain MINT in a sentence...
+
+The MINT is 3D design software which use graphical modeling language.
+
+#Mechanica 5 Zen
+
+1. Reuse is productive.
+2. Make the box usable and let them not to think about inside.
+3. Part is good, system is better, but product is best.
+4. Bits is faster than atom.
+5. Make it, fail it, fix it, in the fastest way.
+6. Conquer complexity by abstracting.

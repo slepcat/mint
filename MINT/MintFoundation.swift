@@ -214,7 +214,7 @@ struct Vertex {
     let pos : Vector
     var normal : Vector = Vector(x: 0, y: 0, z: 0)
     var color = [Float](count: 3, repeatedValue: 0.5)
-    var tag:Int = Tag.get.newTag
+    //var tag:Int = Tag.get.newTag
     
     // defined by `CSG.Vertex`.
     init(pos: Vector) {
@@ -263,7 +263,7 @@ struct Vertex {
 struct Plane {
     let normal : Vector
     let w : Double
-    var tag:Int = Tag.get.newTag
+    //var tag:Int = Tag.get.newTag
     
     // `epsilon` is the tolerance used by `splitPolygon()` to decide if a
     // point is on the plane.
@@ -301,7 +301,7 @@ struct Plane {
     }
     
     func getTag() -> Int {
-        return self.tag
+        return 0//self.tag
     }
     
     func equals(plane: Plane) -> Bool {
@@ -351,7 +351,7 @@ struct Plane {
         
         for vertex in poly.vertices {
             let t = self.normal.dot(vertex.pos) - self.w;
-            var type : BSP = (t < -Plane.epsilon) ? BSP.Back : (t > Plane.epsilon) ? BSP.Front : BSP.Coplanar
+            var type : BSP = (t < -Plane.epsilon) ? BSP.Back : ((t > Plane.epsilon) ? BSP.Front : BSP.Coplanar)
             
             // Use bit operation to identify the polygon's relationship with Plane
             // 0 | 0 = 0 : coplanar
@@ -557,9 +557,14 @@ struct Polygon {
         }
     }
     
-    // need to re consider
-    func fliped() -> Polygon {
-        return self
+    func flipped() -> Polygon {
+        var newvertices : [Vertex] = []
+        for v in vertices {
+            newvertices = [v.flipped()] + newvertices
+        }
+        
+        var newplane = plane.flipped()
+        return Polygon(vertices: newvertices, shared: 0, plane: newplane)
     }
     
     func toStlString() -> String {
@@ -700,14 +705,7 @@ CSG.Polygon.prototype = {
         return this.cachedBoundingBox;
     },
     
-    flipped: function() {
-        var newvertices = this.vertices.map(function(v) {
-            return v.flipped();
-            });
-        newvertices.reverse();
-        var newplane = this.plane.flipped();
-        return new CSG.Polygon(newvertices, this.shared, newplane);
-    },
+
     
     // Affine transformation of polygon. Returns a new CSG.Polygon
     transform: function(matrix4x4) {
@@ -1075,5 +1073,146 @@ class Mesh {
         }
         
         return colors
+    }
+}
+
+class Node {
+    var plane : Plane? = nil
+    var front : Node? = nil
+    var back : Node? = nil
+    var polygons : [Polygon]
+    
+    init(poly: [Polygon]) {
+        polygons = poly
+        build(poly)
+    }
+    
+    func invert() {
+        for var i = 0; polygons.count > i; i++ {
+            polygons[i] = polygons[i].flipped()
+        }
+        
+        if let p = plane {
+            plane = p.flipped()
+        }
+        
+        if let f = front {
+            f.invert()
+        }
+        if let b = back {
+            b.invert()
+        }
+        var temp = front
+        front = back
+        back = temp
+    }
+    
+    func clipPolygons(poly: [Polygon]) -> [Polygon] {
+        if let clipPlane = plane {
+            var front = [Polygon](), back = [Polygon]()
+            for p in poly {
+                let result = clipPlane.splitPolygon(p)
+                
+                if let f = result.front {
+                    front += [f]
+                }
+                
+                if let b = result.back {
+                    back += [b]
+                }
+            }
+            
+            if let bsp = self.front {
+                front = bsp.clipPolygons(front)
+            }
+            if let bsp = self.back {
+                back = bsp.clipPolygons(back)
+            } else {
+                back = []
+            }
+            
+            return front + back
+            
+        } else {
+            return poly
+        }
+    }
+    
+    func clipTo(bsp: Node) {
+        polygons = bsp.clipPolygons(polygons)
+        
+        if let f = front {
+            f.clipTo(bsp)
+        }
+        if let b = back {
+            b.clipTo(bsp)
+        }
+    }
+    
+    func allPolygons() -> [Polygon] {
+        var polygons = self.polygons
+        
+        if let bsp = front {
+            polygons += bsp.allPolygons()
+        }
+        
+        if let bsp = back {
+            polygons += bsp.allPolygons()
+        }
+        
+        return polygons
+    }
+    
+    func build(polygons: [Polygon]) {
+        if polygons.count > 0 {
+            if self.plane == nil {
+                self.plane = self.polygons[0].plane
+            }
+            
+            var front : [Polygon] = []
+            var back : [Polygon] = []
+            
+            for poly in self.polygons {
+                let result = self.plane!.splitPolygon(poly)
+                
+                switch result.type {
+                case .Coplanar_front:
+                    if let poly = result.front {
+                        self.polygons += [poly]
+                    }
+                case .Coplanar_back:
+                    if let poly = result.back {
+                        self.polygons += [poly]
+                    }
+                case .Front:
+                    if let poly = result.front {
+                        front += [poly]
+                    }
+                case .Back:
+                    if let poly = result.back {
+                        back += [poly]
+                    }
+                default:
+                    println("Unexcepted err in BSP Node, splitting polygon")
+                    break
+                }
+            }
+            
+            if front.count > 0 {
+                if let f = self.front {
+                    f.build(front)
+                } else {
+                    self.front = Node(poly: front)
+                }
+            }
+            
+            if back.count > 0 {
+                if let b = self.back {
+                    b.build(back)
+                } else {
+                    self.back = Node(poly: back)
+                }
+            }
+        }
     }
 }

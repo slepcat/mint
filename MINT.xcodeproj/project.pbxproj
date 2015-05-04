@@ -18,6 +18,7 @@
 		A64660B41A2CC77600648FD9 /* OpenJsCADLightingShader.vs in Resources */ = {isa = PBXBuildFile; fileRef = A64660B21A2CC77600648FD9 /* OpenJsCADLightingShader.vs */; };
 		A64DDC651AC0254000E9F9B7 /* Cube.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A64DDC641AC0254000E9F9B7 /* Cube.tiff */; };
 		A64DDC6A1AC309EE00E9F9B7 /* 3D Primitives.toolset in Resources */ = {isa = PBXBuildFile; fileRef = A64DDC691AC309EE00E9F9B7 /* 3D Primitives.toolset */; };
+		A654BE571AF4742500C1CA16 /* spectestsample.swift in Sources */ = {isa = PBXBuildFile; fileRef = A654BE561AF4742500C1CA16 /* spectestsample.swift */; };
 		A6616AE31AE3B8100048EA2D /* LeafView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6616AE21AE3B8100048EA2D /* LeafView.swift */; };
 		A6616AE51AE3B8560048EA2D /* ArgumentCellViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6616AE41AE3B8560048EA2D /* ArgumentCellViews.swift */; };
 		A6616AE71AE3BBE90048EA2D /* MintLeafViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6616AE61AE3BBE90048EA2D /* MintLeafViewController.swift */; };
@@ -31,7 +32,12 @@
 		A686081119EEC93B005E858A /* ModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A686081019EEC93B005E858A /* ModelView.swift */; };
 		A688D9291AEC527300E14D3C /* MintLeafOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = A688D9281AEC527300E14D3C /* MintLeafOperators.swift */; };
 		A688D92B1AED534300E14D3C /* Operator.toolset in Resources */ = {isa = PBXBuildFile; fileRef = A688D92A1AED534300E14D3C /* Operator.toolset */; };
+		A688DC4F1AF470D400E14D3C /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A688DC4C1AF4704200E14D3C /* Nimble.framework */; };
+		A688DC501AF470D400E14D3C /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A688DC351AF4703300E14D3C /* Quick.framework */; };
 		A6A0DEEF1AACAC3600B8D194 /* MintException.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A0DEEE1AACAC3600B8D194 /* MintException.swift */; };
+		A6A6D1311AF4761E007D9717 /* MintLeaf.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E1F5E11AABDDD700CE9EA3 /* MintLeaf.swift */; };
+		A6A6D1441AF47708007D9717 /* MintFoundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61596D51A3DE09C00B314B6 /* MintFoundation.swift */; };
+		A6A6D1451AF47708007D9717 /* MintException.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A0DEEE1AACAC3600B8D194 /* MintException.swift */; };
 		A6AACFE51A9999EF00BE0724 /* MintSingletons.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6AACFE41A9999EF00BE0724 /* MintSingletons.swift */; };
 		A6AACFE71A99DBC500BE0724 /* MintProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6AACFE61A99DBC500BE0724 /* MintProtocols.swift */; };
 		A6B8B4451AB54F2E00235759 /* MintControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B8B4441AB54F2E00235759 /* MintControllers.swift */; };
@@ -52,6 +58,76 @@
 			remoteGlobalIDString = A68607EB19EEC1E1005E858A;
 			remoteInfo = MINT;
 		};
+		A688DC341AF4703300E14D3C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A688DC2B1AF4703300E14D3C /* Quick.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DAEB6B8E1943873100289F44;
+			remoteInfo = "Quick-OSX";
+		};
+		A688DC361AF4703300E14D3C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A688DC2B1AF4703300E14D3C /* Quick.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DAEB6B991943873100289F44;
+			remoteInfo = "Quick-OSXTests";
+		};
+		A688DC381AF4703300E14D3C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A688DC2B1AF4703300E14D3C /* Quick.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DA5663E81A4C8D8500193C88;
+			remoteInfo = "QuickFocused-OSXTests";
+		};
+		A688DC3A1AF4703300E14D3C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A688DC2B1AF4703300E14D3C /* Quick.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5A5D117C19473F2100F6D13D;
+			remoteInfo = "Quick-iOS";
+		};
+		A688DC3C1AF4703300E14D3C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A688DC2B1AF4703300E14D3C /* Quick.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5A5D118619473F2100F6D13D;
+			remoteInfo = "Quick-iOSTests";
+		};
+		A688DC3E1AF4703300E14D3C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A688DC2B1AF4703300E14D3C /* Quick.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DA9876B21A4C70EB0004AA17;
+			remoteInfo = "QuickFocused-iOSTests";
+		};
+		A688DC471AF4704200E14D3C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A688DC401AF4704200E14D3C /* Nimble.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1F1A74291940169200FFFC47;
+			remoteInfo = "Nimble-iOS";
+		};
+		A688DC491AF4704200E14D3C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A688DC401AF4704200E14D3C /* Nimble.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1F1A74341940169200FFFC47;
+			remoteInfo = "Nimble-iOSTests";
+		};
+		A688DC4B1AF4704200E14D3C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A688DC401AF4704200E14D3C /* Nimble.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1F925EAD195C0D6300ED456B;
+			remoteInfo = "Nimble-OSX";
+		};
+		A688DC4D1AF4704200E14D3C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A688DC401AF4704200E14D3C /* Nimble.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1F925EB7195C0D6300ED456B;
+			remoteInfo = "Nimble-OSXTests";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -67,6 +143,7 @@
 		A64660B21A2CC77600648FD9 /* OpenJsCADLightingShader.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = OpenJsCADLightingShader.vs; path = MINT/OpenJsCADLightingShader.vs; sourceTree = "<group>"; };
 		A64DDC641AC0254000E9F9B7 /* Cube.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Cube.tiff; path = Graphics/Cube.tiff; sourceTree = SOURCE_ROOT; };
 		A64DDC691AC309EE00E9F9B7 /* 3D Primitives.toolset */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "3D Primitives.toolset"; sourceTree = SOURCE_ROOT; };
+		A654BE561AF4742500C1CA16 /* spectestsample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = spectestsample.swift; sourceTree = "<group>"; };
 		A6616AE21AE3B8100048EA2D /* LeafView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeafView.swift; sourceTree = "<group>"; };
 		A6616AE41AE3B8560048EA2D /* ArgumentCellViews.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArgumentCellViews.swift; sourceTree = "<group>"; };
 		A6616AE61AE3BBE90048EA2D /* MintLeafViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintLeafViewController.swift; sourceTree = "<group>"; };
@@ -85,6 +162,8 @@
 		A686081219F01791005E858A /* mint.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = mint.playground; sourceTree = "<group>"; };
 		A688D9281AEC527300E14D3C /* MintLeafOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintLeafOperators.swift; sourceTree = "<group>"; };
 		A688D92A1AED534300E14D3C /* Operator.toolset */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Operator.toolset; sourceTree = SOURCE_ROOT; };
+		A688DC2B1AF4703300E14D3C /* Quick.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Quick.xcodeproj; path = Vendor/Quick/Quick.xcodeproj; sourceTree = "<group>"; };
+		A688DC401AF4704200E14D3C /* Nimble.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Nimble.xcodeproj; path = Vendor/Nimbie/Nimble.xcodeproj; sourceTree = "<group>"; };
 		A6A0DEEE1AACAC3600B8D194 /* MintException.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintException.swift; sourceTree = "<group>"; };
 		A6AACFE41A9999EF00BE0724 /* MintSingletons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintSingletons.swift; sourceTree = "<group>"; };
 		A6AACFE61A99DBC500BE0724 /* MintProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintProtocols.swift; sourceTree = "<group>"; };
@@ -111,6 +190,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A688DC4F1AF470D400E14D3C /* Nimble.framework in Frameworks */,
+				A688DC501AF470D400E14D3C /* Quick.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -187,6 +268,8 @@
 				A68607EE19EEC1E1005E858A /* MINT */,
 				A686080119EEC1E1005E858A /* MINTTests */,
 				A68607ED19EEC1E1005E858A /* Products */,
+				A688DC2B1AF4703300E14D3C /* Quick.xcodeproj */,
+				A688DC401AF4704200E14D3C /* Nimble.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -232,6 +315,7 @@
 			isa = PBXGroup;
 			children = (
 				A686080419EEC1E1005E858A /* MINTTests.swift */,
+				A654BE561AF4742500C1CA16 /* spectestsample.swift */,
 				A686080219EEC1E1005E858A /* Supporting Files */,
 			);
 			path = MINTTests;
@@ -252,6 +336,30 @@
 			);
 			name = "Tool Icons";
 			path = MINT;
+			sourceTree = "<group>";
+		};
+		A688DC2C1AF4703300E14D3C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A688DC351AF4703300E14D3C /* Quick.framework */,
+				A688DC371AF4703300E14D3C /* Quick-OSXTests.xctest */,
+				A688DC391AF4703300E14D3C /* QuickFocused-OSXTests.xctest */,
+				A688DC3B1AF4703300E14D3C /* Quick.framework */,
+				A688DC3D1AF4703300E14D3C /* Quick-iOSTests.xctest */,
+				A688DC3F1AF4703300E14D3C /* QuickFocused-iOSTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A688DC411AF4704200E14D3C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A688DC481AF4704200E14D3C /* Nimble.framework */,
+				A688DC4A1AF4704200E14D3C /* NimbleTests.xctest */,
+				A688DC4C1AF4704200E14D3C /* Nimble.framework */,
+				A688DC4E1AF4704200E14D3C /* NimbleTests.xctest */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -321,6 +429,16 @@
 			mainGroup = A68607E319EEC1E0005E858A;
 			productRefGroup = A68607ED19EEC1E1005E858A /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = A688DC411AF4704200E14D3C /* Products */;
+					ProjectRef = A688DC401AF4704200E14D3C /* Nimble.xcodeproj */;
+				},
+				{
+					ProductGroup = A688DC2C1AF4703300E14D3C /* Products */;
+					ProjectRef = A688DC2B1AF4703300E14D3C /* Quick.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				A68607EB19EEC1E1005E858A /* MINT */,
@@ -328,6 +446,79 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		A688DC351AF4703300E14D3C /* Quick.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Quick.framework;
+			remoteRef = A688DC341AF4703300E14D3C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A688DC371AF4703300E14D3C /* Quick-OSXTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "Quick-OSXTests.xctest";
+			remoteRef = A688DC361AF4703300E14D3C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A688DC391AF4703300E14D3C /* QuickFocused-OSXTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "QuickFocused-OSXTests.xctest";
+			remoteRef = A688DC381AF4703300E14D3C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A688DC3B1AF4703300E14D3C /* Quick.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Quick.framework;
+			remoteRef = A688DC3A1AF4703300E14D3C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A688DC3D1AF4703300E14D3C /* Quick-iOSTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "Quick-iOSTests.xctest";
+			remoteRef = A688DC3C1AF4703300E14D3C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A688DC3F1AF4703300E14D3C /* QuickFocused-iOSTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "QuickFocused-iOSTests.xctest";
+			remoteRef = A688DC3E1AF4703300E14D3C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A688DC481AF4704200E14D3C /* Nimble.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Nimble.framework;
+			remoteRef = A688DC471AF4704200E14D3C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A688DC4A1AF4704200E14D3C /* NimbleTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = NimbleTests.xctest;
+			remoteRef = A688DC491AF4704200E14D3C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A688DC4C1AF4704200E14D3C /* Nimble.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Nimble.framework;
+			remoteRef = A688DC4B1AF4704200E14D3C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A688DC4E1AF4704200E14D3C /* NimbleTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = NimbleTests.xctest;
+			remoteRef = A688DC4D1AF4704200E14D3C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		A68607EA19EEC1E1005E858A /* Resources */ = {
@@ -391,6 +582,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A6A6D1441AF47708007D9717 /* MintFoundation.swift in Sources */,
+				A6A6D1451AF47708007D9717 /* MintException.swift in Sources */,
+				A6A6D1311AF4761E007D9717 /* MintLeaf.swift in Sources */,
+				A654BE571AF4742500C1CA16 /* spectestsample.swift in Sources */,
 				A686080519EEC1E1005E858A /* MINTTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -500,6 +695,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Vendor/Quick/build/Debug",
+					"$(PROJECT_DIR)/Vendor/Nimbie/build/Debug",
+				);
 				INFOPLIST_FILE = MINT/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -514,6 +714,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Vendor/Quick/build/Debug",
+					"$(PROJECT_DIR)/Vendor/Nimbie/build/Debug",
+				);
 				INFOPLIST_FILE = MINT/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -8,7 +8,7 @@
 
 import Foundation
 
-class SetColor : Leaf, MintLeaf {
+class SetColor : Leaf {
     
     override init(newID: Int) {
         super.init(newID: newID)
@@ -33,12 +33,7 @@ class SetColor : Leaf, MintLeaf {
             let color = Color(r: 0.5, g: 0.5, b: 0.5, a: 1.0)
             setArg("color", value: color)
         case "mesh":
-            for var i = 0; argLabels.count > i; i++ {
-                if argLabels[i] == "mesh" {
-                    args[i] = nil
-                    break
-                }
-            }
+            setArg("mesh", value: nil)
         default:
             MintErr.exc.raise(MintEXC.ArgNotExist(leafName: name, leafID: leafID, reguired: label))
         }
@@ -51,6 +46,80 @@ class SetColor : Leaf, MintLeaf {
                     mesh.mesh[i].vertices[j].color = [color.r, color.g, color.b]
                 }
             }
+            
+            return mesh
+        }
+        
+        return nil
+    }
+}
+
+// Transform operation of Mesh
+
+// Boolean operation of Mesh
+class Union : Leaf {
+    
+}
+
+class Subtract : Leaf {
+    
+    var mesh : Mesh? = nil
+    
+    override init(newID: Int) {
+        super.init(newID: newID)
+        
+        args = [nil, nil]
+        argLabels += ["target", "subtract"]
+        argTypes += ["Mesh", "Mesh"]
+        
+        returnType = "Mesh"
+        
+        let count = BirthCount.get.count("Subtract")
+        
+        name = "Subtract\(count)"
+    }
+    
+    override func initArg(label: String) {
+        super.initArg(label)
+        
+        switch label {
+        case "target":
+            setArg("target", value: nil)
+        case "subtract":
+            setArg("target", value: nil)
+        default:
+            MintErr.exc.raise(MintEXC.ArgNotExist(leafName: name, leafID: leafID, reguired: label))
+        }
+    }
+    
+    override func solve() -> Any? {
+        
+        if mesh != nil && needUpdate == false {
+            return mesh
+        }
+        
+        if let err = MintErr.exc.catch {
+            MintErr.exc.raise(err)
+            
+            return nil
+        }
+        
+        if let targetMesh = eval("target") as? Mesh, let subtractMesh = eval("subtract") as? Mesh {
+            let a = Node(poly: targetMesh.mesh)
+            var b = Node(poly: subtractMesh.mesh)
+            
+            a.invert()
+            a.clipTo(b)
+            b.clipTo(a)
+            b.invert()
+            b.clipTo(a)
+            b.invert()
+            a.build(b.allPolygons())
+            a.invert()
+            
+            mesh = Mesh(m: a.allPolygons())
+            
+            needUpdate = false
             
             return mesh
         }
