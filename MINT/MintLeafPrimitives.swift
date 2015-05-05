@@ -145,7 +145,7 @@ class Cube:Primitive{
             var poly : [Polygon] = []
             
             for var i = 0; i < vertices.count; i += 3 {
-                poly += [Polygon(vertices: [vertices[i], vertices[i + 1], vertices[i + 2]], shared: 0)]
+                poly += [Polygon(vertices: [vertices[i], vertices[i + 1], vertices[i + 2]])]
             }
             
             mesh = Mesh(m: poly)
