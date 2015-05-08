@@ -224,7 +224,9 @@ struct Vertex {
     // Return a vertex with all orientation-specific data (e.g. vertex normal) flipped. Called when the
     // orientation of a polygon is flipped.
     func flipped() -> Vertex {
-        return self
+        var flipped = self
+        flipped.normal = self.normal.negated()
+        return flipped
     }
     
     // Create a new vertex between this vertex and `other` by linearly
@@ -525,12 +527,20 @@ struct Polygon {
     }
     
     // check whether the polygon is convex (it should be, otherwise we will get unexpected results)
-    func checkIfConvex() {
+    func checkIfConvex() -> Bool {
+        
+        return verticesConvex(self.vertices, normal: self.plane.normal)
+        
+        /*
+        // original method. comment outed
+        
         if verticesConvex(self.vertices, normal: self.plane.normal) {
             verticesConvex(self.vertices, normal: self.plane.normal)
             println("Not Convex polygon found!")
             //throw new Error("Not convex!")
         }
+
+        */
     }
     
     mutating func generateNormal() {
@@ -623,14 +633,26 @@ struct Polygon {
         return result
     }
     
+    func triangulationConvex() -> [Polygon] {
+        
+        var triangles : [Polygon] = []
+        
+        for var i = 2; vertices.count > i; i++ {
+            let vexs = [vertices[0], vertices[i-1], vertices[i]]
+            triangles += [Polygon(vertices: vexs)]
+        }
+        
+        return triangles
+    }
+    
     func verticesConvex(vertices: [Vertex], normal: Vector) -> Bool {
-        let numvertices = vertices.count
-        if numvertices > 2 {
-            var prevprevpos = vertices[numvertices - 2].pos
-            var prevpos = vertices[numvertices - 1].pos
-            for var i = 0; i < numvertices; i++ {
+        if vertices.count > 2 {
+            var prevprevpos = vertices[vertices.count - 2].pos
+            var prevpos = vertices[vertices.count - 1].pos
+            
+            for var i = 0; i < vertices.count; i++ {
                 let pos = vertices[i].pos
-                if isConvexPoint(prevprevpos, point: prevpos, nextpoint: pos, normal: normal) {
+                if !isConvexPoint(prevprevpos, point: prevpos, nextpoint: pos, normal: normal) {
                     return false
                 }
                 prevprevpos = prevpos
@@ -659,8 +681,27 @@ class Mesh {
         var mesharray:[Double] = []
         
         for polygon in mesh {
-            for vertex in polygon.vertices {
-                mesharray += [vertex.pos.x, vertex.pos.y, vertex.pos.z]
+            
+            if polygon.vertices.count == 3 {
+                for vertex in polygon.vertices {
+                    mesharray += [vertex.pos.x, vertex.pos.y, vertex.pos.z]
+                }
+            } else if polygon.vertices.count > 3 {
+                // if polygon is not triangle, split it to triangle polygons
+                
+                //if polygon.checkIfConvex() {
+                    
+                    let triangles = polygon.triangulationConvex()
+                    
+                    for tri in triangles {
+                        for vertex in tri.vertices {
+                            mesharray += [vertex.pos.x, vertex.pos.y, vertex.pos.z]
+                        }
+                    }
+                    
+                //} else {
+                    
+                //}
             }
         }
         
@@ -671,8 +712,27 @@ class Mesh {
         var normals:[Double] = []
         
         for polygon in mesh {
-            for vertex in polygon.vertices {
-                normals += [vertex.normal.x, vertex.normal.y, vertex.normal.z]
+            if polygon.vertices.count == 3 {
+                for vertex in polygon.vertices {
+                    normals += [vertex.normal.x, vertex.normal.y, vertex.normal.z]
+                }
+            } else if polygon.vertices.count > 3 {
+                // if polygon is not triangle, split it to triangle polygons
+                
+                //if polygon.checkIfConvex() {
+                
+                var triangles = polygon.triangulationConvex()
+                
+                for var i = 0; triangles.count > i; i++ {
+                    triangles[i].generateNormal()
+                    for vertex in triangles[i].vertices {
+                        normals += [vertex.normal.x, vertex.normal.y, vertex.normal.z]
+                    }
+                }
+                
+                //} else {
+                
+                //}
             }
         }
         
@@ -683,152 +743,31 @@ class Mesh {
         var colors:[Float] = []
         
         for polygon in mesh {
-            for vertex in polygon.vertices {
-                colors += vertex.color
+            
+            if polygon.vertices.count == 3 {
+                for vertex in polygon.vertices {
+                    colors += vertex.color
+                }
+            } else if polygon.vertices.count > 3 {
+                // if polygon is not triangle, split it to triangle polygons
+                
+                //if polygon.checkIfConvex() {
+                
+                let triangles = polygon.triangulationConvex()
+                
+                for tri in triangles {
+                    for vertex in tri.vertices {
+                        colors += vertex.color
+                    }
+                }
+                
+                //} else {
+                
+                //}
             }
+
         }
         
         return colors
-    }
-}
-
-class Node {
-    var plane : Plane? = nil
-    var front : Node? = nil
-    var back : Node? = nil
-    var polygons : [Polygon]
-    
-    init(poly: [Polygon]) {
-        polygons = poly
-        build(poly)
-    }
-    
-    func invert() {
-        for var i = 0; polygons.count > i; i++ {
-            polygons[i] = polygons[i].flipped()
-        }
-        
-        if let p = plane {
-            plane = p.flipped()
-        }
-        
-        if let f = front {
-            f.invert()
-        }
-        if let b = back {
-            b.invert()
-        }
-        var temp = front
-        front = back
-        back = temp
-    }
-    
-    func clipPolygons(poly: [Polygon]) -> [Polygon] {
-        if let clipPlane = plane {
-            var front = [Polygon](), back = [Polygon]()
-            for p in poly {
-                let result = clipPlane.splitPolygon(p)
-                
-                if let f = result.front {
-                    front += [f]
-                }
-                
-                if let b = result.back {
-                    back += [b]
-                }
-            }
-            
-            if let bsp = self.front {
-                front = bsp.clipPolygons(front)
-            }
-            if let bsp = self.back {
-                back = bsp.clipPolygons(back)
-            } else {
-                back = []
-            }
-            
-            return front + back
-            
-        } else {
-            return poly
-        }
-    }
-    
-    func clipTo(bsp: Node) {
-        polygons = bsp.clipPolygons(polygons)
-        
-        if let f = front {
-            f.clipTo(bsp)
-        }
-        if let b = back {
-            b.clipTo(bsp)
-        }
-    }
-    
-    func allPolygons() -> [Polygon] {
-        var polygons = self.polygons
-        
-        if let bsp = front {
-            polygons += bsp.allPolygons()
-        }
-        
-        if let bsp = back {
-            polygons += bsp.allPolygons()
-        }
-        
-        return polygons
-    }
-    
-    func build(polygons: [Polygon]) {
-        if polygons.count > 0 {
-            if self.plane == nil {
-                self.plane = self.polygons[0].plane
-            }
-            
-            var front : [Polygon] = []
-            var back : [Polygon] = []
-            
-            for poly in self.polygons {
-                let result = self.plane!.splitPolygon(poly)
-                
-                switch result.type {
-                case .Coplanar_front:
-                    if let poly = result.front {
-                        self.polygons += [poly]
-                    }
-                case .Coplanar_back:
-                    if let poly = result.back {
-                        self.polygons += [poly]
-                    }
-                case .Front:
-                    if let poly = result.front {
-                        front += [poly]
-                    }
-                case .Back:
-                    if let poly = result.back {
-                        back += [poly]
-                    }
-                default:
-                    println("Unexcepted err in BSP Node, splitting polygon")
-                    break
-                }
-            }
-            
-            if front.count > 0 {
-                if let f = self.front {
-                    f.build(front)
-                } else {
-                    self.front = Node(poly: front)
-                }
-            }
-            
-            if back.count > 0 {
-                if let b = self.back {
-                    b.build(back)
-                } else {
-                    self.back = Node(poly: back)
-                }
-            }
-        }
     }
 }

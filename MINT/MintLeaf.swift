@@ -149,7 +149,7 @@ class Leaf {
         for var i = 0; argLabels.count > i; i++ {
             if argLabels[i] == label {
                 
-                if argTypes[i] == typestr(value) {
+                if argTypes[i] == typestr(value) || "nil" == typestr(value) {
                     args[i] = value
                     
                     if let leaf = value as? Leaf {
@@ -230,6 +230,8 @@ extension Leaf {
             return "Color"
         case let val as Leaf:
             return val.returnType
+        case nil:
+            return "nil"
         default:
             return "unknown"
         }

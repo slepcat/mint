@@ -28,6 +28,32 @@ class PolygonSpec : QuickSpec {
             expect(result.middle.length() - 1.7348).to(beLessThan(0.1))
             expect(result.radius - 5.7722).to(beLessThan(0.1))
         }
+        
+        it("should split square polygon to 2 triangles") {
+            let vexa = Vertex(pos: Vector(x: 0, y: 0, z: 0))
+            let vexb = Vertex(pos: Vector(x: 0, y: 10, z: 0))
+            let vexc = Vertex(pos: Vector(x: 10, y: 10, z: 0))
+            let vexd = Vertex(pos: Vector(x: 10, y: 0, z: 0))
+            let poly = Polygon(vertices: [vexa, vexb, vexc, vexd])
+            
+            let result = poly.triangulationConvex()
+            
+            expect(result.count).to(equal(2))
+            expect(result.first?.vertices.count).to(equal(3))
+            expect(result.last?.vertices.count).to(equal(3))
+        }
+        
+        it("should evaluate square polygon as convex") {
+            let vexa = Vertex(pos: Vector(x: 0, y: 0, z: 0))
+            let vexb = Vertex(pos: Vector(x: 0, y: 10, z: 0))
+            let vexc = Vertex(pos: Vector(x: 10, y: 10, z: 0))
+            let vexd = Vertex(pos: Vector(x: 10, y: 0, z: 0))
+            let poly = Polygon(vertices: [vexa, vexb, vexc, vexd])
+            
+            let result = poly.checkIfConvex()
+            
+            expect(result).to(equal(true))
+        }
     }
 }
 
@@ -44,17 +70,12 @@ class PlaneSpec : QuickSpec {
             
             let vex = [Vertex(pos: veca), Vertex(pos: vecb), Vertex(pos: vecc)]
             let poly = Polygon(vertices: vex)
-            let csg = PolygonTreeNode()
-            csg.polygon = poly
             
-            var cpfront = [PolygonTreeNode](), cpback = [PolygonTreeNode](), front = [PolygonTreeNode](), back = [PolygonTreeNode]()
+            let result = plane.splitPolygon(poly)
             
-            csg.splitByPlane(plane, cpfrontnodes: &cpfront, cpbacknodes: &cpback, frontnodes: &front, backnodes: &back)
-            
-            expect(cpfront.count).to(equal(1))
-            expect(cpback.count).to(equal(0))
-            expect(front.count).to(equal(0))
-            expect(back.count).to(equal(0))
+            expect(result.type).to(equal(BSP.Coplanar_front))
+            expect(result.front).toNot(beNil())
+            expect(result.back).to(beNil())
         }
         
         it("should return coplanar_back polygon when it's coplanar back") {
@@ -63,22 +84,51 @@ class PlaneSpec : QuickSpec {
             
             let result = plane.splitPolygon(poly)
             
-            expect(result.cpfront.count).to(equal(0))
-            expect(result.cpback.count).to(equal(1))
-            expect(result.front.count).to(equal(0))
-            expect(result.back.count).to(equal(0))
+            expect(result.type).to(equal(BSP.Coplanar_back))
+            expect(result.front).to(beNil())
+            expect(result.back).toNot(beNil())
         }
         
         it("should return front polygon when it's front") {
+            let vexa = Vertex(pos: Vector(x: 3, y: -3, z: 10))
+            let vexb = Vertex(pos: Vector(x: 3, y: 3, z: 10))
+            let vexc = Vertex(pos: Vector(x: 0, y: 0, z: 10))
+            let vex = [vexa, vexb, vexc]
+            let poly = Polygon(vertices: vex)
             
+            let result = plane.splitPolygon(poly)
+            
+            expect(result.type).to(equal(BSP.Front))
+            expect(result.front).toNot(beNil())
+            expect(result.back).to(beNil())
         }
         
         it("should return back polygon when it's back") {
+            let vexa = Vertex(pos: Vector(x: 3, y: -3, z: -10))
+            let vexb = Vertex(pos: Vector(x: 3, y: 3, z: -10))
+            let vexc = Vertex(pos: Vector(x: 0, y: 0, z: -10))
+            let vex = [vexa, vexb, vexc]
+            let poly = Polygon(vertices: vex)
             
+            let result = plane.splitPolygon(poly)
+            
+            expect(result.type).to(equal(BSP.Back))
+            expect(result.front).to(beNil())
+            expect(result.back).toNot(beNil())
         }
         
         it("should return splitted polygon when it's spanning") {
+            let vexa = Vertex(pos: Vector(x: 3, y: -3, z: 1))
+            let vexb = Vertex(pos: Vector(x: 3, y: 3, z: 1))
+            let vexc = Vertex(pos: Vector(x: 0, y: 0, z: -1))
+            let vex = [vexa, vexb, vexc]
+            let poly = Polygon(vertices: vex)
             
+            let result = plane.splitPolygon(poly)
+            
+            expect(result.type).to(equal(BSP.Spanning))
+            expect(result.front).toNot(beNil())
+            expect(result.back).toNot(beNil())
         }
     }
 }

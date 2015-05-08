@@ -146,7 +146,8 @@ struct ViewAngle {
             glBindBuffer(GLenum(GL_ARRAY_BUFFER), mesh.nbufferid)
             glVertexAttribPointer(self.gl_normal, 3, GLenum(GL_DOUBLE), GLboolean(GL_FALSE), 0, nil)
             
-            glDrawArrays(GLenum(GL_TRIANGLES), 0, mesh.buffersize)
+            // 'count' is number of vertices
+            glDrawArrays(GLenum(GL_TRIANGLES), 0, mesh.buffersize / 3)
         }
         
         glDisableVertexAttribArray(gl_vertex)
@@ -184,6 +185,7 @@ struct ViewAngle {
             glBindBuffer(GLenum(GL_ARRAY_BUFFER), ax.axes_vbo[3])
             glVertexAttribPointer(self.gl_normal, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
             
+            // 'count' is number of vertices
             glDrawArrays(GLenum(GL_LINES), 0, ax.avcount)
             
             glDisableVertexAttribArray(gl_vertex)
@@ -226,6 +228,7 @@ struct ViewAngle {
             glBindBuffer(GLenum(GL_ARRAY_BUFFER), pl.plane_vbo[3])
             glVertexAttribPointer(self.gl_normal, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
             
+            // 'count' is number of vertices
             glDrawArrays(GLenum(GL_LINES), 0, pl.pvcount)
             
             

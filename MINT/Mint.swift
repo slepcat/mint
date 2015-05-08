@@ -254,6 +254,15 @@ class MintInterpreter:MintLeafSubject {
                     globalStack.removeAtID(leafID)
                 }
                 
+                // when removed, put arg leaves to view stack
+                for arg in leafPool[i].args {
+                    if let leaf = arg as? Leaf {
+                        if leaf.returnType == "Mesh" {
+                            globalStack.addLeaf(leaf)
+                        }
+                    }
+                }
+                
                 let retLeafID = leafPool[i].retLeafID
                 let labels = leafPool[i].retLeafArg
                 
@@ -267,6 +276,25 @@ class MintInterpreter:MintLeafSubject {
                 break
             }
         }
+    }
+    
+    func getArgLeafIDs(removeID: Int) -> [Int] {
+        
+        var result : [Int] = []
+        
+        for var i = 0; leafPool.count > i; i++ {
+            if leafPool[i].leafID == removeID {
+                // when removed, put arg leaves to view stack
+                for arg in leafPool[i].args {
+                    if let leaf = arg as? Leaf {
+                        if leaf.returnType == "Mesh" {
+                            result += [leaf.leafID]
+                        }
+                    }
+                }
+            }
+        }
+        return result
     }
     
     // loop of reference removed. reset loop check counter
@@ -286,7 +314,7 @@ class MintGlobalStack:MintSubject {
     // Standard Output for view
     func solveMesh(index: Int) -> (mesh: [Double], normals: [Double], colors: [Float]) {
         var mesh = [Double]()
-        var normals = [Double()]
+        var normals = [Double]()
         var colors = [Float]()
         
         if let leafmesh = rootStack[index].solve() as? Mesh {

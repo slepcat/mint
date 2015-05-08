@@ -105,25 +105,27 @@ class Subtract : Leaf {
         }
         
         if let targetMesh = eval("target") as? Mesh, let subtractMesh = eval("subtract") as? Mesh {
-            let a = Node(poly: targetMesh.mesh)
-            var b = Node(poly: subtractMesh.mesh)
+            
+            var a = MeshTree(polygons: targetMesh.mesh)
+            var b = MeshTree(polygons: subtractMesh.mesh)
             
             a.invert()
-            a.clipTo(b)
-            b.clipTo(a)
-            b.invert()
-            b.clipTo(a)
-            b.invert()
-            a.build(b.allPolygons())
+            a.clipTo(b, alsoRemovecoplanarFront: false)
+            b.clipTo(a, alsoRemovecoplanarFront: true)
+            a.addPolygons(b.allPolygons())
             a.invert()
             
-            mesh = Mesh(m: a.allPolygons())
+            var result = a.allPolygons()
+            //if(retesselate) result = result.reTesselated();
+            //if(canonicalize) result = result.canonicalized();
+            
+            mesh = Mesh(m: result)
             
             needUpdate = false
             
             return mesh
         }
-        
+
         return nil
     }
 }
