@@ -28,10 +28,9 @@ class SplitByPlaneSpec : QuickSpec {
             
             var cpfront = [PolygonTreeNode](), cpback = [PolygonTreeNode](), front = [PolygonTreeNode](), back = [PolygonTreeNode]()
             
-            csg.splitByPlane(plane, cpfrontnodes: &cpfront, cpbacknodes: &cpback, frontnodes: &front, backnodes: &back)
+            csg.splitByPlane(plane, cpfrontnodes: &cpfront, frontnodes: &front, backnodes: &back)
             
             expect(cpfront.count).to(equal(1))
-            expect(cpback.count).to(equal(0))
             expect(front.count).to(equal(0))
             expect(back.count).to(equal(0))
         }
@@ -45,12 +44,11 @@ class SplitByPlaneSpec : QuickSpec {
             
             var cpfront = [PolygonTreeNode](), cpback = [PolygonTreeNode](), front = [PolygonTreeNode](), back = [PolygonTreeNode]()
             
-            csg.splitByPlane(plane, cpfrontnodes: &cpfront, cpbacknodes: &cpback, frontnodes: &front, backnodes: &back)
+            csg.splitByPlane(plane, cpfrontnodes: &cpfront, frontnodes: &front, backnodes: &back)
             
             expect(cpfront.count).to(equal(0))
-            expect(cpback.count).to(equal(1))
+            expect(back.count).to(equal(1))
             expect(front.count).to(equal(0))
-            expect(back.count).to(equal(0))
         }
         
         it("should put front polygon in 'frontnode'") {
@@ -64,10 +62,9 @@ class SplitByPlaneSpec : QuickSpec {
             
             var cpfront = [PolygonTreeNode](), cpback = [PolygonTreeNode](), front = [PolygonTreeNode](), back = [PolygonTreeNode]()
             
-            csg.splitByPlane(plane, cpfrontnodes: &cpfront, cpbacknodes: &cpback, frontnodes: &front, backnodes: &back)
+            csg.splitByPlane(plane, cpfrontnodes: &cpfront, frontnodes: &front, backnodes: &back)
             
             expect(cpfront.count).to(equal(0))
-            expect(cpback.count).to(equal(0))
             expect(front.count).to(equal(1))
             expect(back.count).to(equal(0))
         }
@@ -83,10 +80,9 @@ class SplitByPlaneSpec : QuickSpec {
             
             var cpfront = [PolygonTreeNode](), cpback = [PolygonTreeNode](), front = [PolygonTreeNode](), back = [PolygonTreeNode]()
             
-            csg.splitByPlane(plane, cpfrontnodes: &cpfront, cpbacknodes: &cpback, frontnodes: &front, backnodes: &back)
+            csg.splitByPlane(plane, cpfrontnodes: &cpfront, frontnodes: &front, backnodes: &back)
             
             expect(cpfront.count).to(equal(0))
-            expect(cpback.count).to(equal(0))
             expect(front.count).to(equal(0))
             expect(back.count).to(equal(1))
         }
@@ -102,12 +98,20 @@ class SplitByPlaneSpec : QuickSpec {
             
             var cpfront = [PolygonTreeNode](), cpback = [PolygonTreeNode](), front = [PolygonTreeNode](), back = [PolygonTreeNode]()
             
-            csg.splitByPlane(plane, cpfrontnodes: &cpfront, cpbacknodes: &cpback, frontnodes: &front, backnodes: &back)
+            csg.splitByPlane(plane, cpfrontnodes: &cpfront, frontnodes: &front, backnodes: &back)
             
             expect(cpfront.count).to(equal(0))
-            expect(cpback.count).to(equal(0))
             expect(front.count).to(equal(1))
             expect(back.count).to(equal(1))
+        }
+    }
+}
+
+class BooleanSpec : QuickSpec {
+    override func spec() {
+        it("should do 'Subtract' Boolean Operation") {
+            let cube1 = Cube(newID: 1)
+            
         }
     }
 }

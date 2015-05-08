@@ -274,9 +274,16 @@ class RemoveLeaf:MintCommand {
     }
     
     func execute() {
+        // re-generate mesh of leaves which are linked to removed leaf.
+        var linkedleaves : [Int] = interpreter.getArgLeafIDs(removeID)
+        
         workspace.removeLeaf(removeID)
         modelView.removeMesh(removeID)
         interpreter.removeLeaf(removeID)
+        
+        for leafID in linkedleaves {
+            modelView.addMesh(leafID)
+        }
         
         modelView.setNeedDisplay()
     }
