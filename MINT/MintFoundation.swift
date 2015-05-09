@@ -224,9 +224,7 @@ struct Vertex {
     // Return a vertex with all orientation-specific data (e.g. vertex normal) flipped. Called when the
     // orientation of a polygon is flipped.
     func flipped() -> Vertex {
-        var flipped = self
-        flipped.normal = self.normal.negated()
-        return flipped
+        return self
     }
     
     // Create a new vertex between this vertex and `other` by linearly
@@ -597,13 +595,11 @@ struct Polygon {
     }
     
     func flipped() -> Polygon {
-        var newvertices : [Vertex] = []
-        for v in vertices {
-            newvertices = [v.flipped()] + newvertices
-        }
-        
-        var newplane = plane.flipped()
-        return Polygon(vertices: newvertices, plane: newplane)
+        var newvertices : [Vertex] = vertices.reverse()
+        var newPoly = Polygon(vertices: newvertices)
+        newPoly.generateNormal()
+        //var newplane = plane.flipped()
+        return newPoly
     }
     
     func toStlString() -> String {
@@ -671,6 +667,7 @@ struct Polygon {
 
 class Mesh {
     var mesh:[Polygon] = []
+    var boxBound : (min: Vector, max: Vector)? = nil
     
     init(m: [Polygon]) {
         mesh = m;
@@ -769,5 +766,63 @@ class Mesh {
         }
         
         return colors
+    }
+    
+    // returns an tuple of two Vectors (minimum coordinates and maximum coordinates)
+    func getBounds() -> (min: Vector, max: Vector) {
+        if let isCached = boxBound {
+            return isCached
+        } else {
+            var minpoint = Vector(x: 0, y: 0, z: 0)
+            var maxpoint = Vector(x: 0, y: 0, z: 0)
+            
+            for var i = 0; mesh.count > i; i++ {
+				var bounds = mesh[i].boundingBox()
+                
+                minpoint = minpoint.min(bounds.min)
+                maxpoint = maxpoint.max(bounds.max)
+            }
+            boxBound = (minpoint, maxpoint)
+            return (minpoint, maxpoint)
+        }
+    }
+    
+    // returns true if there is a possibility that the two solids overlap
+    // returns false if we can be sure that they do not overlap
+    func mayOverlap(other: Mesh) -> Bool {
+    
+        if (mesh.count == 0) || (other.mesh.count == 0) {
+            return false
+        } else {
+            var mybounds = getBounds()
+            var otherbounds = other.getBounds()
+            // [0].x/y
+            //    +-----+
+            //    |     |
+            //    |     |
+            //    +-----+
+            //          [1].x/y
+            //return false;
+            //echo(mybounds,"=",otherbounds);
+            if mybounds.max.x < otherbounds.min.x {
+                return false
+            }
+            if mybounds.min.x > otherbounds.max.x {
+                return false
+            }
+            if mybounds.max.y < otherbounds.min.y {
+                return false
+            }
+            if mybounds.min.y > otherbounds.max.y {
+                return false
+            }
+            if mybounds.max.z < otherbounds.min.z {
+                return false
+            }
+            if mybounds.min.z > otherbounds.max.z {
+                return false
+            }
+            return true
+        }
     }
 }
