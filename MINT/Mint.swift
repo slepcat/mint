@@ -220,6 +220,10 @@ class MintInterpreter:MintLeafSubject {
         switch leafType {
         case "Cube":
             newLeaf = Cube(newID: leafID)
+        case "Sphere":
+            newLeaf = Sphere(newID: leafID)
+        case "Cylinder":
+            newLeaf = Cylinder(newID: leafID)
         case "Double":
             newLeaf = DoubleLeaf(newID: leafID)
         case "Int":
@@ -234,6 +238,8 @@ class MintInterpreter:MintLeafSubject {
             newLeaf = SetColor(newID: leafID)
         case "Subtract":
             newLeaf = Subtract(newID: leafID)
+        case "Union":
+            newLeaf = Union(newID: leafID)
         default:
             println("Unknown leaf type alloc requied!")
             newLeaf = Cube(newID: leafID)

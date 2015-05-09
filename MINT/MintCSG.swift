@@ -72,7 +72,7 @@ class PolygonTreeNode {
     // invert all polygons in the tree. Call on the root node
     func invert() {
         if isRootNode() {// can only call this on the root node
-            //invertSub()
+            invertSub()
         } else {
             println("Assertion failed")
         }
