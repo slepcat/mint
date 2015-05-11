@@ -149,17 +149,9 @@ struct Vector {
         return ((self.x == a.x) && (self.y == a.y) && (self.z == a.z))
     }
     
-    /*
-    // Right multiply by a 4x4 matrix (the vector is interpreted as a row vector)
-    // Returns a new CSG.Vector3D
-    multiply4x4: function(matrix4x4) {
-    return matrix4x4.leftMultiply1x3Vector(this);
-    },
-    
-    transform: function(matrix4x4) {
-    return matrix4x4.leftMultiply1x3Vector(this);
+    func transform(matrix: Matrix4x4) -> Vector {
+        return self * matrix
     }
-    */
     
     func toStlString() -> String {
         return "\(self.x) \(self.y) \(self.z)"
@@ -203,6 +195,14 @@ func - (left: Vector, right:Vector) -> Vector {
     return Vector(x: left.x - right.x, y: left.y - right.y, z: left.z - right.z)
 }
 
+// # struct Vector2D
+
+struct Vector2D {
+    let x:Double
+    let y:Double
+}
+
+
 // # struct Vertex
 // Represents a vertex of a polygon. Use your own vertex class instead of this
 // one to provide additional features like texture coordinates and vertex
@@ -235,14 +235,11 @@ struct Vertex {
         return Vertex(pos: newpos)
     }
     
-    /*
-    // Affine transformation of vertex. Returns a new CSG.Vertex
-    func transform(matrix: matrix4x4) -> Vertex {
-        var newpos = this.pos.multiply4x4(matrix4x4);
-        
-        return new Vertex(pos: newpos)
+    // Affine transformation of vertex. Returns a new Vertex
+    func transform(matrix: Matrix4x4) -> Vertex {
+        var newpos = pos * matrix
+        return Vertex(pos: newpos)
     }
-    */
     
     func toStlString() -> String {
         return "vertex " + self.pos.toStlString() + "\n"
@@ -308,30 +305,29 @@ struct Plane {
         return self.normal.equals(plane.normal) && self.w == plane.w
     }
     
-    /* transform: function(matrix4x4) {
-    var ismirror = matrix4x4.isMirroring();
-    // get two vectors in the plane:
-    var r = this.normal.randomNonParallelVector();
-    var u = this.normal.cross(r);
-    var v = this.normal.cross(u);
-    // get 3 points in the plane:
-    var point1 = this.normal.times(this.w);
-    var point2 = point1.plus(u);
-    var point3 = point1.plus(v);
-    // transform the points:
-    point1 = point1.multiply4x4(matrix4x4);
-    point2 = point2.multiply4x4(matrix4x4);
-    point3 = point3.multiply4x4(matrix4x4);
-    // and create a new plane from the transformed points:
-    var newplane = CSG.Plane.fromVector3Ds(point1, point2, point3);
-    if(ismirror) {
-    // the transform is mirroring
-    // We should mirror the plane:
-    newplane = newplane.flipped();
+    func transform(matrix: Matrix4x4) -> Plane {
+        var ismirror = matrix.isMirroring()
+        // get two vectors in the plane:
+        var r = normal.randomNonParallelVector()
+        var u = normal.cross(r)
+        var v = normal.cross(u)
+        // get 3 points in the plane:
+        var point1 = normal.times(w)
+        var point2 = point1 + u
+        var point3 = point1 + v
+        // transform the points:
+        point1 = point1 * matrix
+        point2 = point2 * matrix
+        point3 = point3 * matrix
+        // and create a new plane from the transformed points:
+        var newplane = Plane(a: point1, b: point2, c: point3)
+        if ismirror {
+            // the transform is mirroring
+            // We should mirror the plane:
+            newplane = newplane.flipped()
+        }
+        return newplane
     }
-    return newplane;
-    },
-    */
     
     // Returns tuple:
     // .type:
