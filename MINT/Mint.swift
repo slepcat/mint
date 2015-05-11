@@ -240,6 +240,8 @@ class MintInterpreter:MintLeafSubject {
             newLeaf = Subtract(newID: leafID)
         case "Union":
             newLeaf = Union(newID: leafID)
+        case "Intersect":
+            newLeaf = Intersect(newID: leafID)
         default:
             println("Unknown leaf type alloc requied!")
             newLeaf = Cube(newID: leafID)
