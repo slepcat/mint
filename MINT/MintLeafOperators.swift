@@ -238,12 +238,6 @@ class Intersect : Leaf {
     
     override func solve() -> Any? {
         
-        // Like union, but when we know that the two solids are not intersecting
-        // Do not use if you are not completely sure that the solids do not intersect!
-        func unionForNonIntersecting(target1: Mesh, target2: Mesh) -> Mesh {
-            return Mesh(m: target1.mesh + target2.mesh)
-        }
-        
         if mesh != nil && needUpdate == false {
             return mesh
         }
@@ -281,3 +275,86 @@ class Intersect : Leaf {
     }
 }
 
+// # Rotate leaf
+
+class Rotate : Leaf {
+    
+    var mesh : Mesh? = nil
+    
+    override init(newID: Int) {
+        super.init(newID: newID)
+        
+        args = [nil, 0.0, 0.0, 0.0, Vector(x: 0, y: 0, z: 0)]
+        argLabels += ["mesh", "x_axis", "y_axis", "z_axis", "center"]
+        argTypes += ["Mesh", "Double", "Double", "Double", "Vector"]
+        
+        returnType = "Mesh"
+        
+        let count = BirthCount.get.count("Rotate")
+        
+        name = "Rotate\(count)"
+    }
+    
+    override func initArg(label: String) {
+        super.initArg(label)
+        
+        switch label {
+        case "mesh":
+            setArg("mesh", value: nil)
+        case "x_axis":
+            setArg("x_axis", value: 0.0)
+        case "y_axis":
+            setArg("y_axis", value: 0.0)
+        case "z_axis":
+            setArg("z_axis", value: 0.0)
+        case "center":
+            setArg("center", value: Vector(x: 0, y: 0, z: 0))
+        default:
+            MintErr.exc.raise(MintEXC.ArgNotExist(leafName: name, leafID: leafID, reguired: label))
+        }
+    }
+    
+    override func solve() -> Any? {
+        
+        if mesh != nil && needUpdate == false {
+            return mesh
+        }
+        
+        if let err = MintErr.exc.catch {
+            MintErr.exc.raise(err)
+            
+            return nil
+        }
+        
+        if let original = eval("mesh") as? Mesh, let xaxis = eval("x_axis") as? Double, let yaxis = eval("y_axis") as? Double,  let zaxis = eval("z_axis") as? Double, let center = eval("center") as? Vector  {
+            
+            let baseaxis = Vector(x: 0, y: 0, z: 1)
+            let rotateaxis = Matrix4x4.rotationX(xaxis) * Matrix4x4.rotationX(yaxis) * Matrix4x4.rotationX(zaxis) * baseaxis
+            let angle = acos(rotateaxis.dot(baseaxis))
+            let rotatematrix = Matrix4x4.rotation(center, rotationAxis: rotateaxis, degrees: angle)
+            
+            var newpolygons : [Polygon] = []
+            
+            for var i = 0; original.mesh.count > i; i++ {
+                var newpolyvex : [Vertex] = []
+                
+                for var j = 0; original.mesh[i].vertices.count > j; j++ {
+                    newpolyvex += [Vertex(pos: rotatematrix * original.mesh[i].vertices[j].pos)]
+                }
+                
+                var newpoly = Polygon(vertices: newpolyvex)
+                newpoly.generateNormal()
+                newpolygons.append(newpoly)
+            }
+            
+            
+            mesh = Mesh(m: newpolygons)
+            
+            needUpdate = false
+            
+            return mesh
+        }
+        
+        return nil
+    }
+}
