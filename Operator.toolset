@@ -1,6 +1,7 @@
 # Toolset list
 # Operator
-SetColor
 Union
 Subtract
 Intersect
+Rotate
+SetColor

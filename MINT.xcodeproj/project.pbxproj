@@ -23,6 +23,7 @@
 		A6616AE51AE3B8560048EA2D /* ArgumentCellViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6616AE41AE3B8560048EA2D /* ArgumentCellViews.swift */; };
 		A6616AE71AE3BBE90048EA2D /* MintLeafViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6616AE61AE3BBE90048EA2D /* MintLeafViewController.swift */; };
 		A664257C1AFE9BCD00A6D0F0 /* MintMatrix4x4.swift in Sources */ = {isa = PBXBuildFile; fileRef = A664257B1AFE9BCD00A6D0F0 /* MintMatrix4x4.swift */; };
+		A66425871B03A2DC00A6D0F0 /* MintMatrix4x4.swift in Sources */ = {isa = PBXBuildFile; fileRef = A664257B1AFE9BCD00A6D0F0 /* MintMatrix4x4.swift */; };
 		A685F8D81AC7C95A005123D5 /* MintWorkspaceControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A685F8D71AC7C95A005123D5 /* MintWorkspaceControllers.swift */; };
 		A68607F219EEC1E1005E858A /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68607F119EEC1E1005E858A /* main.swift */; };
 		A68607F419EEC1E1005E858A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68607F319EEC1E1005E858A /* AppDelegate.swift */; };
@@ -605,6 +606,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A66425871B03A2DC00A6D0F0 /* MintMatrix4x4.swift in Sources */,
 				A6A6D1561AF7B558007D9717 /* MintCSG.swift in Sources */,
 				A6A6D1441AF47708007D9717 /* MintFoundation.swift in Sources */,
 				A6A6D1451AF47708007D9717 /* MintException.swift in Sources */,

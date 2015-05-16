@@ -110,7 +110,7 @@ class SplitByPlaneSpec : QuickSpec {
 class BooleanSpec : QuickSpec {
     override func spec() {
         it("should do 'Subtract' Boolean Operation") {
-            let cube1 = Cube(newID: 1)
+            //let cube1 = Cube(newID: 1)
             
         }
     }

@@ -28,7 +28,7 @@ func - (left: Matrix4x4, right: Matrix4x4) -> Matrix4x4 {
 // right multiply by another 4x4 matrix:
 func * (left: Matrix4x4, right: Matrix4x4) -> Matrix4x4 {
     // cache elements in local variables, for speedup:
-    var result : [Double] = []
+    var result = [Double](count: 16, repeatedValue: 0.0)
     
     result[0] = left.elements[0] * right.elements[0] + left.elements[1] * right.elements[4] + left.elements[2] * right.elements[8] + left.elements[3] * right.elements[12]
     result[1] = left.elements[0] * right.elements[1] + left.elements[1] * right.elements[5] + left.elements[2] * right.elements[9] + left.elements[3] * right.elements[13]
@@ -171,30 +171,30 @@ struct Matrix4x4 {
     
     
     // return the unity matrix
-    func unity() -> Matrix4x4 {
+    static func unity() -> Matrix4x4 {
         return Matrix4x4(matrix: [])
     }
     
     // Create a rotation matrix for rotating around the x axis
-    func rotationX(angle : Double) -> Matrix4x4 {
+    static func rotationX(angle : Double) -> Matrix4x4 {
         let els = [1, 0, 0, 0, 0, cos(angle), sin(angle), 0, 0, -sin(angle), cos(angle), 0, 0, 0, 0, 1]
         return Matrix4x4(matrix: els)
     }
     
     // Create a rotation matrix for rotating around the y axis
-    func rotationY(angle: Double) -> Matrix4x4 {
+    static func rotationY(angle: Double) -> Matrix4x4 {
         let els = [cos(angle), 0, -sin(angle), 0, 0, 1, 0, 0, sin(angle), 0, cos(angle), 0, 0, 0, 0, 1]
         return Matrix4x4(matrix: els)
     }
     
     // Create a rotation matrix for rotating around the z axis
-    func rotationZ(angle: Double) -> Matrix4x4 {
+    static func rotationZ(angle: Double) -> Matrix4x4 {
         let els = [cos(angle), sin(angle), 0, 0, -sin(angle), cos(angle), 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
         return Matrix4x4(matrix: els)
     }
     
     // Matrix for rotation about arbitrary point and axis
-    func rotation(rotationCenter: Vector, rotationAxis: Vector, degrees: Double) -> Matrix4x4 {
+    static func rotation(rotationCenter: Vector, rotationAxis: Vector, degrees: Double) -> Matrix4x4 {
         var rotationPlane = Plane(normal: rotationAxis, point: rotationCenter)
         var orthobasis = OrthoNormalBasis(plane: rotationPlane, rightvector: nil)
         var transformation = translation(rotationCenter.negated())
@@ -206,13 +206,13 @@ struct Matrix4x4 {
     }
     
     // Create an affine matrix for translation:
-    func translation(trans: Vector) -> Matrix4x4 {
+    static func translation(trans: Vector) -> Matrix4x4 {
         let els = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, trans.x, trans.y, trans.z, 1]
         return Matrix4x4(matrix: els)
     }
     
     // Create an affine matrix for mirroring into an arbitrary plane:
-    func mirroring(plane: Plane) -> Matrix4x4 {
+    static func mirroring(plane: Plane) -> Matrix4x4 {
         let nx = plane.normal.x
         let ny = plane.normal.y
         let nz = plane.normal.z
@@ -227,7 +227,7 @@ struct Matrix4x4 {
     }
     
     // Create an affine matrix for scaling:
-    func scaling(scale: Vector) -> Matrix4x4 {
+    static func scaling(scale: Vector) -> Matrix4x4 {
         let els = [scale.x, 0, 0, 0, 0, scale.y, 0, 0, 0, 0, scale.z, 0, 0, 0, 0, 1]
         return Matrix4x4(matrix: els)
     }
