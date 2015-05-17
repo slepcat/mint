@@ -244,6 +244,8 @@ class MintInterpreter:MintLeafSubject {
             newLeaf = Intersect(newID: leafID)
         case "Rotate":
             newLeaf = Rotate(newID: leafID)
+        case "RotateAxis":
+            newLeaf = RotateAxis(newID: leafID)
         default:
             println("Unknown leaf type alloc requied!")
             newLeaf = Cube(newID: leafID)

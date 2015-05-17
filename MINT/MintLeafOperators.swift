@@ -284,9 +284,9 @@ class Rotate : Leaf {
     override init(newID: Int) {
         super.init(newID: newID)
         
-        args = [nil, 0.0, 0.0, 0.0, Vector(x: 0, y: 0, z: 0)]
-        argLabels += ["mesh", "x_axis", "y_axis", "z_axis", "center"]
-        argTypes += ["Mesh", "Double", "Double", "Double", "Vector"]
+        args = [nil, 0.0, 0.0, 0.0]
+        argLabels += ["mesh", "x_angle", "y_angle", "z_angle"]
+        argTypes += ["Mesh", "Double", "Double", "Double"]
         
         returnType = "Mesh"
         
@@ -301,12 +301,87 @@ class Rotate : Leaf {
         switch label {
         case "mesh":
             setArg("mesh", value: nil)
-        case "x_axis":
-            setArg("x_axis", value: 0.0)
-        case "y_axis":
-            setArg("y_axis", value: 0.0)
-        case "z_axis":
-            setArg("z_axis", value: 0.0)
+        case "x_angle":
+            setArg("x_angle", value: 0.0)
+        case "y_angle":
+            setArg("y_angle", value: 0.0)
+        case "z_angle":
+            setArg("z_angle", value: 0.0)
+        default:
+            MintErr.exc.raise(MintEXC.ArgNotExist(leafName: name, leafID: leafID, reguired: label))
+        }
+    }
+    
+    override func solve() -> Any? {
+        
+        if mesh != nil && needUpdate == false {
+            return mesh
+        }
+        
+        if let err = MintErr.exc.catch {
+            MintErr.exc.raise(err)
+            
+            return nil
+        }
+        
+        if let original = eval("mesh") as? Mesh, let xangle = eval("x_angle") as? Double, let yangle = eval("y_angle") as? Double,  let zangle = eval("z_angle") as? Double {
+            
+            let rotatematrix = Matrix4x4.rotationZ(zangle) * Matrix4x4.rotationX(xangle) * Matrix4x4.rotationY(yangle)
+            
+            var newpolygons : [Polygon] = []
+            
+            for var i = 0; original.mesh.count > i; i++ {
+                var newpolyvex : [Vertex] = []
+                
+                for var j = 0; original.mesh[i].vertices.count > j; j++ {
+                    newpolyvex += [Vertex(pos: rotatematrix * original.mesh[i].vertices[j].pos)]
+                }
+                
+                var newpoly = Polygon(vertices: newpolyvex)
+                newpoly.generateNormal()
+                newpolygons.append(newpoly)
+            }
+            
+            
+            mesh = Mesh(m: newpolygons)
+            
+            needUpdate = false
+            
+            return mesh
+        }
+        
+        return nil
+    }
+}
+
+class RotateAxis : Leaf {
+    
+    var mesh : Mesh? = nil
+    
+    override init(newID: Int) {
+        super.init(newID: newID)
+        
+        args = [nil, Vector(x: 0, y: 0, z: 1), 0.0, Vector(x: 0, y: 0, z: 0)]
+        argLabels += ["mesh", "axis", "angle", "center"]
+        argTypes += ["Mesh", "Vector", "Double", "Vector"]
+        
+        returnType = "Mesh"
+        
+        let count = BirthCount.get.count("RotateAxis")
+        
+        name = "RotateAxis\(count)"
+    }
+    
+    override func initArg(label: String) {
+        super.initArg(label)
+        
+        switch label {
+        case "mesh":
+            setArg("mesh", value: nil)
+        case "axis":
+            setArg("axis", value: Vector(x: 0, y: 0, z: 1))
+        case "angle":
+            setArg("angle", value: 0.0)
         case "center":
             setArg("center", value: Vector(x: 0, y: 0, z: 0))
         default:
@@ -326,12 +401,9 @@ class Rotate : Leaf {
             return nil
         }
         
-        if let original = eval("mesh") as? Mesh, let xaxis = eval("x_axis") as? Double, let yaxis = eval("y_axis") as? Double,  let zaxis = eval("z_axis") as? Double, let center = eval("center") as? Vector  {
+        if let original = eval("mesh") as? Mesh, let axis = eval("axis") as? Vector, let angle = eval("angle") as? Double, let center = eval("center") as? Vector  {
             
-            let baseaxis = Vector(x: 0, y: 0, z: 1)
-            let rotateaxis = Matrix4x4.rotationX(xaxis) * Matrix4x4.rotationX(yaxis) * Matrix4x4.rotationX(zaxis) * baseaxis
-            let angle = acos(rotateaxis.dot(baseaxis))
-            let rotatematrix = Matrix4x4.rotation(center, rotationAxis: rotateaxis, degrees: angle)
+            let rotatematrix = Matrix4x4.rotation(center, rotationAxis: axis, degrees: angle)
             
             var newpolygons : [Polygon] = []
             

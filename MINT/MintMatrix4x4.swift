@@ -61,7 +61,7 @@ func * (left: Matrix4x4, right: Vector) -> Vector {
     var z = right.x * left.elements[8] + right.y * left.elements[9] + right.z * left.elements[10] + v3 * left.elements[11]
     var w = right.x * left.elements[12] + right.y * left.elements[13] + right.z * left.elements[14] + v3 * left.elements[15]
     // scale such that fourth element becomes 1:
-    if w != 1 {
+    if w != 1.0 {
         let invw = 1.0 / w
         x *= invw
         y *= invw
@@ -177,19 +177,22 @@ struct Matrix4x4 {
     
     // Create a rotation matrix for rotating around the x axis
     static func rotationX(angle : Double) -> Matrix4x4 {
-        let els = [1, 0, 0, 0, 0, cos(angle), sin(angle), 0, 0, -sin(angle), cos(angle), 0, 0, 0, 0, 1]
+        let rad = angle * M_PI / 180.0
+        let els = [1, 0, 0, 0, 0, cos(rad), sin(rad), 0, 0, -sin(rad), cos(rad), 0, 0, 0, 0, 1]
         return Matrix4x4(matrix: els)
     }
     
     // Create a rotation matrix for rotating around the y axis
     static func rotationY(angle: Double) -> Matrix4x4 {
-        let els = [cos(angle), 0, -sin(angle), 0, 0, 1, 0, 0, sin(angle), 0, cos(angle), 0, 0, 0, 0, 1]
+        let rad = angle * M_PI / 180.0
+        let els = [cos(rad), 0, -sin(rad), 0, 0, 1, 0, 0, sin(rad), 0, cos(rad), 0, 0, 0, 0, 1]
         return Matrix4x4(matrix: els)
     }
     
     // Create a rotation matrix for rotating around the z axis
     static func rotationZ(angle: Double) -> Matrix4x4 {
-        let els = [cos(angle), sin(angle), 0, 0, -sin(angle), cos(angle), 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+        let rad = angle * M_PI / 180.0
+        let els = [cos(rad), sin(rad), 0, 0, -sin(rad), cos(rad), 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
         return Matrix4x4(matrix: els)
     }
     
