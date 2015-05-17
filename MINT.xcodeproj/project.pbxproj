@@ -24,6 +24,7 @@
 		A6616AE71AE3BBE90048EA2D /* MintLeafViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6616AE61AE3BBE90048EA2D /* MintLeafViewController.swift */; };
 		A664257C1AFE9BCD00A6D0F0 /* MintMatrix4x4.swift in Sources */ = {isa = PBXBuildFile; fileRef = A664257B1AFE9BCD00A6D0F0 /* MintMatrix4x4.swift */; };
 		A66425871B03A2DC00A6D0F0 /* MintMatrix4x4.swift in Sources */ = {isa = PBXBuildFile; fileRef = A664257B1AFE9BCD00A6D0F0 /* MintMatrix4x4.swift */; };
+		A66425891B0832BD00A6D0F0 /* MintMatrix4x4UnitTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A66425881B0832BD00A6D0F0 /* MintMatrix4x4UnitTest.swift */; };
 		A685F8D81AC7C95A005123D5 /* MintWorkspaceControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A685F8D71AC7C95A005123D5 /* MintWorkspaceControllers.swift */; };
 		A68607F219EEC1E1005E858A /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68607F119EEC1E1005E858A /* main.swift */; };
 		A68607F419EEC1E1005E858A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68607F319EEC1E1005E858A /* AppDelegate.swift */; };
@@ -156,6 +157,7 @@
 		A6616AE41AE3B8560048EA2D /* ArgumentCellViews.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArgumentCellViews.swift; sourceTree = "<group>"; };
 		A6616AE61AE3BBE90048EA2D /* MintLeafViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintLeafViewController.swift; sourceTree = "<group>"; };
 		A664257B1AFE9BCD00A6D0F0 /* MintMatrix4x4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintMatrix4x4.swift; sourceTree = "<group>"; };
+		A66425881B0832BD00A6D0F0 /* MintMatrix4x4UnitTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintMatrix4x4UnitTest.swift; sourceTree = "<group>"; };
 		A685F8D71AC7C95A005123D5 /* MintWorkspaceControllers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintWorkspaceControllers.swift; sourceTree = "<group>"; };
 		A68607EC19EEC1E1005E858A /* MINT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MINT.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A68607F019EEC1E1005E858A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -331,6 +333,7 @@
 			isa = PBXGroup;
 			children = (
 				A686080419EEC1E1005E858A /* MINTTests.swift */,
+				A66425881B0832BD00A6D0F0 /* MintMatrix4x4UnitTest.swift */,
 				A6A6D1611AF7B8A8007D9717 /* MintCSGUnitTest.swift */,
 				A6A6D1631AF7D9A9007D9717 /* MintFoundationUnitTest.swift */,
 				A654BE561AF4742500C1CA16 /* spectestsample.swift */,
@@ -609,6 +612,7 @@
 				A66425871B03A2DC00A6D0F0 /* MintMatrix4x4.swift in Sources */,
 				A6A6D1561AF7B558007D9717 /* MintCSG.swift in Sources */,
 				A6A6D1441AF47708007D9717 /* MintFoundation.swift in Sources */,
+				A66425891B0832BD00A6D0F0 /* MintMatrix4x4UnitTest.swift in Sources */,
 				A6A6D1451AF47708007D9717 /* MintException.swift in Sources */,
 				A6A6D1311AF4761E007D9717 /* MintLeaf.swift in Sources */,
 				A654BE571AF4742500C1CA16 /* spectestsample.swift in Sources */,
