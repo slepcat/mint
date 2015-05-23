@@ -504,3 +504,80 @@ class Translate : Leaf {
     }
 }
 
+
+class Scale : Leaf {
+    
+    var mesh : Mesh? = nil
+    
+    override init(newID: Int) {
+        super.init(newID: newID)
+        
+        args = [nil, Vector(x: 1.0, y: 1.0, z: 1.0)]
+        argLabels += ["mesh", "scale"]
+        argTypes += ["Mesh", "Vector"]
+        
+        returnType = "Mesh"
+        
+        let count = BirthCount.get.count("Scale")
+        
+        name = "Scale\(count)"
+    }
+    
+    override func initArg(label: String) {
+        super.initArg(label)
+        
+        switch label {
+        case "mesh":
+            setArg("mesh", value: nil)
+        case "scale":
+            setArg("scale", value: Vector(x: 1.0, y: 1.0, z: 1.0))
+        default:
+            MintErr.exc.raise(MintEXC.ArgNotExist(leafName: name, leafID: leafID, reguired: label))
+        }
+    }
+    
+    override func solve() -> Any? {
+        
+        if mesh != nil && needUpdate == false {
+            return mesh
+        }
+        
+        if let err = MintErr.exc.catch {
+            MintErr.exc.raise(err)
+            
+            return nil
+        }
+        
+        if let original = eval("mesh") as? Mesh, let scale = eval("scale") as? Vector {
+            
+            if scale.x > 0 && scale.y > 0 && scale.z > 0 {
+                
+                let matrix = Matrix4x4.scaling(scale)
+                
+                var newpolygons : [Polygon] = []
+                
+                for var i = 0; original.mesh.count > i; i++ {
+                    var newpolyvex : [Vertex] = []
+                    
+                    for var j = 0; original.mesh[i].vertices.count > j; j++ {
+                        newpolyvex += [original.mesh[i].vertices[j].transform(matrix)]
+                    }
+                    
+                    var newpoly = Polygon(vertices: newpolyvex)
+                    newpoly.generateNormal()
+                    newpolygons.append(newpoly)
+                }
+                
+                
+                mesh = Mesh(m: newpolygons)
+                
+                needUpdate = false
+                
+                return mesh
+            }
+        }
+        return nil
+    }
+}
+
+
