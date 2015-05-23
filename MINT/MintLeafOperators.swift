@@ -334,7 +334,7 @@ class Rotate : Leaf {
                 var newpolyvex : [Vertex] = []
                 
                 for var j = 0; original.mesh[i].vertices.count > j; j++ {
-                    newpolyvex += [Vertex(pos: rotatematrix * original.mesh[i].vertices[j].pos)]
+                    newpolyvex += [original.mesh[i].vertices[j].transform(rotatematrix)]
                 }
                 
                 var newpoly = Polygon(vertices: newpolyvex)
@@ -411,7 +411,7 @@ class RotateAxis : Leaf {
                 var newpolyvex : [Vertex] = []
                 
                 for var j = 0; original.mesh[i].vertices.count > j; j++ {
-                    newpolyvex += [Vertex(pos: rotatematrix * original.mesh[i].vertices[j].pos)]
+                    newpolyvex += [original.mesh[i].vertices[j].transform(rotatematrix)]
                 }
                 
                 var newpoly = Polygon(vertices: newpolyvex)
@@ -430,3 +430,77 @@ class RotateAxis : Leaf {
         return nil
     }
 }
+
+class Translate : Leaf {
+    
+    var mesh : Mesh? = nil
+    
+    override init(newID: Int) {
+        super.init(newID: newID)
+        
+        args = [nil, Vector(x: 0, y: 0, z: 0)]
+        argLabels += ["mesh", "center"]
+        argTypes += ["Mesh", "Vector"]
+        
+        returnType = "Mesh"
+        
+        let count = BirthCount.get.count("Translate")
+        
+        name = "Translate\(count)"
+    }
+    
+    override func initArg(label: String) {
+        super.initArg(label)
+        
+        switch label {
+        case "mesh":
+            setArg("mesh", value: nil)
+        case "center":
+            setArg("center", value: Vector(x: 0, y: 0, z: 0))
+        default:
+            MintErr.exc.raise(MintEXC.ArgNotExist(leafName: name, leafID: leafID, reguired: label))
+        }
+    }
+    
+    override func solve() -> Any? {
+        
+        if mesh != nil && needUpdate == false {
+            return mesh
+        }
+        
+        if let err = MintErr.exc.catch {
+            MintErr.exc.raise(err)
+            
+            return nil
+        }
+        
+        if let original = eval("mesh") as? Mesh, let center = eval("center") as? Vector  {
+            
+            let matrix = Matrix4x4.translation(center)
+            
+            var newpolygons : [Polygon] = []
+            
+            for var i = 0; original.mesh.count > i; i++ {
+                var newpolyvex : [Vertex] = []
+                
+                for var j = 0; original.mesh[i].vertices.count > j; j++ {
+                    newpolyvex += [original.mesh[i].vertices[j].transform(matrix)]
+                }
+                
+                var newpoly = Polygon(vertices: newpolyvex)
+                newpoly.generateNormal()
+                newpolygons.append(newpoly)
+            }
+            
+            
+            mesh = Mesh(m: newpolygons)
+            
+            needUpdate = false
+            
+            return mesh
+        }
+        
+        return nil
+    }
+}
+

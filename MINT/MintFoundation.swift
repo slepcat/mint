@@ -237,8 +237,9 @@ struct Vertex {
     
     // Affine transformation of vertex. Returns a new Vertex
     func transform(matrix: Matrix4x4) -> Vertex {
-        var newpos = pos * matrix
-        return Vertex(pos: newpos)
+        var newvex = Vertex(pos: pos.transform(matrix))
+        newvex.color = color
+        return newvex
     }
     
     func toStlString() -> String {

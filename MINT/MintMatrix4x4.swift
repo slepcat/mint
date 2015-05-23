@@ -198,19 +198,25 @@ struct Matrix4x4 {
     
     // Matrix for rotation about arbitrary point and axis
     static func rotation(rotationCenter: Vector, rotationAxis: Vector, degrees: Double) -> Matrix4x4 {
+        
         var rotationPlane = Plane(normal: rotationAxis, point: rotationCenter)
         var orthobasis = OrthoNormalBasis(plane: rotationPlane, rightvector: nil)
         var transformation = translation(rotationCenter.negated())
+        
         transformation = transformation * orthobasis.getProjectionMatrix()
         transformation = transformation * rotationZ(degrees)
         transformation = transformation * orthobasis.getInverseProjectionMatrix()
         transformation = transformation * translation(rotationCenter)
+        
         return transformation
     }
     
     // Create an affine matrix for translation:
     static func translation(trans: Vector) -> Matrix4x4 {
-        let els = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, trans.x, trans.y, trans.z, 1]
+        let els = [1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            trans.x, trans.y, trans.z, 1]
         return Matrix4x4(matrix: els)
     }
     
@@ -264,7 +270,7 @@ class OrthoNormalBasis {
     }
 
     // The z=0 plane, with the 3D x and y vectors mapped to the 2D x and y vector
-    func Z0Plane() -> OrthoNormalBasis {
+    static func Z0Plane() -> OrthoNormalBasis {
         var plane = Plane(normal: Vector(x: 0, y: 0, z: 1), w: 0)
         return OrthoNormalBasis(plane: plane, rightvector: Vector(x: 1, y: 0, z: 0))
     }
