@@ -248,6 +248,8 @@ class MintInterpreter:MintLeafSubject {
             newLeaf = RotateAxis(newID: leafID)
         case "Translate":
             newLeaf = Translate(newID: leafID)
+        case "Scale":
+            newLeaf = Scale(newID: leafID)
         default:
             println("Unknown leaf type alloc requied!")
             newLeaf = Cube(newID: leafID)
