@@ -42,7 +42,7 @@ import Cocoa
         
         nameTag.delegate = self
         
-        boundPath = NSBezierPath(roundedRect: self.bounds, xRadius: 6.0, yRadius: 6.0)
+        boundPath = NSBezierPath(roundedRect: NSRect(x: 26, y: 0, width: 32, height: 32), xRadius: 5.0, yRadius: 5.0)
         boundPath?.lineWidth = 3.0
     }
     
@@ -351,9 +351,9 @@ class LinkView : NSView, MintLinkObserver {
         setNeedsDisplayInRect(frame)
         
         if leafID == argleafID {
-            argPoint = NSPoint(x: pos.x + 85, y: pos.y + 21)
+            argPoint = NSPoint(x: pos.x + 84, y: pos.y + 16)
         } else if leafID == retleafID {
-            retPoint = NSPoint(x: pos.x, y: pos.y + 21)
+            retPoint = NSPoint(x: pos.x, y: pos.y + 16)
         }
         
         let origin = NSPoint(x: min(argPoint.x, retPoint.x) - 1.5, y:min(argPoint.y, retPoint.y) - 1.5)

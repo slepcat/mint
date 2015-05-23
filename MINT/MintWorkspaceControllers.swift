@@ -70,7 +70,7 @@ class MintWorkspaceController:NSObject {
                 argLeaf = leafctrl
                 
                 let origin = leafctrl.leafview.frame.origin
-                argpt = NSPoint(x: origin.x + 85, y: origin.y + 21)
+                argpt = NSPoint(x: origin.x + 84, y: origin.y + 16)
                 
                 if is2ndhit {
                     break
@@ -84,7 +84,7 @@ class MintWorkspaceController:NSObject {
                 retLeaf = leafctrl
                 
                 let origin = leafctrl.leafview.frame.origin
-                retpt = NSPoint(x: origin.x, y: origin.y + 21)
+                retpt = NSPoint(x: origin.x, y: origin.y + 16)
                 
                 if is2ndhit {
                     break
