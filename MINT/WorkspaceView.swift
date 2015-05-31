@@ -76,3 +76,16 @@ import AppKit
         return true
     }
 }
+
+@objc(WSScrollView) class WSScrollView : NSScrollView {
+    @IBOutlet weak var workspace : WorkspaceView!
+    
+    override func awakeFromNib() {
+        hasVerticalScroller = true
+        hasHorizontalScroller = true
+        borderType = NSBorderType.NoBorder
+        autoresizingMask = NSAutoresizingMaskOptions.ViewHeightSizable | NSAutoresizingMaskOptions.ViewWidthSizable
+        
+        documentView = workspace
+    }
+}

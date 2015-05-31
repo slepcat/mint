@@ -45,6 +45,13 @@ class MintWorkspaceController:NSObject {
         workspace.needsDisplay = true
     }
     
+    func reshapeFrame(newframe: CGRect) {
+        //let newrect = workspace.convertRect(newframe, toView: workspace.superview)
+        let newframerect = CGRectUnion(newframe, workspace.frame)
+        
+        workspace.frame = newframerect
+    }
+    
     func addLinkBetween(argleafID: Int, retleafID: Int) {
         
         for link in linkviews {
@@ -70,7 +77,7 @@ class MintWorkspaceController:NSObject {
                 argLeaf = leafctrl
                 
                 let origin = leafctrl.leafview.frame.origin
-                argpt = NSPoint(x: origin.x + 84, y: origin.y + 16)
+                argpt = NSPoint(x: origin.x + 84, y: origin.y + 19)
                 
                 if is2ndhit {
                     break
@@ -84,7 +91,7 @@ class MintWorkspaceController:NSObject {
                 retLeaf = leafctrl
                 
                 let origin = leafctrl.leafview.frame.origin
-                retpt = NSPoint(x: origin.x, y: origin.y + 16)
+                retpt = NSPoint(x: origin.x, y: origin.y + 19)
                 
                 if is2ndhit {
                     break
@@ -108,6 +115,8 @@ class MintWorkspaceController:NSObject {
         linkviews.append(newlink)
         
         workspace.addSubview(newlink)
+        
+        println("constraint: \(newlink.constraints.count)")
         
         if let aleaf = argLeaf, let rleaf = retLeaf {
             aleaf.registerLinkObserverForView(newlink)
