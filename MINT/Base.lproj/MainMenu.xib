@@ -674,22 +674,32 @@
         <window title="MINT" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="102" y="127" width="1200" height="700"/>
+            <rect key="contentRect" x="102" y="127" width="1201" height="700"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" id="EiT-Mj-1SZ">
-                <rect key="frame" x="0.0" y="0.0" width="1200" height="700"/>
+                <rect key="frame" x="0.0" y="0.0" width="1201" height="700"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="a6P-RF-7to" customClass="WorkspaceView">
-                        <rect key="frame" x="0.0" y="0.0" width="1200" height="300"/>
-                        <connections>
-                            <outlet property="controller" destination="Mgp-eK-e3v" id="b1S-iv-Hxf"/>
-                            <outlet property="workspace" destination="qTW-t7-DNO" id="HNJ-LV-Bzp"/>
-                        </connections>
-                    </customView>
-                    <openGLView autoresizesSubviews="NO" fixedFrame="YES" depthSize="16bit" antiAliasingType="supersample" samplingRate="8" useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Fk8-ER-HQe" customClass="MintModelView">
-                        <rect key="frame" x="0.0" y="300" width="1200" height="400"/>
-                    </openGLView>
+                    <splitView fixedFrame="YES" dividerStyle="thin" translatesAutoresizingMaskIntoConstraints="NO" id="QXm-EV-8kh">
+                        <rect key="frame" x="0.0" y="0.0" width="1200" height="700"/>
+                        <subviews>
+                            <openGLView autoresizesSubviews="NO" fixedFrame="YES" depthSize="16bit" antiAliasingType="supersample" samplingRate="8" useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" id="Fk8-ER-HQe" customClass="MintModelView">
+                                <rect key="frame" x="0.0" y="0.0" width="1200" height="396"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            </openGLView>
+                            <customView fixedFrame="YES" id="OIt-5W-EuM" customClass="WSScrollView">
+                                <rect key="frame" x="0.0" y="397" width="1200" height="303"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <connections>
+                                    <outlet property="workspace" destination="a6P-RF-7to" id="9Tx-3e-L2c"/>
+                                </connections>
+                            </customView>
+                        </subviews>
+                        <holdingPriorities>
+                            <real value="250"/>
+                            <real value="250"/>
+                        </holdingPriorities>
+                    </splitView>
                 </subviews>
             </view>
             <toolbar key="toolbar" implicitIdentifier="04D6FD05-5C93-48B3-A9E4-5F3E03A0077E" autosavesConfiguration="NO" allowsUserCustomization="NO" showsBaselineSeparator="NO" displayMode="iconOnly" sizeMode="small" id="ofU-33-grL">
@@ -808,6 +818,15 @@
                 <outlet property="workspace" destination="qTW-t7-DNO" id="ojk-RP-hsU"/>
             </connections>
         </customObject>
+        <customView id="a6P-RF-7to" customClass="WorkspaceView">
+            <rect key="frame" x="0.0" y="0.0" width="1200" height="300"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <connections>
+                <outlet property="controller" destination="Mgp-eK-e3v" id="b1S-iv-Hxf"/>
+                <outlet property="workspace" destination="qTW-t7-DNO" id="HNJ-LV-Bzp"/>
+            </connections>
+            <point key="canvasLocation" x="188" y="438"/>
+        </customView>
     </objects>
     <resources>
         <image name="Cube" width="40" height="40"/>

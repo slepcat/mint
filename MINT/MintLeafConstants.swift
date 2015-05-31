@@ -36,6 +36,7 @@ class BoolLeaf: Leaf {
     
     override func solve() -> Any? {
         if let result = eval("bool") as? Bool {
+            needUpdate = false
             return result
         }
         
@@ -72,6 +73,7 @@ class DoubleLeaf: Leaf {
     
     override func solve() -> Any? {
         if let result = eval("double") as? Double {
+            needUpdate = false
             return result
         }
         
@@ -108,6 +110,7 @@ class IntLeaf: Leaf {
     
     override func solve() -> Any? {
         if let result = eval("int") as? Int {
+            needUpdate = false
             return result
         }
         
@@ -144,6 +147,7 @@ class StringLeaf: Leaf {
     
     override func solve() -> Any? {
         if let result = eval("string") as? String {
+            needUpdate = false
             return result
         }
         
@@ -180,6 +184,7 @@ class VectorLeaf: Leaf {
     
     override func solve() -> Any? {
         if let result = eval("vector") as? Vector {
+            needUpdate = false
             return result
         }
         

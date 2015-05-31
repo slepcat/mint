@@ -296,3 +296,36 @@ class RemoveLeaf:MintCommand {
         
     }
 }
+
+class ReshapeWorkspace:MintCommand {
+    let newframe : CGRect
+    var oldFrame : CGRect
+    
+    weak var workspace:MintWorkspaceController!
+    weak var modelView: MintModelViewController!
+    weak var interpreter: MintInterpreter!
+    
+    init(newframe: CGRect) {
+        self.newframe = newframe
+        oldFrame = CGRect(x: 0, y: 0, width: 0, height: 0)
+    }
+    
+    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
+        self.workspace = workspace
+        self.modelView = modelView
+        self.interpreter = interpreter
+    }
+    
+    func execute() {
+        oldFrame = workspace.workspace.frame
+        workspace.reshapeFrame(newframe)
+    }
+    
+    func undo() {
+        
+    }
+    
+    func redo() {
+        
+    }
+}

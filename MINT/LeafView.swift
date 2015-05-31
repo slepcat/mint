@@ -28,6 +28,20 @@ import Cocoa
         }
     }
     
+    // for debugging unexpected repositioning
+    /*
+    override var frame : NSRect {
+        set (newvalue){
+            println("leaf: \(controller.leafName), x: \(newvalue.origin.x), y: \(newvalue.origin.y)")
+            super.frame = newvalue
+        }
+        
+        get {
+            return super.frame
+        }
+    }
+    */
+    
     override func awakeFromNib() {
         //if let delegate = NSApplication.sharedApplication().delegate as? AppDelegate {
         //    controller = delegate.controller
@@ -40,9 +54,12 @@ import Cocoa
             color = NSColor(calibratedWhite: 0.5, alpha: 1)
         }
         
+        // to deter auto repositining when workspace view resized
+        autoresizingMask = NSAutoresizingMaskOptions.ViewNotSizable
+        
         nameTag.delegate = self
         
-        boundPath = NSBezierPath(roundedRect: NSRect(x: 26, y: 0, width: 32, height: 32), xRadius: 5.0, yRadius: 5.0)
+        boundPath = NSBezierPath(roundedRect: NSRect(x: 26, y: 3, width: 32, height: 32), xRadius: 5.0, yRadius: 5.0)
         boundPath?.lineWidth = 3.0
     }
     
@@ -95,6 +112,16 @@ import Cocoa
     
     override func mouseUp(theEvent: NSEvent) {
         dragging = false
+        
+        //println("before reshape x: \(frame.origin.x), y: \(frame.origin.y), width: \(frame.size.width), height:\(frame.size.height)")
+
+        controller.reshapeWorkspace(frame)
+        
+        //println("after reshape x: \(frame.origin.x), y: \(frame.origin.y), width: \(frame.size.width), height:\(frame.size.height)")
+        
+        for link in linkviews {
+            link.update(controller.leafID, pos: frame.origin)
+        }
     }
     
     func isPointInItem(pos: NSPoint) -> Bool {
@@ -306,6 +333,20 @@ class LinkView : NSView, MintLinkObserver {
     var path : NSBezierPath = NSBezierPath()
     var color : NSColor = NSColor(calibratedRed: 0, green: 0.5, blue: 0.6, alpha: 0.6)
     
+    // debugging: unexpected repositioning of leafview
+    /*
+    override var frame : NSRect {
+        set (newvalue){
+            println("link between:\(argleafID) and: \(retleafID) x: \(newvalue.origin.x), y: \(newvalue.origin.y)")
+            super.frame = newvalue
+        }
+        
+        get {
+            return super.frame
+        }
+    }
+    */
+    
     override func drawRect(dirtyRect: NSRect) {
         
         if needCalc {
@@ -321,8 +362,8 @@ class LinkView : NSView, MintLinkObserver {
         
         path = NSBezierPath()
         
-        let argPtLocal = self.convertPoint(argPoint, fromView:nil)
-        let retPtLocal = self.convertPoint(retPoint, fromView:nil)
+        let argPtLocal = self.convertPoint(argPoint, fromView:self.superview)
+        let retPtLocal = self.convertPoint(retPoint, fromView:self.superview)
         
         path.moveToPoint(argPtLocal)
         
@@ -351,15 +392,18 @@ class LinkView : NSView, MintLinkObserver {
         setNeedsDisplayInRect(frame)
         
         if leafID == argleafID {
-            argPoint = NSPoint(x: pos.x + 84, y: pos.y + 16)
+            argPoint = NSPoint(x: pos.x + 84, y: pos.y + 19)
         } else if leafID == retleafID {
-            retPoint = NSPoint(x: pos.x, y: pos.y + 16)
+            retPoint = NSPoint(x: pos.x, y: pos.y + 19)
         }
         
         let origin = NSPoint(x: min(argPoint.x, retPoint.x) - 1.5, y:min(argPoint.y, retPoint.y) - 1.5)
         let size = NSSize(width: max(argPoint.x, retPoint.x) - min(argPoint.x, retPoint.x) + 3, height: max(argPoint.y, retPoint.y) - min(argPoint.y, retPoint.y) + 3)
         
         self.frame = NSRect(origin: origin, size: size)
+        
+        //println("pos, x: \(pos.x), y: \(pos.y)")
+        //println("x: \(frame.origin.x), y: \(frame.origin.y), width: \(frame.size.width), height:\(frame.size.height)")
         
         needCalc = true
         
