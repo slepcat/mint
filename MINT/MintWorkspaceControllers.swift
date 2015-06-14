@@ -116,7 +116,7 @@ class MintWorkspaceController:NSObject {
         
         workspace.addSubview(newlink)
         
-        println("constraint: \(newlink.constraints.count)")
+        //println("constraint: \(newlink.constraints.count)")
         
         if let aleaf = argLeaf, let rleaf = retLeaf {
             aleaf.registerLinkObserverForView(newlink)

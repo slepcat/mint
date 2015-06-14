@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7702"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -674,13 +674,13 @@
         <window title="MINT" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="102" y="127" width="1201" height="700"/>
+            <rect key="contentRect" x="102" y="127" width="1200" height="700"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" id="EiT-Mj-1SZ">
-                <rect key="frame" x="0.0" y="0.0" width="1201" height="700"/>
+                <rect key="frame" x="0.0" y="0.0" width="1200" height="700"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <splitView fixedFrame="YES" dividerStyle="thin" translatesAutoresizingMaskIntoConstraints="NO" id="QXm-EV-8kh">
+                    <splitView dividerStyle="thin" translatesAutoresizingMaskIntoConstraints="NO" id="QXm-EV-8kh">
                         <rect key="frame" x="0.0" y="0.0" width="1200" height="700"/>
                         <subviews>
                             <openGLView autoresizesSubviews="NO" fixedFrame="YES" depthSize="16bit" antiAliasingType="supersample" samplingRate="8" useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" id="Fk8-ER-HQe" customClass="MintModelView">
@@ -701,6 +701,12 @@
                         </holdingPriorities>
                     </splitView>
                 </subviews>
+                <constraints>
+                    <constraint firstItem="QXm-EV-8kh" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" id="IXD-Zz-X0U"/>
+                    <constraint firstAttribute="trailing" secondItem="QXm-EV-8kh" secondAttribute="trailing" id="NVe-3I-DrG"/>
+                    <constraint firstItem="QXm-EV-8kh" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" id="pv4-b5-upF"/>
+                    <constraint firstAttribute="bottom" secondItem="QXm-EV-8kh" secondAttribute="bottom" id="svg-54-4jk"/>
+                </constraints>
             </view>
             <toolbar key="toolbar" implicitIdentifier="04D6FD05-5C93-48B3-A9E4-5F3E03A0077E" autosavesConfiguration="NO" allowsUserCustomization="NO" showsBaselineSeparator="NO" displayMode="iconOnly" sizeMode="small" id="ofU-33-grL">
                 <allowedToolbarItems>
