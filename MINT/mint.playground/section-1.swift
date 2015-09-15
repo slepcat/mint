@@ -7,7 +7,7 @@ import Cocoa
 //  MintFoundation.swift
 //  MINT
 //
-//  Created by 安藤 泰造 on 2014/12/15.
+//  Created by NemuNeko on 2014/12/15.
 //  Copyright (c) 2014年 Taizo A. All rights reserved.
 //
 //  MINT Foundation structs and classes.
@@ -792,5 +792,3 @@ let vecc = Vector(x: 0, y: 0)
 let plane = Plane(a: veca, b: vecb, c: vecc)
 
 plane.normal
-
-

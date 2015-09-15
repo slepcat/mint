@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A68607EB19EEC1E1005E858A"
-               BuildableName = "MINT.app"
-               BlueprintName = "MINT"
-               ReferencedContainer = "container:MINT.xcodeproj">
+               BuildableName = "mint.temp_caseinsensitive_rename.app"
+               BlueprintName = "mint.temp_caseinsensitive_rename"
+               ReferencedContainer = "container:mint.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A68607FD19EEC1E1005E858A"
-               BuildableName = "MINTTests.xctest"
-               BlueprintName = "MINTTests"
-               ReferencedContainer = "container:MINT.xcodeproj">
+               BuildableName = "mint.temp_caseinsensitive_renameTests.xctest"
+               BlueprintName = "mint.temp_caseinsensitive_renameTests"
+               ReferencedContainer = "container:mint.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -43,9 +43,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A68607EB19EEC1E1005E858A"
-            BuildableName = "MINT.app"
-            BlueprintName = "MINT"
-            ReferencedContainer = "container:MINT.xcodeproj">
+            BuildableName = "mint.temp_caseinsensitive_rename.app"
+            BlueprintName = "mint.temp_caseinsensitive_rename"
+            ReferencedContainer = "container:mint.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -63,9 +63,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A68607EB19EEC1E1005E858A"
-            BuildableName = "MINT.app"
-            BlueprintName = "MINT"
-            ReferencedContainer = "container:MINT.xcodeproj">
+            BuildableName = "mint.temp_caseinsensitive_rename.app"
+            BlueprintName = "mint.temp_caseinsensitive_rename"
+            ReferencedContainer = "container:mint.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <EnvironmentVariables>
@@ -89,9 +89,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A68607EB19EEC1E1005E858A"
-            BuildableName = "MINT.app"
-            BlueprintName = "MINT"
-            ReferencedContainer = "container:MINT.xcodeproj">
+            BuildableName = "mint.temp_caseinsensitive_rename.app"
+            BlueprintName = "mint.temp_caseinsensitive_rename"
+            ReferencedContainer = "container:mint.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
