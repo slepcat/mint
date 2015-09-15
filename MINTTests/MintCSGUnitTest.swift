@@ -2,7 +2,7 @@
 //  MintCSGUnitTest.swift
 //  MINT
 //
-//  Created by 安藤 泰造 on 2015/05/04.
+//  Created by NemuNeko on 2015/05/04.
 //  Copyright (c) 2015年 Taizo A. All rights reserved.
 //
 

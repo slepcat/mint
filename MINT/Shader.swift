@@ -2,7 +2,7 @@
 //  Shader.swift
 //  MINT
 //
-//  Created by 安藤 泰造 on 2014/11/30.
+//  Created by NemuNeko on 2014/11/30.
 //  Copyright (c) 2014年 Taizo A. All rights reserved.
 //
 
