@@ -9,16 +9,25 @@
 import Foundation
 import Cocoa
 import AppKit
-/*
+
 @objc(WorkspaceView) class WorkspaceView:NSView {
     
-    //@IBOutlet weak var workspace : MintWorkspaceController!
-    //@IBOutlet weak var controller : MintController!
+    @IBOutlet weak var controller : MintController!
     
-    // drag & drop from toolbar
+    let bgcolor = NSColor(calibratedWhite: 0.8, alpha: 1.0) //NSColor(catalogName: , colorName: NSBackgroundColorAttributeName)
+    
+    // draw background
+    
+    override func drawRect(dirtyRect: NSRect) {
+        bgcolor.setFill()
+        NSRectFill(dirtyRect)
+    }
+    
+    // drag & drop from leaf panel
     /// set acceptable drag items
     override func awakeFromNib() {
         self.registerForDraggedTypes(["leaf", "type", "instance"])
+        
     }
     
     /// Tell valid drag operation type. need to match with op. type of drag source.
@@ -60,9 +69,6 @@ import AppKit
                 return false
             }
             // will be implemented
-            //case NSDragOperation.Move:
-            
-            //case NSDragOperation.Link:
             
             //case NSDragOperation.Copy:
             
@@ -87,4 +93,3 @@ import AppKit
         documentView = workspace
     }
 }
-*/

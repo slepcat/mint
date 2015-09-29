@@ -59,7 +59,7 @@ import Cocoa
         
         nameTag.delegate = self
         
-        boundPath = NSBezierPath(roundedRect: NSRect(x: 26, y: 3, width: 32, height: 32), xRadius: 5.0, yRadius: 5.0)
+        boundPath = NSBezierPath(roundedRect: NSRect(x: 34, y: 26, width: 32, height: 32), xRadius: 5.0, yRadius: 5.0)
         boundPath?.lineWidth = 3.0
     }
     
@@ -100,10 +100,11 @@ import Cocoa
             
             setFrameOrigin(pos)
             
+            /*
             for link in linkviews {
                 link.update(controller.leafID, pos: frame.origin)
             }
-            
+            */
             autoscroll(theEvent)
             
             setNeedsDisplayInRect(frame)
@@ -115,13 +116,14 @@ import Cocoa
         
         //print("before reshape x: \(frame.origin.x), y: \(frame.origin.y), width: \(frame.size.width), height:\(frame.size.height)")
 
-        controller.reshapeWorkspace(frame)
+        //controller.reshapeWorkspace(frame)
         
         //print("after reshape x: \(frame.origin.x), y: \(frame.origin.y), width: \(frame.size.width), height:\(frame.size.height)")
-        
+        /*
         for link in linkviews {
             link.update(controller.leafID, pos: frame.origin)
         }
+        */
     }
     
     func isPointInItem(pos: NSPoint) -> Bool {
@@ -143,7 +145,7 @@ import Cocoa
                 let v = s[s.startIndex].value
                 
                 if Int(v) == NSDeleteCharacter {
-                    controller.removeSelf()
+                    //controller.removeSelf()
                     return
                 }
             }
@@ -176,7 +178,7 @@ import Cocoa
         Swift.print("leaf name edited at \(self.nameTag.stringValue)")
         
         if let name = self.nameTag?.stringValue {
-            controller.nameChanged(name)
+            controller.setName(name)
         }
         
         return true
@@ -233,7 +235,7 @@ class MintReturnButton : NSButton, NSDraggingSource, NSPasteboardItemDataProvide
                         if let leafIDstr = arg.stringForType("sourceLeafID") {
                             let leafID = NSString(string: leafIDstr).intValue
                             
-                            controller.setLinkFrom(Int(leafID), withArg: arglabel)
+                            //controller.setLinkFrom(Int(leafID), withArg: arglabel)
                             
                             return true
                         }
@@ -269,8 +271,8 @@ class MintReturnButton : NSButton, NSDraggingSource, NSPasteboardItemDataProvide
             
             switch type {
             case "com.mint.mint.returnLeafID":
-                pb.setString("\(controller.leafID)", forType: "com.mint.mint.returnLeafID")
-                item.setString("\(controller.leafID)", forType: "com.mint.mint.returnLeafID")
+                pb.setString("\(controller.uid)", forType: "com.mint.mint.returnLeafID")
+                item.setString("\(controller.uid)", forType: "com.mint.mint.returnLeafID")
             default:
                 break
             }
@@ -321,8 +323,8 @@ class MintArgumentButton : NSButton {
 
 class LinkView : NSView, MintLinkObserver {
     
-    var argleafID : Int = -1
-    var retleafID : Int = -1
+    var argleafID : UInt = 0
+    var retleafID : UInt = 0
     
     var linkcounter : Int = 0
     
@@ -388,7 +390,7 @@ class LinkView : NSView, MintLinkObserver {
         needCalc = false
     }
     
-    func update(leafID: Int, pos: NSPoint) {
+    func update(leafID: UInt, pos: NSPoint) {
         setNeedsDisplayInRect(frame)
         
         if leafID == argleafID {

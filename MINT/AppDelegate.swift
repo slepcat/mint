@@ -13,9 +13,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var window: NSWindow!
     @IBOutlet weak var leafpanel : MintLeafPanelController!
     //@IBOutlet var modelView: MintModelViewController!
-    //@IBOutlet var workspace: MintWorkspaceController!
-    //@IBOutlet var toolbar: MintToolbarController!
-    //@IBOutlet var controller: MintController!
+    @IBOutlet var workspace: MintWorkspaceController!
+    @IBOutlet var controller: MintController!
 
     // MINT Controller
 
@@ -23,17 +22,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Insert code here to initialize your application
 
         // prepare MintInterpreter
-        //let interpreter = MintInterpreter()
+        let interpreter = MintInterpreter()
         
-        //controller.interpreter = interpreter
-        //workspace.interpreter = interpreter
+        controller.interpreter = interpreter
+        workspace.interpreter = interpreter
         
         // prepare references
         //modelView.globalStack = controller.interpreter.globalStack
         
-        //test
-        
-        leafpanel.updateContents(["test":["hoge", "hogehoge"], "test1":["spam", "hogespam"]])
+        //prepare leafpanel
+        leafpanel.updateContents(interpreter.defined_exps())
     }
 
     func applicationWillTerminate(aNotification: NSNotification) {

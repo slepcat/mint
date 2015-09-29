@@ -8,6 +8,176 @@
 
 import Foundation
 
+public class MintInterpreter : Interpreter, MintLeafSubject {
+    var observers:[MintLeafObserver] = []
+    
+    // register observer (mint leaf view) protocol
+    func registerObserver(observer: MintLeafObserver) {
+        observers.append(observer)
+        let obs = lookup(observer.uid)
+        
+        if let pair = obs.conscell as? Pair {
+            if let f = obs.target as? Form {
+                observer.initArgs(delayed_list_of_values(pair.cdr), labels: f.params_str())
+            } else if let p = obs.target.eval(global) as? Procedure {
+                observer.initArgs(delayed_list_of_values(pair.cdr), labels: p.params_str())
+            }
+        }
+        observer.setName(obs.target.str("", level: 0))
+    }
+    
+    // remove observer
+    func removeObserver(observer: MintLeafObserver) {
+        for var i = 0; observers.count > i; i++ {
+            if observers[i] === observer {
+                observers.removeAtIndex(i)
+                break
+            }
+        }
+    }
+    
+    
+    ///// Manipulating S-Expression /////
+    
+    public func newSExpr(rawstr: String) -> UInt? {
+        
+        // internal function to generate s-expression from a proc
+        func genSExp(proc: Form) -> Pair {
+            
+            let head = Pair(car: proc)
+            var ct = head
+            let params = proc.params_str()
+            
+            for p in params {
+                ct.cdr = Pair(car: MStr(_value: "<" + p + ">" ))
+                ct = ct.cdr as! Pair
+            }
+            
+            return head
+        }
+        
+        let expr = read(rawstr)
+        
+        // add defined proc and primitives
+        if let s = expr as? MSymbol {
+            
+            if let proc = s.eval(global) as? Procedure {
+                
+                let list = genSExp(proc)
+                list.car = s
+                
+                trees.append(list)
+                
+                return s.uid
+            } else if let prim = s.eval(global) as? Primitive {
+                
+                let list = genSExp(prim)
+                list.car = s
+                
+                trees.append(list)
+                return s.uid
+            }
+            
+            // add special forms
+        } else if let f = expr as? Form {
+            
+            trees.append(genSExp(f))
+            return f.uid
+        }
+        
+        return nil//failed to add exp
+    }
+    
+    public func remove(uid: UInt) -> SExpr {
+        
+        for var i = 0; trees.count > i; i++ {
+            let res = trees[i].lookup_exp(uid)
+            if !res.target.isNull() {
+                
+                let opds = delayed_list_of_values(res.target)
+                
+                if res.conscell.isNull() {
+                    trees.removeAtIndex(i)
+                    
+                } else if let pair = res.conscell as? Pair {
+                    if pair.cdr.isNull() {
+                        let prev = trees[i].lookup_exp(pair.uid)
+                        if let prev_pair = prev.conscell as? Pair {
+                            prev_pair.cdr = MNull()
+                        } else if prev.conscell.isNull() {
+                            trees.removeAtIndex(i)
+                        }
+                    } else {
+                        pair.car = pair.cadr
+                        pair.cdr = pair.cddr
+                    }
+                } else {
+                    print("fail to remove. bad conscell", terminator: "")
+                }
+                
+                for exp in opds {
+                    if let pair = exp as? Pair {
+                        trees.append(pair)
+                    }
+                }
+                
+                return res.target
+            }
+        }
+        return MNull()
+    }
+    
+    public func overwrite(uid: UInt, rawstr: String) {
+        let res = lookup(uid)
+        if let pair = res.conscell as? Pair {
+            pair.car = readln(rawstr)
+        }
+    }
+    
+    public func insert(uid: UInt, toNextOfUid: UInt) {
+        let nextTo = lookup(toNextOfUid)
+        
+        if let pair = nextTo.conscell as? Pair {
+            
+            let subject = remove(uid)
+            
+            let newPair = Pair(car: subject, cdr: pair.cdr)
+            pair.cdr = newPair
+            
+        } else {
+            print("error: move element must move inside conscell.", terminator: "")
+        }
+    }
+    
+    ///// read Env /////
+    
+    public func defined_exps() -> [String : [String]] {
+        
+        var acc : [String : [String]] = [:]
+        
+        for defined in global.hash_table {
+            if let proc = defined.1 as? Procedure {
+                if let list = acc[proc.category] {
+                    acc[proc.category] = list + [defined.0]
+                } else {
+                    acc[proc.category] = [defined.0]
+                }
+            } else if let form = defined.1 as? Form {
+                if let list = acc[form.category] {
+                    acc[form.category] = list + [defined.0]
+                } else {
+                    acc[form.category] = [defined.0]
+                }
+            }
+        }
+        
+        acc["special form"] = ["define", "set!", "if", "quote", "lambda", "begin"]
+        
+        return acc
+    }
+
+
+}
 
 /*
 // Root level of Mint leaves chains. Should be 'Singleton'?

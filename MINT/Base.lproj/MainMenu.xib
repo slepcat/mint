@@ -14,8 +14,10 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="mint_temp_caseinsensitive_rename" customModuleProvider="target">
             <connections>
+                <outlet property="controller" destination="a2f-zn-Vx6" id="Rza-3C-Rxd"/>
                 <outlet property="leafpanel" destination="NAm-X9-eSI" id="454-zr-58r"/>
-                <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
+                <outlet property="window" destination="QvC-M9-y7g" id="pDk-UV-PHR"/>
+                <outlet property="workspace" destination="qTW-t7-DNO" id="g2B-WD-MoT"/>
             </connections>
         </customObject>
         <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
@@ -402,7 +404,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="1229" height="742"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fa3-Ii-GEO">
+                    <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fa3-Ii-GEO" customClass="WSScrollView">
                         <rect key="frame" x="0.0" y="0.0" width="1229" height="742"/>
                         <clipView key="contentView" id="tpJ-GA-5Hs">
                             <rect key="frame" x="1" y="1" width="1227" height="740"/>
@@ -412,15 +414,19 @@
                                     <rect key="frame" x="0.0" y="661" width="166" height="79"/>
                                 </view>
                             </subviews>
+                            <color key="backgroundColor" name="controlShadowColor" catalog="System" colorSpace="catalog"/>
                         </clipView>
                         <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="LzE-uv-Aog">
                             <rect key="frame" x="1" y="725" width="1227" height="16"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="UN3-r2-Lb1">
-                            <rect key="frame" x="1213" y="1" width="15" height="740"/>
+                            <rect key="frame" x="1212" y="1" width="16" height="740"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
+                        <connections>
+                            <outlet property="workspace" destination="a6P-RF-7to" id="jIh-8F-3yw"/>
+                        </connections>
                     </scrollView>
                 </subviews>
                 <constraints>
@@ -432,7 +438,16 @@
             </view>
             <point key="canvasLocation" x="201.5" y="-140"/>
         </window>
-        <customObject id="qTW-t7-DNO" customClass="MintWorkspaceController" customModule="mint_temp_caseinsensitive_rename" customModuleProvider="target"/>
+        <customObject id="a2f-zn-Vx6" customClass="MintController" customModule="mint_temp_caseinsensitive_rename" customModuleProvider="target">
+            <connections>
+                <outlet property="workspace" destination="qTW-t7-DNO" id="2oj-Dy-M2F"/>
+            </connections>
+        </customObject>
+        <customObject id="qTW-t7-DNO" customClass="MintWorkspaceController" customModule="mint_temp_caseinsensitive_rename" customModuleProvider="target">
+            <connections>
+                <outlet property="workspace" destination="a6P-RF-7to" id="shM-YJ-c5z"/>
+            </connections>
+        </customObject>
         <customObject id="NAm-X9-eSI" customClass="MintLeafPanelController" customModule="mint_temp_caseinsensitive_rename" customModuleProvider="target">
             <connections>
                 <outlet property="leafList" destination="35a-Au-iLy" id="iVd-uN-Y8u"/>
@@ -442,10 +457,10 @@
             </connections>
         </customObject>
         <customView id="a6P-RF-7to" customClass="WorkspaceView">
-            <rect key="frame" x="0.0" y="0.0" width="1200" height="300"/>
+            <rect key="frame" x="0.0" y="0.0" width="1200" height="1000"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <connections>
-                <outlet property="workspace" destination="qTW-t7-DNO" id="HNJ-LV-Bzp"/>
+                <outlet property="controller" destination="a2f-zn-Vx6" id="Iaz-ef-ax4"/>
             </connections>
             <point key="canvasLocation" x="188" y="438"/>
         </customView>
@@ -467,7 +482,7 @@
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="40" rowSizeStyle="automatic" viewBased="YES" id="35a-Au-iLy">
-                                    <rect key="frame" x="0.0" y="0.0" width="234" height="338"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="234" height="0.0"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -545,7 +560,7 @@
                         <rect key="frame" x="10" y="346" width="216" height="25"/>
                         <popUpButtonCell key="cell" type="roundTextured" title="Item 1" bezelStyle="texturedRounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" selectedItem="PVH-Sd-NFe" id="cjD-dt-BhY">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="menu"/>
                             <menu key="menu" id="sca-z5-331">
                                 <items>
                                     <menuItem title="Item 1" state="on" id="PVH-Sd-NFe"/>

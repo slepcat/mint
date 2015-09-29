@@ -11,7 +11,7 @@ import Cocoa
 
 // Controller of leaf view
 // Manage user actions: Arguments inputs and link.
-class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegate, NSTextFieldDelegate, NSDraggingDestination {
+class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegate, NSTextFieldDelegate, NSDraggingDestination, MintLeafObserver {
     @IBOutlet weak var argsPopover:NSPopover!
     @IBOutlet weak var leafview:LeafView!
     @IBOutlet weak var argList:NSTableView!
@@ -86,22 +86,22 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     }
     
     /// init observer's arg value
-    func initArgs(args: [SExpr]) {
+    func initArgs(args: [SExpr], labels: [String]) {
         
         //:::: TODO: need to repair param input :::::
         
-        for arg in args {
-            switch arg {
+        for var i = 0; args.count > i; i++ {
+            switch args[i] {
             case let ltrl as Literal:
-                self.args.append((uid: ltrl.uid, param: "", value: ltrl.str("", level: 0), isRef: false))
+                self.args.append((uid: ltrl.uid, param: labels[i], value: ltrl.str("", level: 0), isRef: false))
             default:
-                self.args.append((uid: arg.uid, param: "", value: "\(arg.uid)", isRef: true))
+                self.args.append((uid: args[i].uid, param: labels[i], value: "\(args[i].uid)", isRef: true))
             }
         }
     }
     
     /// init observer's name
-    func setUniqueName(name: String) {
+    func setName(name: String) {
         leafName = name
         leafview.nameTag.stringValue = name
     }
@@ -269,6 +269,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         case "paramCell":
             if let paramView = result as? NSTableCellView {
                 paramView.textField?.stringValue = args[row].param
+                paramView.textField?.editable = false
             }
         case "valueCell":
             if let valueView = result as? NSTableCellView { // replace MintArgCellView
@@ -295,21 +296,6 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         
         return result as? NSView
     }
-    /*
-    
-    /// Provide height of row according cell type
-    func tableView(tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
-        switch argTypes[row] {
-        case "Vector":
-            return 64.0
-        case "Color":
-            return 32.0
-        default:
-            return 24.0
-        }
-    }
-    
-    */
     
     /*
     
@@ -346,15 +332,15 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         
         return (leafID, "")
     }
+    */
     
     // when dragged "return" entered in arguments button, show popover
     // called by 'MintArgumentCellView' and it's subclasses or 'MintArgumentButton'
     func isLinkReqAcceptable() -> Bool {
-        
-        
         return true
     }
     
+    /*
     // 'LinkView' observer pattern implementation
     /// register 'Observer' for view
     func registerLinkObserverForView(obs: MintLinkObserver) {
@@ -365,6 +351,5 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     func removeLinkObserverFromView(obs: MintLinkObserver) {
         leafview.removeObserver(obs)
     }
-
-*/
+    */
 }

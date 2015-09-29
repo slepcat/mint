@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A60DA1301BBA698A002F6EA3 /* MintModelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A60DA12F1BBA698A002F6EA3 /* MintModelViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		A643B9491AD1EED200990E42 /* MintLeafConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A643B9481AD1EED200990E42 /* MintLeafConstants.swift */; };
 		A643B94B1AD1F69B00990E42 /* Control.toolset in Resources */ = {isa = PBXBuildFile; fileRef = A643B94A1AD1F69B00990E42 /* Control.toolset */; };
 		A64660A31A234F0000648FD9 /* bridge.m in Sources */ = {isa = PBXBuildFile; fileRef = A64660A21A234F0000648FD9 /* bridge.m */; };
@@ -162,6 +163,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A60DA12F1BBA698A002F6EA3 /* MintModelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintModelViewController.swift; sourceTree = "<group>"; };
 		A643B9481AD1EED200990E42 /* MintLeafConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintLeafConstants.swift; sourceTree = "<group>"; };
 		A643B94A1AD1F69B00990E42 /* Control.toolset */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Control.toolset; sourceTree = SOURCE_ROOT; };
 		A64660A11A234F0000648FD9 /* MINT-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MINT-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -294,6 +296,7 @@
 			isa = PBXGroup;
 			children = (
 				A6B8B4441AB54F2E00235759 /* MintControllers.swift */,
+				A60DA12F1BBA698A002F6EA3 /* MintModelViewController.swift */,
 				A685F8D71AC7C95A005123D5 /* MintWorkspaceControllers.swift */,
 				A64779E41BB2A30400A36E66 /* MintLeafPanelController.swift */,
 				A6616AE61AE3BBE90048EA2D /* MintLeafViewController.swift */,
@@ -647,6 +650,7 @@
 				A6B8B4451AB54F2E00235759 /* MintControllers.swift in Sources */,
 				A64CE25A1BA4B432004F20E8 /* mintlisp_env.swift in Sources */,
 				A64CE2581BA4B432004F20E8 /* mintlisp_3d_primitives.swift in Sources */,
+				A60DA1301BBA698A002F6EA3 /* MintModelViewController.swift in Sources */,
 				A64CE2661BA4B432004F20E8 /* mintlisp_util.swift in Sources */,
 				A686081119EEC93B005E858A /* ModelView.swift in Sources */,
 				A688D9291AEC527300E14D3C /* MintLeafOperators.swift in Sources */,

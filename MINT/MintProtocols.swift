@@ -23,15 +23,14 @@ protocol MintSubject:class {
     func removeObserver(observer: MintObserver)
 }
 
-// Observer Pattern ptrotocol for 'LeafView' and 'MintController'
+// Observer Pattern protocol for 'LeafView' and 'MintController'
 // Sync arguments values between 'LeafView' and 'leaf'
 protocol MintLeafObserver:class {
-    var leafID : Int {get set}
+    var uid : UInt {get set}
     
-    func initArgs(argLabels: [String], argTypes:[String], args: [Any?])
-    func initReturnValueType(type: String)
-    func setUniqueName(name: String)
-    func update(argLabel: String, arg: Any?)
+    func initArgs(args: [SExpr], labels:[String])
+    func setName(name: String)
+    func update(arg: SExpr, uid: UInt)
 }
 
 protocol MintLeafSubject:class{
@@ -41,19 +40,17 @@ protocol MintLeafSubject:class{
 
 // Observer Pattern protocol for 'LinkView' to update link path
 protocol MintLinkObserver:class {
-    func update(leafID: Int, pos: NSPoint)
+    func update(leafID: UInt, pos: NSPoint)
 }
 
 protocol MintLinkSubject: class {
     func registerObserver(observer: MintLinkObserver)
     func removeObserver(observer: MintLinkObserver)
 }
-/*
+
 protocol MintCommand {
-    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter)
+    func prepare(workspace: MintWorkspaceController, /*modelView: MintModelViewController, */interpreter: MintInterpreter)
     func execute()
     func undo()
     func redo()
 }
-
-*/

@@ -22,7 +22,7 @@ class MintWorkspaceController:NSObject {
     
     // Instantiate a leaf when tool dragged to workspace from toolbar.
     // Responsible for create leaf's view and model.
-    func addLeaf(toolName:String, setName:String, pos:NSPoint, leafID:Int) {
+    func addLeaf(toolName:String, setName:String, pos:NSPoint, uid:UInt) {
         
         if leafViewXib == nil {
             leafViewXib = NSNib(nibNamed: "LeafView", bundle: nil)
@@ -33,7 +33,7 @@ class MintWorkspaceController:NSObject {
             }
         }
         
-        viewStack += [MintLeafViewController(newID: leafID, pos: pos, xib: leafViewXib)]
+        viewStack += [MintLeafViewController(newID: uid, pos: pos, xib: leafViewXib)]
         
         if let view = viewStack.last?.leafview {
             workspace.addSubview(view)
@@ -53,7 +53,7 @@ class MintWorkspaceController:NSObject {
         workspace.frame = newframerect
     }
     
-    func addLinkBetween(argleafID: Int, retleafID: Int) {
+    func addLinkBetween(argleafID: UInt, retleafID: UInt) {
         
         for link in linkviews {
             if link.argleafID == argleafID && link.retleafID == retleafID {
@@ -73,7 +73,7 @@ class MintWorkspaceController:NSObject {
         var is2ndhit : Bool = false
         
         for leafctrl in viewStack {
-            if leafctrl.leafID == argleafID {
+            if leafctrl.uid == argleafID {
                 
                 argLeaf = leafctrl
                 
@@ -87,7 +87,7 @@ class MintWorkspaceController:NSObject {
                 }
             }
             
-            if leafctrl.leafID == retleafID {
+            if leafctrl.uid == retleafID {
                 
                 retLeaf = leafctrl
                 
@@ -119,15 +119,17 @@ class MintWorkspaceController:NSObject {
         
         //print("constraint: \(newlink.constraints.count)")
         
+        /*
         if let aleaf = argLeaf, let rleaf = retLeaf {
             aleaf.registerLinkObserverForView(newlink)
             rleaf.registerLinkObserverForView(newlink)
         }
+        */
         
         workspace.needsDisplay = true
     }
     
-    func removeLinkBetween(argleafID: Int, retleafID: Int) {
+    func removeLinkBetween(argleafID: UInt, retleafID: UInt) {
         // Remove link between designated leaf IDs.
         // Only removed if 'linkcounter' = 0
         
@@ -149,7 +151,7 @@ class MintWorkspaceController:NSObject {
         }
     }
     
-    func removeLinkFrom(leafID: Int) {
+    func removeLinkFrom(leafID: UInt) {
         // Remove link when the leaf is deleted.
         // search links from 'linkviews' and remove the link
         
@@ -169,32 +171,32 @@ class MintWorkspaceController:NSObject {
         }
     }
     
-    func removeLinkObserver(leafID: Int, link: LinkView) {
+    func removeLinkObserver(leafID: UInt, link: LinkView) {
         for view in viewStack {
-            if view.leafID == leafID {
-                view.removeLinkObserverFromView(link)
+            if view.uid == leafID {
+                // view.removeLinkObserverFromView(link)
                 break
             }
         }
     }
     
-    func setNewName(leafID: Int, newName: String) {
+    func setNewName(leafID: UInt, newName: String) {
         for var i = 0; viewStack.count > i; i++ {
-            if viewStack[i].leafID == leafID {
-                viewStack[i].setUniqueName(newName)
+            if viewStack[i].uid == leafID {
+                viewStack[i].setName(newName)
                 break
             }
         }
     }
     
-    func removeLeaf(removeID: Int) {
+    func removeLeaf(removeID: UInt) {
         for var i = 0; viewStack.count > i; i++ {
-            if viewStack[i].leafID == removeID {
+            if viewStack[i].uid == removeID {
                 viewStack[i].removeView()
                 
                 removeLinkFrom(removeID)
                 
-                interpreter.removeObserver(viewStack[i])
+                //interpreter.removeObserver(viewStack[i])
                 
                 viewStack.removeAtIndex(i)
                 
