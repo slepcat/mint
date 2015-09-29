@@ -8,6 +8,8 @@
 
 import Foundation
 
+/*
+
 class SetColor : Leaf {
     
     override init(newID: Int) {
@@ -580,4 +582,4 @@ class Scale : Leaf {
     }
 }
 
-
+*/

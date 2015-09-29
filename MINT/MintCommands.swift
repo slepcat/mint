@@ -9,6 +9,8 @@
 import Foundation
 import Cocoa
 
+/*
+
 class AddLeaf:MintCommand {
     weak var workspace:MintWorkspaceController!
     weak var modelView: MintModelViewController!
@@ -85,7 +87,7 @@ class SetArgument:MintCommand {
         if let err = MintErr.exc.catch {
             switch err {
             case .TypeInvalid(leafName: let name, leafID: let leafID, argname: let argname, required: let correcttype, invalid: let errtype):
-                println("Argument \"\(argname)\" of leaf \(name)(ID: \(leafID)) must be \"\(correcttype)\" type, not \"\(errtype)\" type.")
+                print("Argument \"\(argname)\" of leaf \(name)(ID: \(leafID)) must be \"\(correcttype)\" type, not \"\(errtype)\" type.")
                 if let value = oldvalue {
                     interpreter.setArgument(leafID, label: argLabel, arg: value)
                 }
@@ -134,7 +136,7 @@ class SetNewName:MintCommand {
             
             switch err {
             case .NameNotUnique(newName: let name, leafID: let leafid):
-                println("New name: \(name)(ID: \(leafid)) is not unique")
+                print("New name: \(name)(ID: \(leafid)) is not unique")
                 workspace.setNewName(leafID, newName: oldName)
             default:
                 MintErr.exc.raise(err)
@@ -187,7 +189,7 @@ class LinkArgument:MintCommand {
         if let err = MintErr.exc.catch {
             switch err {
             case .TypeInvalid(leafName: let name, leafID: let leafID, argname: let argname, required: let correcttype, invalid: let errtype):
-                println("Argument \"\(argname)\" of leaf \(name)(ID: \(leafID)) must be \"\(correcttype)\" type, not \"\(errtype)\" type.")
+                print("Argument \"\(argname)\" of leaf \(name)(ID: \(leafID)) must be \"\(correcttype)\" type, not \"\(errtype)\" type.")
                 interpreter.removeLink(returnLeafID, argleafID: argumentLeafID, label: argLabel)
                 if let value = oldvalue {
                     interpreter.setArgument(argumentLeafID, label: argLabel, arg: value)
@@ -195,7 +197,7 @@ class LinkArgument:MintCommand {
                 workspace.removeLinkBetween(argumentLeafID, retleafID: returnLeafID)
                 modelView.addMesh(returnLeafID)
             case .ReferenceLoop(leafName: let name, leafID: let leafID, argname: let argname):
-                println("Loop of reference is detected at argument \"\(argname)\" of Leaf \(name)(ID: \(leafID)).")
+                print("Loop of reference is detected at argument \"\(argname)\" of Leaf \(name)(ID: \(leafID)).")
                 interpreter.removeLink(returnLeafID, argleafID: argumentLeafID, label: argLabel)
                 interpreter.loopCleared()
                 if let value = oldvalue {
@@ -329,3 +331,5 @@ class ReshapeWorkspace:MintCommand {
         
     }
 }
+
+*/

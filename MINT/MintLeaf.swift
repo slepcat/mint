@@ -8,6 +8,8 @@
 
 import Foundation
 
+/*
+
 class Leaf {
     let leafID : Int
     var name: String
@@ -165,14 +167,14 @@ class Leaf {
                     }
                     
                 } else {
-                    println("type error")
+                    print("type error")
                     MintErr.exc.raise(MintEXC.TypeInvalid(leafName: name, leafID: leafID, argname: argLabels[i],required: argTypes[i], invalid: typestr(value)))
                     return
                 }
                 
                 needUpdate = true
                 
-                println("argument \(argLabels[i]) of leaf (leafID: \(leafID) is updated to \(value)")
+                print("argument \(argLabels[i]) of leaf (leafID: \(leafID) is updated to \(value)")
                 
                 return
             }
@@ -237,3 +239,5 @@ extension Leaf {
         }
     }
 }
+
+*/

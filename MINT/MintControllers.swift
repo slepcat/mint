@@ -9,6 +9,8 @@
 import Foundation
 import Cocoa
 
+/*
+
 // Controller of Mint
 // Responsible to sync 'LeafView', 'GLMesh', and 'Leaf' instances
 // This mean 'MintController' manage interactions between 2 controllers and
@@ -26,22 +28,7 @@ class MintController:NSObject {
         newCommand.prepare(workspace, modelView: modelView, interpreter: interpreter)
         newCommand.execute()
         
-        while let err = MintErr.exc.catch {
-            switch err {
-            case .ArgNotExist(leafName: let name, leafID: let leafid, reguired: let arglabel):
-                println("Leaf \(name)(ID: \(leafid)) does not have argument: \(arglabel)")
-            case .TypeInvalid(leafName: let name, leafID: let leafid, argname: let label, required: let correct, invalid: let invalid):
-                println("Argument \"\(label)\" of leaf \(name)(ID: \(leafid)) must be \"\(correct)\" type, not \"\(invalid)\" type.")
-            case .ReferenceLoop(leafName: let name, leafID: let leafid, argname: let arg):
-                println("Loop of reference is detected at argument \"\(arg)\" of Leaf \(name)(ID: \(leafid)).")
-            case .SolverFailed(leafName: let name, leafID: let leafid):
-                println("Leaf \(name)(ID: \(leafid)) failed to solve arguments.")
-            case .LeafIDNotExist(leafID: let leafid):
-                println("Serious error detected. Leaf ID: \(leafid) not found.")
-            case .NameNotUnique(newName: let name, leafID: let leafid):
-                println("New name: \(name)(ID: \(leafid)) is not unique")
-            }
-        }
+        // todo: manage err msg
         
         undoStack.append(newCommand)
         redoStack.removeAll(keepCapacity: false)
@@ -89,7 +76,7 @@ class MintModelViewController:NSObject {
         
         if globalStack.hasLeaf(leafID) {
             
-            var mesh = GLmesh(leafID: leafID)
+            let mesh = GLmesh(leafID: leafID)
             
             // add mesh to model view
             modelview.stack.append(mesh)
@@ -180,7 +167,7 @@ class MintToolListController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         let myXib = NSNib(nibNamed: "MintPopoverPalleteView", bundle: nil)
         
         if myXib?.instantiateWithOwner(self, topLevelObjects: &xibObjects) == nil {
-            println("Failed to load xib, popover views")
+            print("Failed to load xib, popover views")
         } else {
             // set data source and delegate for NSTableView
             toolList.setDataSource(self as NSTableViewDataSource)
@@ -233,7 +220,7 @@ class MintToolListController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                 }
             }
         } else {
-            println("Unvalid toolset name")
+            print("Unvalid toolset name")
         }
     }
     
@@ -273,3 +260,5 @@ class MintToolListController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         }
     }
 }
+
+*/

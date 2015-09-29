@@ -10,6 +10,7 @@ import Foundation
 import Cocoa
 import OpenGL
 
+/*
 struct ViewPoint {
     var x:GLfloat
     var y:GLfloat
@@ -63,31 +64,31 @@ struct ViewAngle {
             if  attribId >= 0 {
                 self.gl_vertex = numericCast(attribId)
             } else {
-                println("failed to get gl_Vertex pos")
+                Swift.print("failed to get gl_Vertex pos")
             }
             // Normal id
             attribId = glGetAttribLocation(shader.program, "vertexNormal")
             if  attribId >= 0 {
                 self.gl_normal = numericCast(attribId)
             } else {
-                println("failed to get gl_Normal")
+                Swift.print("failed to get gl_Normal")
             }
             // Color id
             attribId = glGetAttribLocation(shader.program, "vertexColor")
             if  attribId >= 0 {
                 self.gl_color = numericCast(attribId)
             } else {
-                println("failed to get vertexColor")
+                Swift.print("failed to get vertexColor")
             }
             // Alpha id
             attribId = glGetAttribLocation(shader.program, "vertexAlpha")
             if  attribId >= 0 {
                 self.gl_alpha = numericCast(attribId)
             } else {
-                println("failed to get vertexAlpha")
+                Swift.print("failed to get vertexAlpha")
             }
         } else {
-            println("failed to init shader")
+            Swift.print("failed to init shader")
         }
         
         glMatrixMode(UInt32(GL_PROJECTION))
@@ -103,7 +104,7 @@ struct ViewAngle {
         glEnable(GLenum(GL_DEPTH_TEST))
         glDepthFunc(GLenum(GL_LESS))
         
-        println("open gl view prepared")
+        Swift.print("open gl view prepared")
     }
     
     override func drawRect(dirtyRect: NSRect) {
@@ -210,7 +211,7 @@ struct ViewAngle {
             glEnable(GLenum(GL_BLEND))
             glBlendFunc(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA))
             
-            //println("try to draw gird")
+            //print("try to draw gird")
             // draw grid
             glEnableVertexAttribArray(gl_vertex)
             glBindBuffer(GLenum(GL_ARRAY_BUFFER), pl.plane_vbo[0])
@@ -255,12 +256,12 @@ struct ViewAngle {
         
         //let clickPt: NSPoint = theEvent.locationInWindow
         //lastPt = self.convertPoint(clickPt, fromView: nil)
-        //println("mouse down at X:\(lastPt.x), Y:\(lastPt.y)")
+        //print("mouse down at X:\(lastPt.x), Y:\(lastPt.y)")
     }
     
     override func mouseDragged(theEvent : NSEvent) {
         
-        if NSEventModifierFlags.AlternateKeyMask & theEvent.modifierFlags != nil {
+        if NSEventModifierFlags.AlternateKeyMask.rawValue & theEvent.modifierFlags.rawValue != nil {
             //rotate x and y
             //rotateFactor is for speed control. but system delta value work fine
             //and I decided not to adjust it by user preference
@@ -274,7 +275,7 @@ struct ViewAngle {
             viewAngle.x += Float(theEvent.deltaY)// * rotateFactor
         }
         
-        //println("viewAngle.X:\(viewAngle.x),Y:\(viewAngle.y), Z:\(viewAngle.z)")
+        //print("viewAngle.X:\(viewAngle.x),Y:\(viewAngle.y), Z:\(viewAngle.z)")
         
         self.needsDisplay = true
     }
@@ -283,7 +284,7 @@ struct ViewAngle {
         
         //let upPt:NSPoint = theEvent.locationInWindow
         //lastPt = self.convertPoint(upPt, fromView: nil)
-        //println("mouse up at X:\(lastPt.x), Y:\(lastPt.y)")
+        //print("mouse up at X:\(lastPt.x), Y:\(lastPt.y)")
     }
     
     //pan view when the mouse dragged with right button
@@ -319,11 +320,11 @@ struct ViewAngle {
             
             coeff = coeff * Float(factor)
             
-            //println("Zoom with coeff:\(coeff)")
+            //print("Zoom with coeff:\(coeff)")
             
             self.viewPt.z = self.zoomMin + coeff * (self.zoomMax - self.zoomMin)
             
-            //println("view point changed to: \(viewPt.z)")
+            //print("view point changed to: \(viewPt.z)")
             
             self.needsDisplay = true
         }
@@ -557,3 +558,5 @@ class GridPlane {
         }
     }
 }
+
+*/

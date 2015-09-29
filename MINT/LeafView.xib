@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8191"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="MintLeafViewController" customModule="MINT" customModuleProvider="target">
+        <customObject id="-2" userLabel="File's Owner" customClass="MintLeafViewController" customModule="mint_temp_caseinsensitive_rename" customModuleProvider="target">
             <connections>
                 <outlet property="argList" destination="qCx-JS-iXd" id="QKh-Ko-pVL"/>
                 <outlet property="argsPopover" destination="2os-vJ-9xb" id="sR3-yx-d4T"/>
@@ -15,19 +15,19 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView id="MpU-Wu-ttb" customClass="LeafView">
-            <rect key="frame" x="0.0" y="0.0" width="84" height="51"/>
+            <rect key="frame" x="0.0" y="0.0" width="84" height="75"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QRY-od-rqg">
-                    <rect key="frame" x="0.0" y="32" width="85" height="19"/>
+                    <rect key="frame" x="0.0" y="56" width="85" height="19"/>
                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="center" drawsBackground="YES" id="uQx-Fc-1UV">
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
                     </textFieldCell>
                 </textField>
-                <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6nA-t8-YZA" customClass="MintReturnButton" customModule="MINT" customModuleProvider="target">
-                    <rect key="frame" x="-8" y="-1" width="39" height="38"/>
+                <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6nA-t8-YZA" customClass="MintReturnButton" customModule="mint_temp_caseinsensitive_rename" customModuleProvider="target">
+                    <rect key="frame" x="-8" y="23" width="39" height="38"/>
                     <buttonCell key="cell" type="round" bezelStyle="circular" image="ret" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ork-SD-NTJ">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
@@ -36,8 +36,8 @@
                         <outlet property="controller" destination="-2" id="3xZ-G9-ElL"/>
                     </connections>
                 </button>
-                <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gie-wI-25b" customClass="MintArgumentButton" customModule="MINT" customModuleProvider="target">
-                    <rect key="frame" x="54" y="-1" width="39" height="38"/>
+                <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gie-wI-25b" customClass="MintArgumentButton" customModule="mint_temp_caseinsensitive_rename" customModuleProvider="target">
+                    <rect key="frame" x="54" y="23" width="39" height="38"/>
                     <buttonCell key="cell" type="round" bezelStyle="circular" image="arg" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="cvv-hc-ybV">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
@@ -47,12 +47,21 @@
                         <outlet property="controller" destination="-2" id="Pt1-W6-15z"/>
                     </connections>
                 </button>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tfd-l4-SDy">
+                    <rect key="frame" x="-2" y="0.0" width="89" height="24"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" id="voV-K5-hpz">
+                        <font key="font" metaFont="smallSystem"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
             </subviews>
             <connections>
                 <outlet property="controller" destination="-2" id="jwd-pt-nqH"/>
+                <outlet property="errStdOut" destination="tfd-l4-SDy" id="KPl-Ex-ONo"/>
                 <outlet property="nameTag" destination="QRY-od-rqg" id="i4a-Gy-T8b"/>
             </connections>
-            <point key="canvasLocation" x="349" y="324.5"/>
+            <point key="canvasLocation" x="349" y="338.5"/>
         </customView>
         <viewController id="z0M-nb-4qp" userLabel="Popover View Controller">
             <connections>
@@ -64,22 +73,22 @@
                 <outlet property="contentViewController" destination="z0M-nb-4qp" id="kxE-wX-F5A"/>
             </connections>
         </popover>
-        <scrollView autohidesScrollers="YES" horizontalLineScroll="24" horizontalPageScroll="10" verticalLineScroll="24" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="0fC-k9-qt5">
-            <rect key="frame" x="0.0" y="5" width="210" height="50"/>
+        <scrollView autohidesScrollers="YES" horizontalLineScroll="22" horizontalPageScroll="10" verticalLineScroll="22" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="0fC-k9-qt5">
+            <rect key="frame" x="0.0" y="0.0" width="207" height="151"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <clipView key="contentView" drawsBackground="NO" id="ixJ-Dr-3Wi">
-                <rect key="frame" x="1" y="0.0" width="238" height="134"/>
+                <rect key="frame" x="1" y="17" width="205" height="133"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
-                    <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" autosaveColumns="NO" rowHeight="22" rowSizeStyle="automatic" viewBased="YES" id="qCx-JS-iXd">
-                        <rect key="frame" x="0.0" y="0.0" width="208" height="0.0"/>
+                    <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" autosaveColumns="NO" rowHeight="20" rowSizeStyle="automatic" headerView="ynb-HU-QSj" viewBased="YES" id="qCx-JS-iXd">
+                        <rect key="frame" x="0.0" y="0.0" width="206" height="133"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <size key="intercellSpacing" width="3" height="2"/>
                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                         <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                         <tableColumns>
-                            <tableColumn width="205" minWidth="40" maxWidth="1000" id="krA-Hm-0Lq">
-                                <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
+                            <tableColumn width="67" minWidth="40" maxWidth="1000" id="krA-Hm-0Lq">
+                                <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Params">
                                     <font key="font" metaFont="smallSystem"/>
                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -90,336 +99,82 @@
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <prototypeCellViews>
-                                    <tableCellView identifier="Bool" id="wUP-Hw-uyv" customClass="MintBoolCellView" customModule="MINT" customModuleProvider="target">
-                                        <rect key="frame" x="1" y="1" width="205" height="22"/>
+                                    <tableCellView id="Cba-Ig-JHe">
+                                        <rect key="frame" x="1" y="1" width="67" height="20"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="czu-aI-0cb">
-                                                <rect key="frame" x="3" y="3" width="64" height="14"/>
-                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="Mf1-bb-kcb">
-                                                    <font key="font" metaFont="smallSystem"/>
+                                            <textField identifier="paramCell" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WG1-DA-zZr">
+                                                <rect key="frame" x="0.0" y="2" width="66" height="17"/>
+                                                <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="Lnr-ol-Srj">
+                                                    <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
+                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                 </textFieldCell>
                                             </textField>
-                                            <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Oex-zQ-KVG">
-                                                <rect key="frame" x="173" y="-8" width="30" height="30"/>
-                                                <buttonCell key="cell" type="round" title="✖️" bezelStyle="circular" imagePosition="above" alignment="center" controlSize="mini" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" id="KVB-GW-uGX">
-                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                    <font key="font" metaFont="miniSystem"/>
-                                                </buttonCell>
-                                            </button>
-                                            <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Acv-KO-bU2">
-                                                <rect key="frame" x="75" y="1" width="96" height="18"/>
-                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                <size key="cellSize" width="47" height="18"/>
-                                                <size key="intercellSpacing" width="4" height="2"/>
-                                                <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="small" inset="2" id="Bh9-FL-xUV">
-                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                    <font key="font" metaFont="smallSystem"/>
-                                                </buttonCell>
-                                                <cells>
-                                                    <column>
-                                                        <buttonCell type="radio" title="true" imagePosition="left" alignment="left" controlSize="small" state="on" tag="1" inset="2" id="Q5B-zo-KQs">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="smallSystem"/>
-                                                        </buttonCell>
-                                                    </column>
-                                                    <column>
-                                                        <buttonCell type="radio" title="false" imagePosition="left" alignment="left" controlSize="small" inset="2" id="azP-fz-RFB">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="smallSystem"/>
-                                                        </buttonCell>
-                                                    </column>
-                                                </cells>
-                                            </matrix>
                                         </subviews>
                                         <connections>
-                                            <outlet property="rmbutton" destination="Oex-zQ-KVG" id="2UE-dn-FsN"/>
-                                            <outlet property="textField" destination="czu-aI-0cb" id="6de-Y5-Mbr"/>
-                                            <outlet property="value1" destination="Acv-KO-bU2" id="LDc-BM-Y1g"/>
+                                            <outlet property="textField" destination="WG1-DA-zZr" id="Jau-bT-WhY"/>
                                         </connections>
                                     </tableCellView>
-                                    <tableCellView identifier="Double" id="gPG-Nb-5c3" customClass="MintArgumentCellView" customModule="MINT" customModuleProvider="target">
-                                        <rect key="frame" x="1" y="1" width="205" height="22"/>
+                                </prototypeCellViews>
+                            </tableColumn>
+                            <tableColumn width="75" minWidth="10" maxWidth="3.4028234663852886e+38" id="0vA-5b-dqs">
+                                <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Values">
+                                    <font key="font" metaFont="smallSystem"/>
+                                    <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                </tableHeaderCell>
+                                <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="uQz-D7-Zwy">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                                <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                <prototypeCellViews>
+                                    <tableCellView id="2d5-LU-auG">
+                                        <rect key="frame" x="71" y="1" width="75" height="20"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8ib-FF-60G">
-                                                <rect key="frame" x="3" y="3" width="80" height="14"/>
-                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="aew-YT-hdC">
-                                                    <font key="font" metaFont="smallSystem"/>
+                                            <textField identifier="valueCell" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="psI-83-cLC">
+                                                <rect key="frame" x="0.0" y="2" width="73" height="17"/>
+                                                <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="Wrl-Jv-1du">
+                                                    <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
+                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                 </textFieldCell>
                                             </textField>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oaa-3P-Pvj">
-                                                <rect key="frame" x="97" y="1" width="76" height="19"/>
-                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="tIe-A0-mAU">
-                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" numberStyle="decimal" lenient="YES" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="5" id="CFO-4Q-lJy">
-                                                        <metadata>
-                                                            <real key="inspectorSampleValue" value="1.6000000000000001"/>
-                                                        </metadata>
-                                                    </numberFormatter>
-                                                    <font key="font" metaFont="smallSystem"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
-                                                </textFieldCell>
-                                            </textField>
-                                            <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YTd-ql-bDl">
-                                                <rect key="frame" x="173" y="-8" width="30" height="30"/>
-                                                <buttonCell key="cell" type="round" title="✖️" bezelStyle="circular" imagePosition="above" alignment="center" controlSize="mini" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" id="RSo-iN-AdB">
-                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                    <font key="font" metaFont="miniSystem"/>
-                                                </buttonCell>
-                                                <connections>
-                                                    <action selector="removeLink:" target="gPG-Nb-5c3" id="vUX-qV-X2J"/>
-                                                </connections>
-                                            </button>
                                         </subviews>
                                         <connections>
-                                            <outlet property="rmbutton" destination="YTd-ql-bDl" id="het-iJ-iSk"/>
-                                            <outlet property="textField" destination="8ib-FF-60G" id="tI1-9d-wbc"/>
-                                            <outlet property="value1" destination="oaa-3P-Pvj" id="5ZD-0R-J8S"/>
+                                            <outlet property="textField" destination="psI-83-cLC" id="Uyn-y7-ZfR"/>
                                         </connections>
                                     </tableCellView>
-                                    <tableCellView identifier="Reference" id="xi9-kK-JJ3" customClass="MintArgumentCellView" customModule="MINT" customModuleProvider="target">
-                                        <rect key="frame" x="1" y="1" width="205" height="22"/>
+                                </prototypeCellViews>
+                            </tableColumn>
+                            <tableColumn identifier="" width="55" minWidth="10" maxWidth="3.4028234663852886e+38" id="geC-zb-zXe">
+                                <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Ref">
+                                    <font key="font" metaFont="smallSystem"/>
+                                    <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                </tableHeaderCell>
+                                <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="qfs-uF-jy2">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                                <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                <prototypeCellViews>
+                                    <tableCellView identifier="refCell" id="WfH-ht-a70">
+                                        <rect key="frame" x="149" y="1" width="55" height="20"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JSd-ns-90F">
-                                                <rect key="frame" x="3" y="3" width="80" height="14"/>
-                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="L0W-Mw-bGD">
-                                                    <font key="font" metaFont="smallSystem"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
-                                                </textFieldCell>
-                                            </textField>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="T2L-64-e07">
-                                                <rect key="frame" x="98" y="3" width="76" height="14"/>
-                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="O5d-Gw-mXI">
-                                                    <font key="font" metaFont="smallSystem"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
-                                                </textFieldCell>
-                                            </textField>
-                                            <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="btc-dp-BJz">
-                                                <rect key="frame" x="173" y="-8" width="30" height="30"/>
-                                                <buttonCell key="cell" type="round" title="✖️" bezelStyle="circular" imagePosition="above" alignment="center" controlSize="mini" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" id="t03-nX-mWz">
+                                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eXO-9I-vmq">
+                                                <rect key="frame" x="7" y="1" width="41" height="17"/>
+                                                <buttonCell key="cell" type="inline" title="unlink" bezelStyle="inline" alignment="center" borderStyle="border" inset="2" id="bvm-Vb-OYH">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                    <font key="font" metaFont="miniSystem"/>
+                                                    <font key="font" metaFont="smallSystemBold"/>
                                                 </buttonCell>
-                                                <connections>
-                                                    <action selector="removeLink:" target="xi9-kK-JJ3" id="rsW-zk-Idg"/>
-                                                </connections>
                                             </button>
                                         </subviews>
-                                        <connections>
-                                            <outlet property="rmbutton" destination="btc-dp-BJz" id="zZF-g0-AXT"/>
-                                            <outlet property="textField" destination="JSd-ns-90F" id="n9a-Xh-LA7"/>
-                                            <outlet property="value1" destination="T2L-64-e07" id="WIg-iJ-0LP"/>
-                                        </connections>
-                                    </tableCellView>
-                                    <tableCellView identifier="String" id="9ZF-uu-HQk" customClass="MintArgumentCellView" customModule="MINT" customModuleProvider="target">
-                                        <rect key="frame" x="1" y="1" width="205" height="22"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <subviews>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5k6-hz-bJT">
-                                                <rect key="frame" x="3" y="3" width="80" height="14"/>
-                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="T1v-sh-Cah">
-                                                    <font key="font" metaFont="smallSystem"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
-                                                </textFieldCell>
-                                            </textField>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FSA-xf-RdC">
-                                                <rect key="frame" x="98" y="2" width="76" height="19"/>
-                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="cy6-Gy-rkk">
-                                                    <font key="font" metaFont="smallSystem"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
-                                                </textFieldCell>
-                                            </textField>
-                                            <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AxV-hH-5I7">
-                                                <rect key="frame" x="173" y="-8" width="30" height="30"/>
-                                                <buttonCell key="cell" type="round" title="✖️" bezelStyle="circular" imagePosition="above" alignment="center" controlSize="mini" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" id="RZ9-cd-JMl">
-                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                    <font key="font" metaFont="miniSystem"/>
-                                                </buttonCell>
-                                                <connections>
-                                                    <action selector="removeLink:" target="9ZF-uu-HQk" id="0OX-D2-pf9"/>
-                                                </connections>
-                                            </button>
-                                        </subviews>
-                                        <connections>
-                                            <outlet property="rmbutton" destination="AxV-hH-5I7" id="Fhn-VD-JZ2"/>
-                                            <outlet property="textField" destination="5k6-hz-bJT" id="1v3-W2-kqY"/>
-                                            <outlet property="value1" destination="FSA-xf-RdC" id="NiP-Rj-Ks2"/>
-                                        </connections>
-                                    </tableCellView>
-                                    <tableCellView identifier="Int" id="mzN-wC-ET9" customClass="MintArgumentCellView" customModule="MINT" customModuleProvider="target">
-                                        <rect key="frame" x="1" y="1" width="205" height="22"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <subviews>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="alT-JK-hYY">
-                                                <rect key="frame" x="3" y="3" width="80" height="14"/>
-                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="2zL-Pb-IGw">
-                                                    <font key="font" metaFont="smallSystem"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
-                                                </textFieldCell>
-                                            </textField>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MG4-xg-MrQ">
-                                                <rect key="frame" x="98" y="1" width="76" height="19"/>
-                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="rBX-fv-Rkl">
-                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" numberStyle="decimal" allowsFloats="NO" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" id="8Dr-qE-Y4J"/>
-                                                    <font key="font" metaFont="smallSystem"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
-                                                </textFieldCell>
-                                            </textField>
-                                            <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="EDw-dc-SPS">
-                                                <rect key="frame" x="173" y="-8" width="30" height="30"/>
-                                                <buttonCell key="cell" type="round" title="✖️" bezelStyle="circular" imagePosition="above" alignment="center" controlSize="mini" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" id="0t6-SR-ghv">
-                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                    <font key="font" metaFont="miniSystem"/>
-                                                </buttonCell>
-                                                <connections>
-                                                    <action selector="removeLink:" target="mzN-wC-ET9" id="Cne-O4-XKz"/>
-                                                </connections>
-                                            </button>
-                                        </subviews>
-                                        <connections>
-                                            <outlet property="rmbutton" destination="EDw-dc-SPS" id="Aly-lq-eZz"/>
-                                            <outlet property="textField" destination="alT-JK-hYY" id="uvQ-Iw-n9b"/>
-                                            <outlet property="value1" destination="MG4-xg-MrQ" id="Tks-Rl-84h"/>
-                                        </connections>
-                                    </tableCellView>
-                                    <tableCellView identifier="Color" id="m6I-c2-tha" customClass="MintColorCellView" customModule="MINT" customModuleProvider="target">
-                                        <rect key="frame" x="1" y="121" width="205" height="32"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <subviews>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fld-2c-514">
-                                                <rect key="frame" x="3" y="9" width="60" height="14"/>
-                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="Hsn-Zn-zTO">
-                                                    <font key="font" metaFont="smallSystem"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
-                                                </textFieldCell>
-                                            </textField>
-                                            <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mH8-HN-APc">
-                                                <rect key="frame" x="173" y="-2" width="30" height="30"/>
-                                                <buttonCell key="cell" type="round" title="✖️" bezelStyle="circular" imagePosition="above" alignment="center" controlSize="mini" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" id="alG-pu-rnh">
-                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                    <font key="font" metaFont="miniSystem"/>
-                                                </buttonCell>
-                                                <connections>
-                                                    <action selector="removeLink:" target="m6I-c2-tha" id="1Bj-l9-Y86"/>
-                                                </connections>
-                                            </button>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TAL-Kd-ma3">
-                                                <rect key="frame" x="71" y="9" width="60" height="14"/>
-                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" drawsBackground="YES" usesSingleLineMode="YES" id="Nkf-ei-IGe">
-                                                    <font key="font" metaFont="smallSystem"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
-                                                </textFieldCell>
-                                            </textField>
-                                            <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FiN-X4-E3w">
-                                                <rect key="frame" x="143" y="2" width="28" height="28"/>
-                                                <color key="color" white="0.4950832648026316" alpha="1" colorSpace="calibratedWhite"/>
-                                                <connections>
-                                                    <action selector="setColor:" target="m6I-c2-tha" id="Xqq-0Q-VF4"/>
-                                                </connections>
-                                            </colorWell>
-                                        </subviews>
-                                        <connections>
-                                            <outlet property="colorWell" destination="FiN-X4-E3w" id="G37-wp-Xaf"/>
-                                            <outlet property="rmbutton" destination="mH8-HN-APc" id="S9e-bi-mQy"/>
-                                            <outlet property="textField" destination="fld-2c-514" id="7a5-K1-oKC"/>
-                                            <outlet property="value1" destination="TAL-Kd-ma3" id="wvi-yN-HEj"/>
-                                        </connections>
-                                    </tableCellView>
-                                    <tableCellView identifier="Vector" id="Ok6-Oc-FVP" customClass="MintVectorCellView" customModule="MINT" customModuleProvider="target">
-                                        <rect key="frame" x="1" y="73" width="205" height="62"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <subviews>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Jow-JQ-kPx">
-                                                <rect key="frame" x="3" y="23" width="69" height="14"/>
-                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="zxF-X3-y0W">
-                                                    <font key="font" metaFont="smallSystem"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
-                                                </textFieldCell>
-                                            </textField>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="P4m-3a-QDY">
-                                                <rect key="frame" x="99" y="41" width="76" height="19"/>
-                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="lOx-9b-a1M">
-                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" numberStyle="decimal" lenient="YES" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="5" id="ews-MV-tIj"/>
-                                                    <font key="font" metaFont="smallSystem"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
-                                                </textFieldCell>
-                                            </textField>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mJn-Zo-xvV">
-                                                <rect key="frame" x="99" y="21" width="76" height="19"/>
-                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="om6-GS-YRr">
-                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="5" id="bYC-xE-0cV"/>
-                                                    <font key="font" metaFont="smallSystem"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
-                                                </textFieldCell>
-                                            </textField>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1uc-0a-xdd">
-                                                <rect key="frame" x="99" y="1" width="76" height="19"/>
-                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" title="Table View Cell" drawsBackground="YES" usesSingleLineMode="YES" id="nwu-qi-kfc">
-                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="5" id="Fnu-eu-kYJ"/>
-                                                    <font key="font" metaFont="smallSystem"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
-                                                </textFieldCell>
-                                            </textField>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Car-sz-IyO">
-                                                <rect key="frame" x="77" y="43" width="15" height="14"/>
-                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="x:" drawsBackground="YES" usesSingleLineMode="YES" id="goN-vu-KvG">
-                                                    <font key="font" metaFont="smallSystem"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
-                                                </textFieldCell>
-                                            </textField>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5PB-Jw-W8f">
-                                                <rect key="frame" x="77" y="23" width="15" height="14"/>
-                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="y:" drawsBackground="YES" usesSingleLineMode="YES" id="uX5-eK-qr9">
-                                                    <font key="font" metaFont="smallSystem"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
-                                                </textFieldCell>
-                                            </textField>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="K67-5W-oLB">
-                                                <rect key="frame" x="77" y="3" width="15" height="14"/>
-                                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="z:" drawsBackground="YES" usesSingleLineMode="YES" id="yFX-uo-Nvt">
-                                                    <font key="font" metaFont="smallSystem"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
-                                                </textFieldCell>
-                                            </textField>
-                                            <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fjE-iC-4z1">
-                                                <rect key="frame" x="173" y="12" width="30" height="30"/>
-                                                <buttonCell key="cell" type="round" title="✖️" bezelStyle="circular" imagePosition="above" alignment="center" controlSize="mini" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" id="jkc-SI-biZ">
-                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                    <font key="font" metaFont="miniSystem"/>
-                                                </buttonCell>
-                                                <connections>
-                                                    <action selector="removeLink:" target="Ok6-Oc-FVP" id="4Pz-CV-28a"/>
-                                                </connections>
-                                            </button>
-                                        </subviews>
-                                        <connections>
-                                            <outlet property="rmbutton" destination="fjE-iC-4z1" id="sDE-kp-uY9"/>
-                                            <outlet property="textField" destination="Jow-JQ-kPx" id="5aZ-u8-YOG"/>
-                                            <outlet property="value1" destination="P4m-3a-QDY" id="ARg-0t-5e3"/>
-                                            <outlet property="value2" destination="mJn-Zo-xvV" id="Gut-kJ-bcy"/>
-                                            <outlet property="value3" destination="1uc-0a-xdd" id="tZ0-hf-NJi"/>
-                                        </connections>
                                     </tableCellView>
                                 </prototypeCellViews>
                             </tableColumn>
@@ -428,15 +183,19 @@
                 </subviews>
                 <nil key="backgroundColor"/>
             </clipView>
-            <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="MzI-wv-p0Z">
-                <rect key="frame" x="1" y="119" width="223" height="15"/>
+            <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="MzI-wv-p0Z">
+                <rect key="frame" x="1" y="134" width="205" height="16"/>
                 <autoresizingMask key="autoresizingMask"/>
             </scroller>
             <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="SDg-H4-LV2">
                 <rect key="frame" x="224" y="17" width="15" height="102"/>
                 <autoresizingMask key="autoresizingMask"/>
             </scroller>
-            <point key="canvasLocation" x="586" y="309"/>
+            <tableHeaderView key="headerView" id="ynb-HU-QSj">
+                <rect key="frame" x="0.0" y="0.0" width="206" height="17"/>
+                <autoresizingMask key="autoresizingMask"/>
+            </tableHeaderView>
+            <point key="canvasLocation" x="540.5" y="415.5"/>
         </scrollView>
     </objects>
     <resources>

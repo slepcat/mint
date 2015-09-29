@@ -48,10 +48,12 @@ protocol MintLinkSubject: class {
     func registerObserver(observer: MintLinkObserver)
     func removeObserver(observer: MintLinkObserver)
 }
-
+/*
 protocol MintCommand {
     func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter)
     func execute()
     func undo()
     func redo()
 }
+
+*/

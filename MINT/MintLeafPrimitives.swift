@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+/*
 // Primitive class
 // Base class for all primitive solids. For example, cube, sphere, cylinder, and so on.
 // This class itself will not be instantiated
@@ -523,3 +523,4 @@ class Cylinder:Primitive{
 }
 */
 
+*/

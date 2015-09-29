@@ -1,5 +1,5 @@
 //
-//  MintWorkspaceControllers.swift
+//  MintWorkspaceController.swift
 //  MINT
 //
 //  Created by NemuNeko on 2015/03/29.
@@ -8,6 +8,7 @@
 
 import Foundation
 import Cocoa
+
 
 // Controller of workspace view
 // Responsible to interact user action and manage leaf views
@@ -28,7 +29,7 @@ class MintWorkspaceController:NSObject {
             
             // debug
             if leafViewXib == nil {
-                println("Failed to load 'LeafViewNib' ")
+                print("Failed to load 'LeafViewNib' ")
             }
         }
         
@@ -116,7 +117,7 @@ class MintWorkspaceController:NSObject {
         
         workspace.addSubview(newlink)
         
-        //println("constraint: \(newlink.constraints.count)")
+        //print("constraint: \(newlink.constraints.count)")
         
         if let aleaf = argLeaf, let rleaf = retLeaf {
             aleaf.registerLinkObserverForView(newlink)

@@ -8,6 +8,8 @@
 
 import Foundation
 
+
+/*
 // Root level of Mint leaves chains. Should be 'Singleton'?
 class MintInterpreter:MintLeafSubject {
     private var leafPool = [Leaf]()
@@ -251,7 +253,7 @@ class MintInterpreter:MintLeafSubject {
         case "Scale":
             newLeaf = Scale(newID: leafID)
         default:
-            println("Unknown leaf type alloc requied!")
+            print("Unknown leaf type alloc requied!")
             newLeaf = Cube(newID: leafID)
         }
         
@@ -394,3 +396,5 @@ class MintGlobalStack:MintSubject {
         return false
     }
 }
+
+*/

@@ -9,7 +9,7 @@
 import Foundation
 import Cocoa
 
-
+/*
 
 class MintArgumentCellView : NSTableCellView, NSTextFieldDelegate, NSDraggingDestination {
     @IBOutlet weak var value1: NSTextField!
@@ -45,7 +45,7 @@ class MintArgumentCellView : NSTableCellView, NSTextFieldDelegate, NSDraggingDes
                 // pasteboardItemDataProvider is called when below line excuted.
                 // but not reflect to return value. API bug??
                 // After excution of the line, returnLeafID become available.
-                println(item.stringForType("com.mint.mint.returnLeafID"))
+                print(item.stringForType("com.mint.mint.returnLeafID"))
             }
             
             switch sender.draggingSourceOperationMask() {
@@ -66,7 +66,7 @@ class MintArgumentCellView : NSTableCellView, NSTextFieldDelegate, NSDraggingDes
     
     func control(control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
         
-        println("value edited at \(self.value1.stringValue)")
+        print("value edited at \(self.value1.stringValue)")
         
         if let label = self.textField?.stringValue {
             controller.argument(label, valueShouldEndEditing: control.stringValue)
@@ -97,7 +97,7 @@ class MintVectorCellView : MintArgumentCellView {
         if var label = self.textField?.stringValue {
             
             if control === value1 {
-                println("value edited at \(self.value1.stringValue)")
+                print("value edited at \(self.value1.stringValue)")
                 controller.argument(label + "/x", valueShouldEndEditing: control.stringValue)
             } else if control === value2 {
                 controller.argument(label + "/y", valueShouldEndEditing: control.stringValue)
@@ -132,3 +132,4 @@ class MintColorCellView : MintArgumentCellView {
         }
     }
 }
+*/
