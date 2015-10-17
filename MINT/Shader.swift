@@ -9,7 +9,7 @@
 import Foundation
 import Cocoa
 import OpenGL
-/*
+
 class Shader {
     
     var program:GLuint = 0
@@ -102,11 +102,15 @@ class Shader {
         let shaderPath:String? = appBundle.pathForResource(shaderName, ofType: ext)
         
         if let path = shaderPath {
-            let shaderSource = String.init(contentsOfFile: path, encoding:NSUTF8StringEncoding, error: nil)
-            
-            if let source = shaderSource {
-                var shaderSourceC:UnsafePointer<CChar> = (source as NSString).UTF8String
+            do {
+                let shaderSource = try NSString(contentsOfFile: path, encoding:NSUTF8StringEncoding)
+                
+                let shaderSourceC:UnsafePointer<CChar> = shaderSource.UTF8String
                 return shaderSourceC
+                
+            } catch {
+                print("failed to read shader source")
+                return nil
             }
         }
         
@@ -121,4 +125,3 @@ class Shader {
         return getShaderSource(shaderName, ext: "fs")
     }
 }
-*/

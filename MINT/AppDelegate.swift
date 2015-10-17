@@ -20,15 +20,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         // Insert code here to initialize your application
-
+        
         // prepare MintInterpreter
         let interpreter = MintInterpreter()
         
         controller.interpreter = interpreter
         workspace.interpreter = interpreter
-        
-        // prepare references
-        //modelView.globalStack = controller.interpreter.globalStack
         
         //prepare leafpanel
         leafpanel.updateContents(interpreter.defined_exps())

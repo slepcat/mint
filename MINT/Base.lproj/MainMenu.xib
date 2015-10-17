@@ -467,22 +467,22 @@
         <window title="Leafs" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" animationBehavior="default" id="HeK-tW-Hnd" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="139" y="81" width="236" height="378"/>
+            <rect key="contentRect" x="139" y="81" width="235" height="378"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <value key="minSize" type="size" width="150" height="200"/>
             <value key="maxSize" type="size" width="236" height="1200"/>
             <view key="contentView" id="YhU-0P-KTK">
-                <rect key="frame" x="0.0" y="0.0" width="236" height="378"/>
+                <rect key="frame" x="0.0" y="0.0" width="235" height="378"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <scrollView autohidesScrollers="YES" horizontalLineScroll="42" horizontalPageScroll="10" verticalLineScroll="42" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cMv-eQ-nQs">
+                    <scrollView misplaced="YES" autohidesScrollers="YES" horizontalLineScroll="42" horizontalPageScroll="10" verticalLineScroll="42" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cMv-eQ-nQs">
                         <rect key="frame" x="0.0" y="0.0" width="236" height="340"/>
                         <clipView key="contentView" id="jQ3-CA-cJR">
                             <rect key="frame" x="1" y="1" width="234" height="338"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="40" rowSizeStyle="automatic" viewBased="YES" id="35a-Au-iLy">
-                                    <rect key="frame" x="0.0" y="0.0" width="234" height="0.0"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="234" height="338"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -556,7 +556,7 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
-                    <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Do7-6r-buh">
+                    <popUpButton verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Do7-6r-buh">
                         <rect key="frame" x="10" y="346" width="216" height="25"/>
                         <popUpButtonCell key="cell" type="roundTextured" title="Item 1" bezelStyle="texturedRounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" selectedItem="PVH-Sd-NFe" id="cjD-dt-BhY">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -587,9 +587,9 @@
             <connections>
                 <outlet property="delegate" destination="NAm-X9-eSI" id="etS-Ub-Nfh"/>
             </connections>
-            <point key="canvasLocation" x="-168" y="-312"/>
+            <point key="canvasLocation" x="-168.5" y="-312"/>
         </window>
-        <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" animationBehavior="default" id="H9O-5J-z6M" customClass="NSPanel">
+        <window title="View" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" animationBehavior="default" id="H9O-5J-z6M" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="139" y="81" width="500" height="520"/>
@@ -597,8 +597,19 @@
             <view key="contentView" id="ohm-ck-Lfj">
                 <rect key="frame" x="0.0" y="0.0" width="500" height="520"/>
                 <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="gXU-9v-OKR" customClass="MintModelView">
+                        <rect key="frame" x="0.0" y="0.0" width="500" height="520"/>
+                    </customView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="gXU-9v-OKR" firstAttribute="top" secondItem="ohm-ck-Lfj" secondAttribute="top" id="A6F-44-s6E"/>
+                    <constraint firstAttribute="bottom" secondItem="gXU-9v-OKR" secondAttribute="bottom" id="RRL-7u-PVc"/>
+                    <constraint firstItem="gXU-9v-OKR" firstAttribute="leading" secondItem="ohm-ck-Lfj" secondAttribute="leading" id="eEy-t1-FUe"/>
+                    <constraint firstAttribute="trailing" secondItem="gXU-9v-OKR" secondAttribute="trailing" id="grB-mA-Ukh"/>
+                </constraints>
             </view>
-            <point key="canvasLocation" x="273" y="-147"/>
+            <point key="canvasLocation" x="186" y="-278"/>
         </window>
     </objects>
     <resources>

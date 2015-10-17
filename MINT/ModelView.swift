@@ -10,7 +10,6 @@ import Foundation
 import Cocoa
 import OpenGL
 
-/*
 struct ViewPoint {
     var x:GLfloat
     var y:GLfloat
@@ -261,7 +260,7 @@ struct ViewAngle {
     
     override func mouseDragged(theEvent : NSEvent) {
         
-        if NSEventModifierFlags.AlternateKeyMask.rawValue & theEvent.modifierFlags.rawValue != nil {
+        if NSEventModifierFlags.AlternateKeyMask.isSupersetOf(theEvent.modifierFlags) {
             //rotate x and y
             //rotateFactor is for speed control. but system delta value work fine
             //and I decided not to adjust it by user preference
@@ -334,7 +333,7 @@ struct ViewAngle {
 
 class GLmesh:MintObserver {
     // ID of leaf which is counterpart of GLmesh instance
-    let leafID : Int
+    let leafID : UInt
     
     //open gl buffer ids
     var vbufferid : GLuint = 0
@@ -343,7 +342,7 @@ class GLmesh:MintObserver {
     //length of mesh array
     var buffersize : GLsizei = 0
     
-    init(leafID: Int) {
+    init(leafID: UInt) {
         self.leafID = leafID
     }
     
@@ -360,50 +359,53 @@ class GLmesh:MintObserver {
     }
     
     // update open gl vertices & attribute array
-    func update(subject: MintSubject, index: Int) {
+    func update(subject: MintSubject, uid: UInt) {
         if vbufferid == 0 { // In case of inital update
-            let result = subject.solveMesh(index)
-            var glmesh = [GLdouble](result.mesh)
-            var glnormal = [GLdouble](result.normals)
-            var glcolor = [GLfloat](result.colors)
-            
-            buffersize = GLsizei(glmesh.count)
-            
-            if buffersize != 0 {// Check 'result' have valid mesh
+            if let meshio = subject as? Mint3DPort {
+                var glmesh = meshio.mesh()
+                var glnormal = meshio.normal()
+                var glcolor = meshio.color()
+                
+                buffersize = GLsizei(glmesh.count)
+                
+                if buffersize != 0 {// Check 'result' have valid mesh
+                    //mesh
+                    glGenBuffers(1, &self.vbufferid)
+                    glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vbufferid)
+                    glBufferData(GLenum(GL_ARRAY_BUFFER), glmesh.count * sizeof(GLdouble), &glmesh, GLenum(GL_STATIC_DRAW))
+                    //normal
+                    glGenBuffers(1, &self.nbufferid)
+                    glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.nbufferid)
+                    glBufferData(GLenum(GL_ARRAY_BUFFER), glnormal.count * sizeof(GLdouble), &glnormal, GLenum(GL_STATIC_DRAW))
+                    //color
+                    glGenBuffers(1, &self.cbufferid)
+                    glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.cbufferid)
+                    glBufferData(GLenum(GL_ARRAY_BUFFER), glcolor.count * sizeof(GLfloat), &glcolor, GLenum(GL_STATIC_DRAW))
+                    
+                    glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+                }
+
+            }
+        } else { // In case of update
+            if let meshio = subject as? Mint3DPort {
+                var glmesh = meshio.mesh()
+                var glnormal = meshio.normal()
+                var glcolor = meshio.color()
+                
+                buffersize = GLsizei(glmesh.count)
+                
                 //mesh
-                glGenBuffers(1, &self.vbufferid)
                 glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vbufferid)
                 glBufferData(GLenum(GL_ARRAY_BUFFER), glmesh.count * sizeof(GLdouble), &glmesh, GLenum(GL_STATIC_DRAW))
                 //normal
-                glGenBuffers(1, &self.nbufferid)
                 glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.nbufferid)
                 glBufferData(GLenum(GL_ARRAY_BUFFER), glnormal.count * sizeof(GLdouble), &glnormal, GLenum(GL_STATIC_DRAW))
                 //color
-                glGenBuffers(1, &self.cbufferid)
                 glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.cbufferid)
                 glBufferData(GLenum(GL_ARRAY_BUFFER), glcolor.count * sizeof(GLfloat), &glcolor, GLenum(GL_STATIC_DRAW))
                 
                 glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
             }
-        } else { // In case of update
-            let result = subject.solveMesh(index)
-            var glmesh = [GLdouble](result.mesh)
-            var glnormal = [GLdouble](result.normals)
-            var glcolor = [GLfloat](result.colors)
-            
-            buffersize = GLsizei(glmesh.count)
-            
-            //mesh
-            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vbufferid)
-            glBufferData(GLenum(GL_ARRAY_BUFFER), glmesh.count * sizeof(GLdouble), &glmesh, GLenum(GL_STATIC_DRAW))
-            //normal
-            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.nbufferid)
-            glBufferData(GLenum(GL_ARRAY_BUFFER), glnormal.count * sizeof(GLdouble), &glnormal, GLenum(GL_STATIC_DRAW))
-            //color
-            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.cbufferid)
-            glBufferData(GLenum(GL_ARRAY_BUFFER), glcolor.count * sizeof(GLfloat), &glcolor, GLenum(GL_STATIC_DRAW))
-            
-            glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
         }
     }
 }
@@ -558,5 +560,3 @@ class GridPlane {
         }
     }
 }
-
-*/

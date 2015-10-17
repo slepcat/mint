@@ -11,13 +11,10 @@ import Foundation
 // Observer Pattern protocol for 'ModelView' and 'MintInterpreter'
 // Tell change of 'Leaf' model to 'ModelView' to update 3D model view.
 protocol MintObserver:class { // observer must be class type
-    func update(subject: MintSubject, index: Int)//tell observer which leaves are updated
+    func update(subject: MintSubject, uid: UInt)//tell observer which leaves are updated
 }
 
 protocol MintSubject:class {
-    //return mesh & attributes of leave determined by the index.
-    func solveMesh(index: Int) -> (mesh: [Double], normals: [Double], colors: [Float])
-
     // Observer register & remove
     func registerObserver(observer: MintObserver)
     func removeObserver(observer: MintObserver)

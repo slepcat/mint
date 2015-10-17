@@ -8,8 +8,17 @@
 
 import Foundation
 
+let stderrout = MintErrPort()
+
 public class MintInterpreter : Interpreter, MintLeafSubject {
     var observers:[MintLeafObserver] = []
+    
+    override init() {
+        super.init()
+        
+        // add IOs
+        global.define_variable("display", val: Display())
+    }
     
     // register observer (mint leaf view) protocol
     func registerObserver(observer: MintLeafObserver) {
