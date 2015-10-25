@@ -14,6 +14,7 @@ import Cocoa
 // Responsible to interact user action and manage leaf views
 class MintWorkspaceController:NSObject {
     @IBOutlet weak var workspace: WorkspaceView!
+    @IBOutlet weak var controller: MintController!
     weak var interpreter:MintInterpreter!
     var leafViewXib : NSNib!
     
@@ -41,6 +42,7 @@ class MintWorkspaceController:NSObject {
         
         if let viewctrl = viewStack.last {
             interpreter.registerObserver(viewctrl)
+            viewctrl.controller = controller
         }
         
         workspace.needsDisplay = true
@@ -78,7 +80,7 @@ class MintWorkspaceController:NSObject {
                 argLeaf = leafctrl
                 
                 let origin = leafctrl.leafview.frame.origin
-                argpt = NSPoint(x: origin.x + 84, y: origin.y + 19)
+                argpt = NSPoint(x: origin.x + 95, y: origin.y + 42)
                 
                 if is2ndhit {
                     break
@@ -92,7 +94,7 @@ class MintWorkspaceController:NSObject {
                 retLeaf = leafctrl
                 
                 let origin = leafctrl.leafview.frame.origin
-                retpt = NSPoint(x: origin.x, y: origin.y + 19)
+                retpt = NSPoint(x: origin.x, y: origin.y + 42)
                 
                 if is2ndhit {
                     break
@@ -119,12 +121,10 @@ class MintWorkspaceController:NSObject {
         
         //print("constraint: \(newlink.constraints.count)")
         
-        /*
         if let aleaf = argLeaf, let rleaf = retLeaf {
             aleaf.registerLinkObserverForView(newlink)
             rleaf.registerLinkObserverForView(newlink)
         }
-        */
         
         workspace.needsDisplay = true
     }

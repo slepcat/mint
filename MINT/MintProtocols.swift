@@ -27,7 +27,7 @@ protocol MintLeafObserver:class {
     
     func initArgs(args: [SExpr], labels:[String])
     func setName(name: String)
-    func update(arg: SExpr, uid: UInt)
+    func update(leafid: UInt, newargs: [SExpr], newuid: UInt, olduid: UInt)
 }
 
 protocol MintLeafSubject:class{
@@ -46,7 +46,7 @@ protocol MintLinkSubject: class {
 }
 
 protocol MintCommand {
-    func prepare(workspace: MintWorkspaceController, /*modelView: MintModelViewController, */interpreter: MintInterpreter)
+    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter)
     func execute()
     func undo()
     func redo()

@@ -17,14 +17,14 @@ import Cocoa
 
 class MintController:NSObject {
     @IBOutlet weak var workspace: MintWorkspaceController!
-    // @IBOutlet weak var modelView: MintModelViewController!
+    @IBOutlet weak var modelView: MintModelViewController!
     var interpreter: MintInterpreter!
     
     var undoStack : [MintCommand] = []
     var redoStack : [MintCommand] = []
     
     func sendCommand(newCommand: MintCommand) {
-        newCommand.prepare(workspace, /*modelView: modelView, */interpreter: interpreter)
+        newCommand.prepare(workspace, modelView: modelView, interpreter: interpreter)
         newCommand.execute()
         
         // todo: manage err msg

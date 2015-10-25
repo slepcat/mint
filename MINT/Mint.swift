@@ -8,16 +8,22 @@
 
 import Foundation
 
-let stderrout = MintErrPort()
-
 public class MintInterpreter : Interpreter, MintLeafSubject {
     var observers:[MintLeafObserver] = []
     
-    override init() {
+    let stderrout : MintErrPort
+    let std3dout : Mint3DPort
+    
+    init(port: Mint3DPort, errport: MintErrPort) {
+        
+        stderrout = errport
+        std3dout = port
+        
         super.init()
         
         // add IOs
-        global.define_variable("display", val: Display())
+        
+        global.define_variable("display", val: Display(port: port))
     }
     
     // register observer (mint leaf view) protocol
@@ -25,14 +31,17 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         observers.append(observer)
         let obs = lookup(observer.uid)
         
-        if let pair = obs.conscell as? Pair {
-            if let f = obs.target as? Form {
+        if let pair = obs.target as? Pair {
+            if let f = pair.car as? Form {
                 observer.initArgs(delayed_list_of_values(pair.cdr), labels: f.params_str())
-            } else if let p = obs.target.eval(global) as? Procedure {
+            } else if let p = pair.car.eval(global) as? Procedure {
                 observer.initArgs(delayed_list_of_values(pair.cdr), labels: p.params_str())
             }
+            
+            observer.setName(pair.car.str("", level: 0))
+        } else {
+            print("unexpected error: leaf must be pair", terminator: "\n")
         }
-        observer.setName(obs.target.str("", level: 0))
     }
     
     // remove observer
@@ -45,6 +54,94 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         }
     }
     
+    // update observer
+    func update(leafid: UInt, newargs:[SExpr], newuid: UInt, olduid: UInt) {
+        for obs in observers {
+            obs.update(leafid, newargs: newargs, newuid: newuid, olduid: olduid)
+        }
+    }
+    
+    ///// Look up location of uid /////
+    
+    public func lookup_treeindex_of(uid: UInt) -> Int {
+        for var i = 0; trees.count > i; i++ {
+            let res = trees[i].lookup_exp(uid)
+            
+            if !res.target.isNull() {
+                return i
+            }
+        }
+        
+        return -1
+    }
+    
+    // lookup uid of s-expression which include designated uid object.
+    public func lookup_leaf_of(uid: UInt) -> UInt {
+        for tree in trees {
+            if tree.uid == uid {
+                return uid
+            } else {
+                if let pair = tree as? Pair {
+                    let res = rec_lookup_leaf(uid, expr: pair)
+                    if res > 0 {
+                        return res
+                    }
+                }
+            }
+        }
+        return 0
+    }
+    
+    private func rec_lookup_leaf(uid: UInt, expr: Pair) -> UInt {
+        var unchecked : [Pair] = []
+        let chain = gen_pairchain_of_leaf(expr)
+        
+        for pair in chain {
+            if pair.car.uid == uid {
+                
+                return expr.uid
+                
+                /*
+                if let pair2 = pair.car as? Pair {
+                    return pair2.uid
+                } else {
+                    return expr.uid
+                }
+                */
+            } else if pair.cdr.uid == uid {
+                return expr.uid
+            } else {
+                if let pair2 = pair.car as? Pair {
+                    unchecked.append(pair2)
+                }
+            }
+        }
+        
+        while unchecked.count > 0 {
+            let head = unchecked.removeLast()
+            let res = rec_lookup_leaf(uid, expr: head)
+            if res > 0 {
+                return res
+            }
+        }
+        
+        return 0
+    }
+    
+    private func gen_pairchain_of_leaf(exp:SExpr) -> [Pair] {
+        var acc : [Pair] = []
+        var head = exp
+        
+        while true {
+            if let pair = head as? Pair {
+                acc.append(pair)
+                head = pair.cdr
+            } else {
+                return acc
+            }
+        }
+        
+    }
     
     ///// Manipulating S-Expression /////
     
@@ -77,21 +174,23 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
                 
                 trees.append(list)
                 
-                return s.uid
+                return list.uid
             } else if let prim = s.eval(global) as? Primitive {
                 
                 let list = genSExp(prim)
                 list.car = s
                 
                 trees.append(list)
-                return s.uid
+                return list.uid
             }
             
-            // add special forms
+        // add special forms
         } else if let f = expr as? Form {
             
-            trees.append(genSExp(f))
-            return f.uid
+            let list = genSExp(f)
+            
+            trees.append(list)
+            return list.uid
         }
         
         return nil//failed to add exp
@@ -136,25 +235,98 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         return MNull()
     }
     
-    public func overwrite(uid: UInt, rawstr: String) {
+    public func new_arg(uid: UInt, rawstr: String) {
+        
+    }
+    
+    public func overwrite_arg(uid: UInt, rawstr: String) {
         let res = lookup(uid)
         if let pair = res.conscell as? Pair {
             pair.car = readln(rawstr)
         }
+        
+        print_exps()
     }
     
-    public func insert(uid: UInt, toNextOfUid: UInt) {
-        let nextTo = lookup(toNextOfUid)
+    public func link_toArg(ofleafid:UInt, uid: UInt, fromUid: UInt) {
+        let res = lookup(uid)
+        let rewrite = lookup(fromUid)
         
-        if let pair = nextTo.conscell as? Pair {
+        // if target leaf has been linked, unlink from member of tree.
+        if !rewrite.conscell.isNull() {
+            let oldleafid = lookup_leaf_of(fromUid)
+            unlink_arg(fromUid, ofleafid: oldleafid)
+        }
+        
+        // remove from trees of interpreter
+        for var i = 0; trees.count > i; i++ {
+            if trees[i].uid == fromUid {
+                trees.removeAtIndex(i)
+                print("leaf (id: \(fromUid)) removed from interpreter trees", terminator: "\n")
+            }
+        }
+        
+        if let pair = res.conscell as? Pair {
             
-            let subject = remove(uid)
+            // if old argument is Pair, append it to interpreter trees before overwrite.
+            if let removed = res.target as? Pair {
+                trees.append(removed)
+                print("leaf (id: \(removed.uid)) added to interpreter trees", terminator: "\n")
+            }
             
-            let newPair = Pair(car: subject, cdr: pair.cdr)
-            pair.cdr = newPair
+            pair.car = rewrite.target
+        }
+        
+        update(ofleafid, newargs: [rewrite.target], newuid: fromUid, olduid: uid)
+        
+        print_exps()
+    }
+    
+    public func unlink_arg(uid: UInt, ofleafid: UInt) {
+        let res = lookup(uid)
+        
+        //if !res.target.isNull() {
+        // move to interpreter trees
+        trees.append(res.target)
+        print("leaf (id: \(res.target.uid)) added to interpreter trees", terminator: "\n")
+        //}
+        
+        // remove from current tree
+        if let pair = res.conscell as? Pair {
+            pair.car = MStr(_value: "<unlinked>")
+            
+            print("unlink old arg (id: \(uid)) in leaf (id: \(ofleafid))", terminator: "\n")
+            
+            update(ofleafid, newargs: [pair.car], newuid: pair.car.uid, olduid: uid)
+        }
+    }
+    
+    public func remove_arg(uid:UInt) {
+        let removedArg = lookup(uid)
+        let parent = lookup(removedArg.conscell.uid)
+        
+        if let parentPair = parent.conscell as? Pair, let removedPair = removedArg.conscell as? Pair {
+            parentPair.cdr = removedPair.cdr
+        } else {
+            print("error: unexpected remove of element", terminator: "\n")
+        }
+    }
+    
+    public func set_ref(uid:UInt, symbolUid: UInt) {
+        
+    }
+    
+    public func move_arg(uid: UInt, toNextOfUid: UInt) {
+        let nextTo = lookup(toNextOfUid)
+        let moveArg = lookup(uid)
+        
+        if let pair1 = nextTo.conscell as? Pair, let pair2 = moveArg.conscell as? Pair  {
+            
+            pair1.car = moveArg.target
+            pair2.car = nextTo.target
             
         } else {
-            print("error: move element must move inside conscell.", terminator: "")
+            print("error: move element must move inside conscell.", terminator: "\n")
         }
     }
     
@@ -180,12 +352,19 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
             }
         }
         
-        acc["special form"] = ["define", "set!", "if", "quote", "lambda", "begin"]
+        acc["lisp special form"] = ["define", "set!", "if", "quote", "lambda", "begin"]
         
         return acc
     }
 
-
+    ///// debugging /////
+    
+    func print_exps() {
+        for tree in trees {
+            //print(tree._debug_string(),terminator: "\n")
+            print(tree.str("  ", level: 1),terminator: "\n")
+        }
+    }
 }
 
 /*

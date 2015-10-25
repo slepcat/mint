@@ -12,9 +12,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                             
     @IBOutlet weak var window: NSWindow!
     @IBOutlet weak var leafpanel : MintLeafPanelController!
-    //@IBOutlet var modelView: MintModelViewController!
+    @IBOutlet var modelView: MintModelViewController!
     @IBOutlet var workspace: MintWorkspaceController!
     @IBOutlet var controller: MintController!
+    
+    let mint3dout = Mint3DPort()
+    let minterrout = MintErrPort()
 
     // MINT Controller
 
@@ -22,10 +25,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Insert code here to initialize your application
         
         // prepare MintInterpreter
-        let interpreter = MintInterpreter()
+        let interpreter = MintInterpreter(port: mint3dout, errport: minterrout)
         
         controller.interpreter = interpreter
         workspace.interpreter = interpreter
+        modelView.port = mint3dout
         
         //prepare leafpanel
         leafpanel.updateContents(interpreter.defined_exps())

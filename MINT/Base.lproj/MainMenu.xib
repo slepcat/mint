@@ -16,6 +16,7 @@
             <connections>
                 <outlet property="controller" destination="a2f-zn-Vx6" id="Rza-3C-Rxd"/>
                 <outlet property="leafpanel" destination="NAm-X9-eSI" id="454-zr-58r"/>
+                <outlet property="modelView" destination="czX-Ux-6fY" id="Vte-JP-vct"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="pDk-UV-PHR"/>
                 <outlet property="workspace" destination="qTW-t7-DNO" id="g2B-WD-MoT"/>
             </connections>
@@ -440,11 +441,13 @@
         </window>
         <customObject id="a2f-zn-Vx6" customClass="MintController" customModule="mint_temp_caseinsensitive_rename" customModuleProvider="target">
             <connections>
+                <outlet property="modelView" destination="czX-Ux-6fY" id="umw-kI-cSp"/>
                 <outlet property="workspace" destination="qTW-t7-DNO" id="2oj-Dy-M2F"/>
             </connections>
         </customObject>
         <customObject id="qTW-t7-DNO" customClass="MintWorkspaceController" customModule="mint_temp_caseinsensitive_rename" customModuleProvider="target">
             <connections>
+                <outlet property="controller" destination="a2f-zn-Vx6" id="Kk3-90-HM5"/>
                 <outlet property="workspace" destination="a6P-RF-7to" id="shM-YJ-c5z"/>
             </connections>
         </customObject>
@@ -454,6 +457,11 @@
                 <outlet property="toggleMenu" destination="Kx7-D3-xHX" id="Uaw-Ph-F15"/>
                 <outlet property="toolList" destination="Do7-6r-buh" id="6EW-Iq-s4w"/>
                 <outlet property="window" destination="HeK-tW-Hnd" id="AAq-V7-y1e"/>
+            </connections>
+        </customObject>
+        <customObject id="czX-Ux-6fY" customClass="MintModelViewController" customModule="mint_temp_caseinsensitive_rename" customModuleProvider="target">
+            <connections>
+                <outlet property="modelview" destination="xba-BG-uU9" id="nJp-H5-Cof"/>
             </connections>
         </customObject>
         <customView id="a6P-RF-7to" customClass="WorkspaceView">
@@ -589,27 +597,28 @@
             </connections>
             <point key="canvasLocation" x="-168.5" y="-312"/>
         </window>
-        <window title="View" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" animationBehavior="default" id="H9O-5J-z6M" customClass="NSPanel">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+        <window title="View" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" animationBehavior="default" id="ycA-bH-nok" customClass="NSPanel">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="139" y="81" width="500" height="520"/>
+            <rect key="contentRect" x="159" y="393" width="500" height="400"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
-            <view key="contentView" id="ohm-ck-Lfj">
-                <rect key="frame" x="0.0" y="0.0" width="500" height="520"/>
+            <value key="minSize" type="size" width="500" height="400"/>
+            <view key="contentView" id="udK-gV-unk">
+                <rect key="frame" x="0.0" y="0.0" width="500" height="400"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="gXU-9v-OKR" customClass="MintModelView">
-                        <rect key="frame" x="0.0" y="0.0" width="500" height="520"/>
+                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="xba-BG-uU9" customClass="MintModelView">
+                        <rect key="frame" x="0.0" y="0.0" width="500" height="400"/>
                     </customView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="gXU-9v-OKR" firstAttribute="top" secondItem="ohm-ck-Lfj" secondAttribute="top" id="A6F-44-s6E"/>
-                    <constraint firstAttribute="bottom" secondItem="gXU-9v-OKR" secondAttribute="bottom" id="RRL-7u-PVc"/>
-                    <constraint firstItem="gXU-9v-OKR" firstAttribute="leading" secondItem="ohm-ck-Lfj" secondAttribute="leading" id="eEy-t1-FUe"/>
-                    <constraint firstAttribute="trailing" secondItem="gXU-9v-OKR" secondAttribute="trailing" id="grB-mA-Ukh"/>
+                    <constraint firstItem="xba-BG-uU9" firstAttribute="top" secondItem="udK-gV-unk" secondAttribute="top" id="33n-4b-rhd"/>
+                    <constraint firstAttribute="trailing" secondItem="xba-BG-uU9" secondAttribute="trailing" id="KJ3-bY-MUb"/>
+                    <constraint firstAttribute="bottom" secondItem="xba-BG-uU9" secondAttribute="bottom" id="Zx6-ps-IcW"/>
+                    <constraint firstItem="xba-BG-uU9" firstAttribute="leading" secondItem="udK-gV-unk" secondAttribute="leading" id="hJg-dB-2tN"/>
                 </constraints>
             </view>
-            <point key="canvasLocation" x="186" y="-278"/>
+            <point key="canvasLocation" x="264" y="-323"/>
         </window>
     </objects>
     <resources>

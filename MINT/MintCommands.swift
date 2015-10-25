@@ -12,7 +12,7 @@ import Cocoa
 
 class AddLeaf:MintCommand {
     weak var workspace:MintWorkspaceController!
-    //weak var modelView: MintModelViewController!
+    weak var modelView: MintModelViewController!
     weak var interpreter: MintInterpreter!
     
     let leafType : String
@@ -26,9 +26,9 @@ class AddLeaf:MintCommand {
         self.pos = pos
     }
     
-    func prepare(workspace: MintWorkspaceController, /*modelView: MintModelViewController,*/ interpreter: MintInterpreter) {
+    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
         self.workspace = workspace
-        //self.modelView = modelView
+        self.modelView = modelView
         self.interpreter = interpreter
     }
     
@@ -154,23 +154,23 @@ class SetNewName:MintCommand {
         
     }
 }
-
+*/
 
 class LinkArgument:MintCommand {
-    let returnLeafID : Int
-    let argumentLeafID : Int
-    let argLabel : String
+    let returnLeafID : UInt
+    let argumentID : UInt
+    let argumentLeafID : UInt
     
-    var oldvalue : Any? = nil
+    var oldvalue : SExpr? = nil
     
     weak var workspace:MintWorkspaceController!
     weak var modelView: MintModelViewController!
     weak var interpreter: MintInterpreter!
     
-    init(returnID: Int, argumentID: Int, label: String) {
-        returnLeafID = returnID
-        argumentLeafID = argumentID
-        argLabel = label
+    init(retLeafID: UInt, argID: UInt, argleafID: UInt) {
+        returnLeafID = retLeafID
+        argumentLeafID = argleafID
+        argumentID = argID
     }
     
     func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
@@ -180,37 +180,23 @@ class LinkArgument:MintCommand {
     }
     
     func execute() {
-        // save old value for undo or exception restre operation
-        oldvalue = interpreter.getArgument(argumentLeafID, argLabel: argLabel)
+        // save old value for undo
+        oldvalue = interpreter.lookup(argumentID).target
         
         workspace.addLinkBetween(argumentLeafID, retleafID: returnLeafID)
-        modelView.removeMesh(returnLeafID)
-        interpreter.linkArgument(argumentLeafID, label: argLabel, retLeafID: returnLeafID)
         
-        // catch exception
-        if let err = MintErr.exc.catch {
-            switch err {
-            case .TypeInvalid(leafName: let name, leafID: let leafID, argname: let argname, required: let correcttype, invalid: let errtype):
-                print("Argument \"\(argname)\" of leaf \(name)(ID: \(leafID)) must be \"\(correcttype)\" type, not \"\(errtype)\" type.")
-                interpreter.removeLink(returnLeafID, argleafID: argumentLeafID, label: argLabel)
-                if let value = oldvalue {
-                    interpreter.setArgument(argumentLeafID, label: argLabel, arg: value)
-                }
-                workspace.removeLinkBetween(argumentLeafID, retleafID: returnLeafID)
-                modelView.addMesh(returnLeafID)
-            case .ReferenceLoop(leafName: let name, leafID: let leafID, argname: let argname):
-                print("Loop of reference is detected at argument \"\(argname)\" of Leaf \(name)(ID: \(leafID)).")
-                interpreter.removeLink(returnLeafID, argleafID: argumentLeafID, label: argLabel)
-                interpreter.loopCleared()
-                if let value = oldvalue {
-                    interpreter.setArgument(argumentLeafID, label: argLabel, arg: value)
-                }
-                workspace.removeLinkBetween(argumentLeafID, retleafID: returnLeafID)
-                modelView.addMesh(returnLeafID)
-            default:
-                MintErr.exc.raise(err)
-            }
+        let target = interpreter.lookup(returnLeafID)
+        if !target.conscell.isNull() {
+            let oldargLeafID = interpreter.lookup_leaf_of(target.conscell.uid)
+            workspace.removeLinkBetween(oldargLeafID, retleafID: returnLeafID)
         }
+        
+        if let oldargLeaf = oldvalue as? Pair {
+            workspace.removeLinkBetween(oldargLeaf.uid, retleafID: returnLeafID)
+        }
+        
+        interpreter.link_toArg(argumentLeafID, uid: argumentID, fromUid: returnLeafID)
+        
         modelView.setNeedDisplay()
     }
     
@@ -224,18 +210,16 @@ class LinkArgument:MintCommand {
 }
 
 class RemoveLink:MintCommand {
-    let argleafID : Int
-    let retleafID : Int
-    let argLabel : String
+    let argleafID : UInt
+    let argumentID : UInt
     
     weak var workspace:MintWorkspaceController!
     weak var modelView: MintModelViewController!
     weak var interpreter: MintInterpreter!
     
-    init(rmRetID: Int, rmArgID: Int, label: String) {
+    init(rmArgID: UInt, argID: UInt) {
         argleafID = rmArgID
-        retleafID = rmRetID
-        argLabel = label
+        argumentID = argID
     }
     
     func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
@@ -245,9 +229,11 @@ class RemoveLink:MintCommand {
     }
     
     func execute() {
-        interpreter.removeLink(retleafID, argleafID: argleafID, label: argLabel)
-        workspace.removeLinkBetween(argleafID, retleafID: retleafID)
-        modelView.addMesh(retleafID)
+        let argleafID = interpreter.lookup_leaf_of(argumentID)
+        
+        interpreter.unlink_arg(argumentID, ofleafid: argleafID)
+        
+        workspace.removeLinkBetween(argleafID, retleafID: argumentID)
         modelView.setNeedDisplay()
     }
     
@@ -260,6 +246,7 @@ class RemoveLink:MintCommand {
     }
 }
 
+/*
 class RemoveLeaf:MintCommand {
     let removeID : Int
     

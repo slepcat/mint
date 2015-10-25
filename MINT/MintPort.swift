@@ -10,6 +10,7 @@ import Foundation
 
 class Mint3DPort : MintPort, MintSubject {
     
+    var portid : Int = -1
     var obs : [MintObserver] = []
     var data : MintIO? = nil
     
@@ -20,7 +21,7 @@ class Mint3DPort : MintPort, MintSubject {
             self.data = data
 
             for o in obs {
-                o.update(self, uid: uid)
+                o.update(self, uid: 0)
             }
         }
     }

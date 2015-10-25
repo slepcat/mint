@@ -10,14 +10,17 @@ import Foundation
 
 class Display: Primitive {
     
-    let port : Mint3DPort = Mint3DPort()
+    let port : Mint3DPort
+    
+    init(port: Mint3DPort) {
+        self.port = port
+    }
     
     override func apply(args: [SExpr]) -> SExpr {
         
         var acc: [Double] = []
         var acc_normal: [Double] = []
         var acc_color: [Float] = []
-        var counter:UInt = 0
         
         for arg in args {
             let polys = delayed_list_of_values(arg)
@@ -57,10 +60,9 @@ class Display: Primitive {
                     return MNull()
                 }
             }
-            
-            port.write(IOMesh(mesh: acc, normal: acc_normal, color: acc_color), uid: counter)
-            counter++
         }
+        
+        port.write(IOMesh(mesh: acc, normal: acc_normal, color: acc_color), uid: 0)
         
         return MNull()
     }

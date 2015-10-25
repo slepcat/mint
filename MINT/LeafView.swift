@@ -59,7 +59,7 @@ import Cocoa
         
         nameTag.delegate = self
         
-        boundPath = NSBezierPath(roundedRect: NSRect(x: 34, y: 26, width: 32, height: 32), xRadius: 5.0, yRadius: 5.0)
+        boundPath = NSBezierPath(roundedRect: NSRect(x: 31, y: 26, width: 32, height: 32), xRadius: 5.0, yRadius: 5.0)
         boundPath?.lineWidth = 3.0
     }
     
@@ -100,11 +100,10 @@ import Cocoa
             
             setFrameOrigin(pos)
             
-            /*
             for link in linkviews {
-                link.update(controller.leafID, pos: frame.origin)
+                link.update(controller.uid, pos: frame.origin)
             }
-            */
+            
             autoscroll(theEvent)
             
             setNeedsDisplayInRect(frame)
@@ -119,11 +118,11 @@ import Cocoa
         //controller.reshapeWorkspace(frame)
         
         //print("after reshape x: \(frame.origin.x), y: \(frame.origin.y), width: \(frame.size.width), height:\(frame.size.height)")
-        /*
+        
         for link in linkviews {
-            link.update(controller.leafID, pos: frame.origin)
+            link.update(controller.uid, pos: frame.origin)
         }
-        */
+        
     }
     
     func isPointInItem(pos: NSPoint) -> Bool {
@@ -210,7 +209,7 @@ class MintReturnButton : NSButton, NSDraggingSource, NSPasteboardItemDataProvide
     // drag from argument
     /// set acceptable drag items
     override func awakeFromNib() {
-        self.registerForDraggedTypes(["argument"])
+        self.registerForDraggedTypes(["argumentID"])
     }
     
     /// Tell valid drag operation type. need to match with op. type of drag source.
@@ -231,14 +230,13 @@ class MintReturnButton : NSButton, NSDraggingSource, NSPasteboardItemDataProvide
         case NSDragOperation.Link:
             if let type = arg.stringForType("type") {
                 if type == "argumentLink" {
-                    if let arglabel = arg.stringForType("argument") {
-                        if let leafIDstr = arg.stringForType("sourceLeafID") {
-                            let leafID = NSString(string: leafIDstr).intValue
-                            
-                            //controller.setLinkFrom(Int(leafID), withArg: arglabel)
-                            
-                            return true
-                        }
+                    if let argIDstr = arg.stringForType("argumentID"), let leafIDstr = arg.stringForType("argLeafID") {
+                        let leafID = NSString(string: leafIDstr).integerValue
+                        let argID = NSString(string: argIDstr).integerValue
+                        
+                        controller.setLinkFrom(UInt(leafID), withArg: UInt(argID))
+                        
+                        return true
                     }
                 }
             }
@@ -394,9 +392,9 @@ class LinkView : NSView, MintLinkObserver {
         setNeedsDisplayInRect(frame)
         
         if leafID == argleafID {
-            argPoint = NSPoint(x: pos.x + 84, y: pos.y + 19)
+            argPoint = NSPoint(x: pos.x + 95, y: pos.y + 42)
         } else if leafID == retleafID {
-            retPoint = NSPoint(x: pos.x, y: pos.y + 19)
+            retPoint = NSPoint(x: pos.x, y: pos.y + 42)
         }
         
         let origin = NSPoint(x: min(argPoint.x, retPoint.x) - 1.5, y:min(argPoint.y, retPoint.y) - 1.5)

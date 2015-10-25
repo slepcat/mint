@@ -16,7 +16,9 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     @IBOutlet weak var leafview:LeafView!
     @IBOutlet weak var argList:NSTableView!
     
-    //weak var controller:MintController!
+    weak var controller:MintController!
+    
+    var obs : [MintLinkObserver] = []
     
     var uid : UInt
     var leafType : String = "Test"
@@ -74,21 +76,79 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     
     // observer protocol implementation
     /// update as observer
-    func update(arg: SExpr, uid: UInt) {
+    func update(leafid: UInt, newargs: [SExpr], newuid: UInt, olduid: UInt) {
         
-        for var i = 0; args.count > i; i++ {
+        if leafid == uid {
             
-            if args[i].uid == uid {
-                args[i].value = arg.str("", level: 0)
-                return
+            // if both of uids are '0', replace all arguments to 'newargs'
+            if olduid == 0 && newuid == 0 {
+                
+                //make [labels] array form args
+                var labels : [String] = []
+                
+                // remove current args
+                
+                args = []
+                
+                for a in args {
+                    labels.append(a.param)
+                }
+                
+                initArgs(newargs, labels: labels)
+                
+            // if only 'olduid' is '0', append new argument to last
+            } else if olduid == 0 {
+                if let newarg = newargs.last {
+                    switch newarg {
+                    case let ltrl as Literal:
+                        args.append((uid: ltrl.uid, param: "", value: ltrl.str("", level: 0), isRef: false))
+                    default:
+                        args.append((uid: newarg.uid, param: "", value: newarg.str("", level: 0), isRef: true))
+                    }
+                }
+                
+            // if only 'newuid' is '0', remove 'olduid' arg from list
+            } else if newuid == 0 {
+                for var i = 0; args.count > i; i++ {
+                    if args[i].uid == olduid {
+                        args.removeAtIndex(i)
+                    }
+                }
+                
+            // if both of uids are not '0', overwrite 'olduid' arg by 'newuid'
+            } else {
+                for var i = 0; args.count > i; i++ {
+                    if args[i].uid == olduid {
+                        if let newarg = newargs.last {
+                            args[i].uid = newuid
+                            args[i].value = newarg.str("", level: 0)
+                            
+                            if let _ = newarg as? Literal {
+                                args[i].isRef = false
+                            } else {
+                                args[i].isRef = true
+                            }
+                        }
+                    }
+                }
             }
+            
+            argList.reloadData()
+            print("reload data at leaf(id: \(uid))", terminator:"\n")
         }
     }
     
     /// init observer's arg value
-    func initArgs(args: [SExpr], labels: [String]) {
+    func initArgs(args: [SExpr], var labels: [String]) {
         
-        //:::: TODO: need to repair param input :::::
+        if args.count > labels.count {
+            var i = labels.count
+            
+            while args.count > i {
+                labels.append("")
+                i++
+            }
+        }
         
         for var i = 0; args.count > i; i++ {
             switch args[i] {
@@ -194,41 +254,36 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         let nameChange = SetNewName(leafID: leafID, newName: newName)
         controller.sendCommand(nameChange)
     }
+    */
     
     /// when dragged "argument" dropped in return button, generate link command for controller
     /// called by MintReturnButton
-    func setLinkFrom(leafID: Int , withArg: String) {
+    func setLinkFrom(leafID: UInt , withArg: UInt) {
         
-        print("link argument \(withArg) from leafID: \(leafID)")
+        print("overwrite the argument (id: \(withArg)) of leaf (id: \(leafID)) and make link from leafID: \(uid)")
         
-        let command = LinkArgument(returnID: self.leafID, argumentID: leafID, label: withArg)
+        let command = LinkArgument(retLeafID: self.uid, argID: withArg, argleafID: leafID)
         controller.sendCommand(command)
     }
     
     // when dragged "return" dropped in arguments button, generate link command for controller
     // called by 'MintArgumentCellView' and it's subclasses
-    func acceptLinkFrom(leafID: Int, toArg: String) {
+    func acceptLinkFrom(leafID: UInt, toArg: UInt) {
         print("link argument \(toArg) from leafID: \(leafID)")
         
-        let command = LinkArgument(returnID: leafID, argumentID: self.leafID, label: toArg)
+        let command = LinkArgument(retLeafID: uid, argID: toArg, argleafID: leafID)
         controller.sendCommand(command)
     }
     
     /// remove link when 'remove' button clicked
     /// called by 'MintArgumentCellView' and it's subclasses
-    func removeLink(label: String) {
-        for var i = 0; argLabels.count > i; i++ {
-            if argLabels[i] == label {
-                if let leaf = argValues[i] as? Leaf {
-                    let removeID = leaf.leafID
-                    
-                    let command = RemoveLink(rmRetID: removeID, rmArgID: leafID, label: argLabels[i])
-                    controller.sendCommand(command)
-                }
-                break
-            }
-        }
+    func removeLink(uid: UInt) {
+        
+        let command = RemoveLink(rmArgID: self.uid, argID: uid)
+        controller.sendCommand(command)
     }
+    
+    /*
     
     /// rehape workspace to fit leaves
     func reshapeWorkspace(newframe: CGRect) {
@@ -297,7 +352,6 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         return result as? NSView
     }
     
-    /*
     
     //////// 'Link' operations ////////
     
@@ -305,13 +359,13 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     /// Provide type of return value to NSPasteboard for dragging operation
     func tableView(tableView: NSTableView, writeRowsWithIndexes rowIndexes: NSIndexSet, toPasteboard pboard: NSPasteboard) -> Bool {
         pboard.clearContents()
-        pboard.declareTypes(["type", "sourceLeafID", "argument"], owner: self)
+        pboard.declareTypes(["type", "argLeafID", "argumentID"], owner: self)
         if pboard.setString("argumentLink", forType:"type" ) {
             
-            if pboard.setString("\(leafID)", forType: "sourceLeafID") {
+            if pboard.setString("\(uid)", forType: "argLeafID") {
                 let row = rowIndexes.firstIndex
                 if row != NSNotFound {
-                    if pboard.setString(argLabels[row], forType: "argument") {
+                    if pboard.setString("\(args[row].uid)", forType: "argumentID") {
                         return true
                     }
                 }
@@ -327,12 +381,10 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     
     // when "return" button dragged, generate drag as source
     // called by MintReturnButton
-    func beginDraggingReturn() -> (leafID: Int, type: String) {
+    func beginDraggingReturn() -> (leafID: UInt, type: String) {
         
-        
-        return (leafID, "")
+        return (uid, "")
     }
-    */
     
     // when dragged "return" entered in arguments button, show popover
     // called by 'MintArgumentCellView' and it's subclasses or 'MintArgumentButton'
@@ -340,7 +392,6 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         return true
     }
     
-    /*
     // 'LinkView' observer pattern implementation
     /// register 'Observer' for view
     func registerLinkObserverForView(obs: MintLinkObserver) {
@@ -351,5 +402,4 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     func removeLinkObserverFromView(obs: MintLinkObserver) {
         leafview.removeObserver(obs)
     }
-    */
 }
