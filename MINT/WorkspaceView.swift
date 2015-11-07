@@ -14,7 +14,7 @@ import AppKit
     
     @IBOutlet weak var controller : MintController!
     
-    let bgcolor = NSColor(calibratedWhite: 0.8, alpha: 1.0) //NSColor(catalogName: , colorName: NSBackgroundColorAttributeName)
+    let bgcolor = NSColor(calibratedWhite: 0.95, alpha: 1.0) //NSColor(catalogName: , colorName: NSBackgroundColorAttributeName)
     
     // draw background
     

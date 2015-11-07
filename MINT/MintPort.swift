@@ -14,7 +14,7 @@ class Mint3DPort : MintPort, MintSubject {
     var obs : [MintObserver] = []
     var data : MintIO? = nil
     
-    func write(data: MintIO, uid: UInt){
+    func write(data: MintIO, port: Int){
         
         if let _ = data as? IOMesh {
             
@@ -69,7 +69,7 @@ class MintErrPort : MintPort, MintSubject {
     var obs : [MintObserver] = []
     var err : String = ""
     
-    func write(data: MintIO, uid: UInt){
+    func write(data: MintIO, port: Int){
         if let errobj = data as? IOErr {
             
             err = errobj.err

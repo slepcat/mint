@@ -16,11 +16,18 @@ class Display: Primitive {
         self.port = port
     }
     
-    override func apply(args: [SExpr]) -> SExpr {
+    override func apply(var args: [SExpr]) -> SExpr {
         
         var acc: [Double] = []
         var acc_normal: [Double] = []
         var acc_color: [Float] = []
+        var portid = 0
+        
+        if args.count > 0 {
+            if let p = args.removeAtIndex(0) as? MInt {
+                portid = p.value
+            }
+        }
         
         for arg in args {
             let polys = delayed_list_of_values(arg)
@@ -56,15 +63,23 @@ class Display: Primitive {
                     }
                     
                 } else {
-                    print("display take only polygons", terminator: "")
+                    print("display take only polygons", terminator: "\n")
                     return MNull()
                 }
             }
         }
         
-        port.write(IOMesh(mesh: acc, normal: acc_normal, color: acc_color), uid: 0)
+        port.write(IOMesh(mesh: acc, normal: acc_normal, color: acc_color), port: portid)
         
         return MNull()
+    }
+    
+    override var category : String {
+        get {return "3D Primitives"}
+    }
+    
+    override func params_str() -> [String] {
+        return ["portid", "poly."]
     }
     
     private func delayed_list_of_values(_opds :SExpr) -> [SExpr] {

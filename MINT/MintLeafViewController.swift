@@ -9,12 +9,21 @@
 import Foundation
 import Cocoa
 
+enum type {
+    case link
+    case ref
+    case val
+    case proc
+    case def
+}
+
 // Controller of leaf view
 // Manage user actions: Arguments inputs and link.
 class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegate, NSTextFieldDelegate, NSDraggingDestination, MintLeafObserver {
-    @IBOutlet weak var argsPopover:NSPopover!
+    @IBOutlet weak var opdsPopover:NSPopover!
     @IBOutlet weak var leafview:LeafView!
-    @IBOutlet weak var argList:NSTableView!
+    @IBOutlet weak var operandList:NSTableView!
+    @IBOutlet weak var output:NSTextField!
     
     weak var controller:MintController!
     
@@ -28,7 +37,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     var xibObjects : NSArray?
     
     //Arguments List
-    var args : [(uid: UInt, param: String, value: String, isRef: Bool)] = []
+    var opds : [(uid: UInt, param: String, value: String, type: type)] = []
     
     // management of view. commmand receivers
     /// setup leafview with xib file
@@ -41,11 +50,11 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
             print("Failed to load xib, leaf view")
         } else {
             // set data source and delegate for NSTableView
-            argList.setDataSource(self as NSTableViewDataSource)
-            argList.setDelegate(self as NSTableViewDelegate)
+            operandList.setDataSource(self as NSTableViewDataSource)
+            operandList.setDelegate(self as NSTableViewDelegate)
             
             // set drag operation mask
-            argList.setDraggingSourceOperationMask(NSDragOperation.Link, forLocal: true)
+            operandList.setDraggingSourceOperationMask(NSDragOperation.Link, forLocal: true)
             
         }
         
@@ -67,95 +76,139 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     
     
     // Show popover
-    @IBAction func showArgPopover(sender: AnyObject) {
+    @IBAction func showOpdsPopover(sender: AnyObject) {
         
         if let view = sender as? NSView {
-            argsPopover.showRelativeToRect(view.bounds, ofView: view, preferredEdge: NSRectEdge.MaxY)
+            opdsPopover.showRelativeToRect(view.bounds, ofView: view, preferredEdge: NSRectEdge.MaxY)
         }
     }
     
     // observer protocol implementation
     /// update as observer
-    func update(leafid: UInt, newargs: [SExpr], newuid: UInt, olduid: UInt) {
+    func update(leafid: UInt, newopds: [SExpr], newuid: UInt, olduid: UInt) {
         
         if leafid == uid {
             
-            // if both of uids are '0', replace all arguments to 'newargs'
+            // if both of uids are '0', replace all arguments to 'newopds'
             if olduid == 0 && newuid == 0 {
                 
-                //make [labels] array form args
+                //make [labels] array form opds
                 var labels : [String] = []
                 
-                // remove current args
+                // remove current opds
                 
-                args = []
+                opds = []
                 
-                for a in args {
+                for a in opds {
                     labels.append(a.param)
                 }
                 
-                initArgs(newargs, labels: labels)
+                init_opds(newopds, labels: labels)
+                if let name = newopds.first?.str("", level: 0) {
+                    setName(name)
+                }
                 
             // if only 'olduid' is '0', append new argument to last
             } else if olduid == 0 {
-                if let newarg = newargs.last {
-                    switch newarg {
+                if let newopd = newopds.last {
+                    switch newopd {
                     case let ltrl as Literal:
-                        args.append((uid: ltrl.uid, param: "", value: ltrl.str("", level: 0), isRef: false))
+                        opds.append((uid: ltrl.uid, param: "", value: ltrl.str("", level: 0), type: type.val))
+                    case let pair as Pair:
+                        opds.append((uid: pair.uid, param: "", value: "link to: \(pair.car.str("", level: 0))", type: type.link))
+                    case let def as MDefine:
+                        self.opds.append((uid: def.uid, param: "", value: def.str("", level: 0), type: type.def))
+                    case let form as Form:
+                        self.opds.append((uid: form.uid, param: "proc", value: form.str("", level: 0), type: type.proc))
+                    case let proc as Procedure:
+                        self.opds.append((uid: proc.uid, param: "proc", value: proc.str("", level: 0), type: type.proc))
                     default:
-                        args.append((uid: newarg.uid, param: "", value: newarg.str("", level: 0), isRef: true))
+                        opds.append((uid: newopd.uid, param: "", value: newopd.str("", level: 0), type: type.ref))
+                    }
+                    
+                    //:::: if adde opd is head (never run? delete in the case)
+                    if opds.count == 1 {
+                        setName(newopd.str("", level: 0))
                     }
                 }
                 
-            // if only 'newuid' is '0', remove 'olduid' arg from list
+            // if only 'newuid' is '0', remove 'olduid' opd from list
             } else if newuid == 0 {
-                for var i = 0; args.count > i; i++ {
-                    if args[i].uid == olduid {
-                        args.removeAtIndex(i)
+                for var i = 0; opds.count > i; i++ {
+                    if opds[i].uid == olduid {
+                        opds.removeAtIndex(i)
                     }
                 }
                 
-            // if both of uids are not '0', overwrite 'olduid' arg by 'newuid'
+            // if both of uids are not '0', overwrite 'olduid' opd by 'newuid'
             } else {
-                for var i = 0; args.count > i; i++ {
-                    if args[i].uid == olduid {
-                        if let newarg = newargs.last {
-                            args[i].uid = newuid
-                            args[i].value = newarg.str("", level: 0)
+                for var i = 0; opds.count > i; i++ {
+                    if opds[i].uid == olduid {
+                        if let newopd = newopds.last {
+                            opds[i].uid = newuid
                             
-                            if let _ = newarg as? Literal {
-                                args[i].isRef = false
-                            } else {
-                                args[i].isRef = true
+                            switch newopd {
+                            case let ltrl as Literal:
+                                opds[i].value = ltrl.str("", level: 0)
+                                opds[i].type = type.val
+                            case let pair as Pair:
+                                opds[i].value = "link to: \(pair.car.str("", level: 0))"
+                                opds[i].type = type.link
+                            case let def as MDefine:
+                                opds[i].value = def.str("", level: 0)
+                                opds[i].type = type.def
+                            case let form as Form:
+                                opds[i].value = form.str("", level: 0)
+                                opds[i].type = type.proc
+                            default:
+                                opds[i].value = newopd.str("", level: 0)
+                                if i == 0 {
+                                    opds[i].type = type.proc
+                                } else {
+                                    opds[i].type = type.ref
+                                }
+                            }
+                            
+                            if i == 0 {
+                                setName(newopd.str("", level: 0))
                             }
                         }
                     }
                 }
             }
-            
-            argList.reloadData()
             print("reload data at leaf(id: \(uid))", terminator:"\n")
+            operandList.reloadData()
         }
     }
     
-    /// init observer's arg value
-    func initArgs(args: [SExpr], var labels: [String]) {
+    /// init observer's proc and opd value
+    func init_opds(opds: [SExpr], var labels: [String]) {
         
-        if args.count > labels.count {
+        if opds.count > labels.count {
             var i = labels.count
             
-            while args.count > i {
+            while opds.count > i {
                 labels.append("")
                 i++
             }
         }
         
-        for var i = 0; args.count > i; i++ {
-            switch args[i] {
+        for var i = 0; opds.count > i; i++ {
+            switch opds[i] {
             case let ltrl as Literal:
-                self.args.append((uid: ltrl.uid, param: labels[i], value: ltrl.str("", level: 0), isRef: false))
+                self.opds.append((uid: ltrl.uid, param: labels[i], value: ltrl.str("", level: 0), type: type.val))
+            case let pair as Pair:
+                self.opds.append((uid: pair.uid, param: labels[i], value: "link to: \(pair.car.str("", level: 0))", type: type.link))
+            case let def as MDefine:
+                self.opds.append((uid: def.uid, param: labels[i], value: def.str("", level: 0), type: type.def))
+            case let form as Form:
+                self.opds.append((uid: form.uid, param: labels[i], value: form.str("", level: 0), type: type.proc))
             default:
-                self.args.append((uid: args[i].uid, param: labels[i], value: "\(args[i].uid)", isRef: true))
+                if i == 0 {
+                    self.opds.append((uid: opds[i].uid, param: labels[i], value: opds[i].str("", level: 0), type: type.proc))
+                } else {
+                    self.opds.append((uid: opds[i].uid, param: labels[i], value: opds[i].str("", level: 0), type: type.ref))
+                }
             }
         }
     }
@@ -168,6 +221,20 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     
     ///////// Mint Command ////////////
     
+    /// tell 'controller' when a operand is modified
+    func operand(uid: UInt ,valueDidEndEditing value: String) {
+        
+        // if uid is '0', new opd added.
+        if uid == 0 {
+            let addOpd = AddOperand(leafid: self.uid, newvalue: value)
+            controller.sendCommand(addOpd)
+        // if uid is not '0', overwrite current uid.
+        } else {
+            let setOpd = SetOperand(argid: uid, leafid: self.uid, newvalue: value)
+            controller.sendCommand(setOpd)
+        }
+    }
+    
     /*
     
     // hand over 'MintCommand' from view to 'MintController'
@@ -176,111 +243,90 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         let command = RemoveLeaf(removeID: leafID)
         controller.sendCommand(command)
     }
-    
-    /// tell 'controller' when a argument is modified
-    func argument(label: String ,valueShouldEndEditing value: String) {
-        
-        var setArg : SetArgument
-        
-        // Convert argument value from string to primitives
-        for var i = 0; argLabels.count > i; i++ {
-            if argLabels[i] == label.pathComponents[0] {
-                switch argTypes[i] {
-                case "Double":
-                    let arg = NSString(string: value).doubleValue
-                    setArg = SetArgument(updateID: leafID, label: argLabels[i], arg: arg)
-                    controller.sendCommand(setArg)
-                case "Int":
-                    let arg = Int(NSString(string: value).intValue)
-                    setArg = SetArgument(updateID: leafID, label: argLabels[i], arg: arg)
-                    controller.sendCommand(setArg)
-                case "String":
-                    setArg = SetArgument(updateID: leafID, label: argLabels[i], arg: value)
-                    controller.sendCommand(setArg)
-                case "Vector":
-                    if let vec = argValues[i] as? Vector {
-                        var result : Vector?
-                        
-                        let s = NSString(string: value).doubleValue
-                        
-                        switch label.lastPathComponent {
-                        case "x":
-                            result = Vector(x: s, y: vec.y, z: vec.z)
-                        case "y":
-                            result = Vector(x: vec.x, y: s, z: vec.z)
-                        case "z":
-                            result = Vector(x: vec.x, y: vec.y, z: s)
-                        default:
-                            result = nil
-                        }
-                        
-                        if let vec = result {
-                            setArg = SetArgument(updateID: leafID, label: label.pathComponents[0], arg: vec)
-                            controller.sendCommand(setArg)
-                        }
-                    }
-                case "Bool":
-                    break
-                default:
-                    break
-                }
-                break
-            }
-        }
-    }
-    
-    /// tell 'controller' when a argument is modified. case of NSColor
-    func argument(label: String, color: NSColor) {
-        var setArg : SetArgument
-        
-        // Convert argument value from string to primitives
-        for var i = 0; argLabels.count > i; i++ {
-            if argLabels[i] == label.pathComponents[0] {
-                switch argTypes[i] {
-                case "Color":
-                    let mintcolor = Color(r: Float(color.redComponent), g: Float(color.greenComponent), b: Float(color.blueComponent), a: Float(1.0))
-                    setArg = SetArgument(updateID: leafID, label: label, arg: mintcolor)
-                    controller.sendCommand(setArg)
-                default:
-                    break
-                }
-                break
-            }
-        }
-    }
-    
-    /// tell 'controller' when leaf name is changed
-    func nameChanged(newName: String) {
-        let nameChange = SetNewName(leafID: leafID, newName: newName)
-        controller.sendCommand(nameChange)
-    }
     */
     
     /// when dragged "argument" dropped in return button, generate link command for controller
     /// called by MintReturnButton
+    
     func setLinkFrom(leafID: UInt , withArg: UInt) {
         
-        print("overwrite the argument (id: \(withArg)) of leaf (id: \(leafID)) and make link from leafID: \(uid)")
-        
-        let command = LinkArgument(retLeafID: self.uid, argID: withArg, argleafID: leafID)
-        controller.sendCommand(command)
+        if withArg != 0 {
+            print("overwrite the argument (id: \(withArg)) of leaf (id: \(leafID)) and make link from leafID: \(uid)")
+            let command = LinkOperand(retLeafID: self.uid, argID: withArg, argleafID: leafID)
+            controller.sendCommand(command)
+        }
     }
     
     // when dragged "return" dropped in arguments button, generate link command for controller
-    // called by 'MintArgumentCellView' and it's subclasses
+    // called by 'MintOperandCellView' and it's subclasses
     func acceptLinkFrom(leafID: UInt, toArg: UInt) {
-        print("link argument \(toArg) from leafID: \(leafID)")
         
-        let command = LinkArgument(retLeafID: uid, argID: toArg, argleafID: leafID)
-        controller.sendCommand(command)
+        if toArg != 0 {
+            print("overwrite the argument (id: \(toArg)) of leaf (id: \(uid)) and make link from leafID: \(leafID)")
+            let command = LinkOperand(retLeafID: leafID, argID: toArg, argleafID: self.uid)
+            controller.sendCommand(command)
+        } else {
+            let command1 = AddOperand(leafid: uid, newvalue: "")
+            controller.sendCommand(command1)
+            
+            if let newopd = opds.last {
+                let command2 = LinkOperand(retLeafID: leafID, argID: newopd.uid, argleafID: self.uid)
+                controller.sendCommand(command2)
+            }
+        }
     }
     
-    /// remove link when 'remove' button clicked
-    /// called by 'MintArgumentCellView' and it's subclasses
-    func removeLink(uid: UInt) {
+    /// when dragged "argument" dropped in return button of "define" special form, generate ref command for controller
+    /// called by MintReturnButton
+    func setRefFrom(leafID: UInt, withArg: UInt) {
+        if withArg != 0 {
+            let command = SetReference(retLeafID: self.uid, argID: withArg, argleafID: leafID)
+            controller.sendCommand(command)
+        }
+    }
+    
+    /// when dragged "return" of "define" dropped in arguments button, generate ref command for controller
+    /// called by 'MintOperandCellView' and it's subclasses
+    func acceptRefFrom(leafID: UInt, toArg: UInt) {
         
-        let command = RemoveLink(rmArgID: self.uid, argID: uid)
-        controller.sendCommand(command)
+        if toArg != 0 {
+            let command = SetReference(retLeafID: leafID, argID: toArg, argleafID: self.uid)
+            controller.sendCommand(command)
+        } else {
+            let command1 = AddOperand(leafid: uid, newvalue: "")
+            controller.sendCommand(command1)
+            
+            if let newopd = opds.last {
+                let command2 = SetReference(retLeafID: leafID, argID: newopd.uid, argleafID: self.uid)
+                controller.sendCommand(command2)
+            }
+        }
+    }
+    
+    
+    /// remove argument or link when 'remove' button clicked
+    /// called by 'MintOperandCellView' and it's subclasses
+    func remove(uid: UInt) {
+        for opd in opds {
+            if opd.uid == uid {
+                switch opd.type {
+                case .link:
+                    let command = RemoveLink(rmArgID: self.uid, argID: uid)
+                    controller.sendCommand(command)
+                    return
+                case .val, .proc:
+                    let command = RemoveOperand(argid: uid, ofleafid: self.uid)
+                    controller.sendCommand(command)
+                    return
+                case .ref:
+                    let command = RemoveReference(rmArgID: self.uid, argID: uid)
+                    controller.sendCommand(command)
+                    return
+                case .def:
+                    return
+                }
+            }
+        }
     }
     
     /*
@@ -299,7 +345,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     // Provide arguments list. NSTableView delegate & data source implementation
     /// Provide number of list
     func numberOfRowsInTableView(tableView: NSTableView) -> Int {
-        return args.count
+        return opds.count + 1 // for adding new argument, plus 1 row.
     }
     
     /// Provide data for NSTableView
@@ -312,8 +358,8 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
             identifier = "paramCell"
         case "Values":
             identifier = "valueCell"
-        case "Ref":
-            identifier = "refCell"
+        case "Rm":
+            identifier = "rmCell"
         default:
             identifier = ""
         }
@@ -322,29 +368,55 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         
         switch identifier {
         case "paramCell":
-            if let paramView = result as? NSTableCellView {
-                paramView.textField?.stringValue = args[row].param
+            if let paramView = result as? MintOperandCellView {
+                
+                if opds.count > row {
+                    paramView.uid = opds[row].uid
+                    paramView.textField?.stringValue = opds[row].param
+                } else {
+                    paramView.uid = 0
+                    paramView.textField?.stringValue = "add value"
+                }
+                
                 paramView.textField?.editable = false
+                paramView.controller = self
             }
         case "valueCell":
-            if let valueView = result as? NSTableCellView { // replace MintArgCellView
-                valueView.textField?.stringValue = args[row].value
-                if args[row].isRef {
-                    valueView.textField?.editable = false
+            if let valueView = result as? MintOperandCellView {
+                if opds.count > row {
+                    valueView.uid = opds[row].uid
+                    valueView.textField?.stringValue = opds[row].value
+                    switch opds[row].type {
+                    case .val:
+                        valueView.textField?.editable = true
+                    case .proc:
+                        valueView.textField?.editable = true
+                    case .link:
+                        valueView.textField?.editable = false
+                    case .ref:
+                        valueView.textField?.editable = false
+                    case .def:
+                        valueView.textField?.editable = false
+                    }
                 } else {
+                    valueView.uid = 0
+                    valueView.textField?.stringValue = ""
                     valueView.textField?.editable = true
                 }
+                
+                valueView.controller = self
             }
-        //case "isRef":
-            /*
-            if let refView = result as? NSTableCellView { //replace MintRefCellView
-                if args[row].isRef {
-                    // refView.rmButton.enabled = true
+        case "rmCell":
+            if let rmView = result as? MintRmOpdCellView { //replace MintRefCellView
+                if opds.count > row {
+                    rmView.uid = opds[row].uid
+                    rmView.rmbutton.enabled = true
                 } else {
-                    // refView.rmButton.enabled = false
+                    rmView.rmbutton.enabled = false
                 }
+                
+                rmView.controller = self
             }
-            */
         default:
             print("Unknown type cell err")
         }
@@ -360,13 +432,16 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     func tableView(tableView: NSTableView, writeRowsWithIndexes rowIndexes: NSIndexSet, toPasteboard pboard: NSPasteboard) -> Bool {
         pboard.clearContents()
         pboard.declareTypes(["type", "argLeafID", "argumentID"], owner: self)
+        
         if pboard.setString("argumentLink", forType:"type" ) {
             
             if pboard.setString("\(uid)", forType: "argLeafID") {
                 let row = rowIndexes.firstIndex
                 if row != NSNotFound {
-                    if pboard.setString("\(args[row].uid)", forType: "argumentID") {
-                        return true
+                    if opds.count > row {
+                        if pboard.setString("\(opds[row].uid)", forType: "argumentID") {
+                            return true
+                        }
                     }
                 }
             }
@@ -376,7 +451,39 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     
     // accept drop from return button
     func tableView(tableView: NSTableView, acceptDrop info: NSDraggingInfo, row: Int, dropOperation: NSTableViewDropOperation) -> Bool {
-        return true
+        let pboad = info.draggingPasteboard()
+        let pbitems = pboad.readObjectsForClasses([NSPasteboardItem.self], options: nil)
+        
+        if let item = pbitems?.last as? NSPasteboardItem {
+            // pasteboardItemDataProvider is called when below line excuted.
+            // but not reflect to return value. API bug??
+            // After excution of the line, returnLeafID become available.
+            Swift.print(item.stringForType("com.mint.mint.returnLeafID"), terminator: "\n")
+        }
+        
+        switch info.draggingSourceOperationMask() {
+        case NSDragOperation.Link:
+            if let leafIDstr = pboad.stringForType("com.mint.mint.returnLeafID") {
+                
+                if opds.count > row {
+                    let leafID = NSString(string: leafIDstr).intValue
+                    acceptLinkFrom(UInt(leafID), toArg: opds[row].uid)
+                    return true
+                }
+                
+            } else if let leafIDstr = pboad.stringForType("com.mint.mint.referenceLeafID") {
+                
+                if opds.count > row {
+                    let leafID = NSString(string: leafIDstr).intValue
+                    acceptRefFrom(UInt(leafID), toArg: opds[row].uid)
+                    return true
+                }
+                
+            }
+        default: //anything else will be failed
+            return false
+        }
+        return false
     }
     
     // when "return" button dragged, generate drag as source
@@ -387,7 +494,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     }
     
     // when dragged "return" entered in arguments button, show popover
-    // called by 'MintArgumentCellView' and it's subclasses or 'MintArgumentButton'
+    // called by 'MintOperandCellView' and it's subclasses or 'MintArgumentButton'
     func isLinkReqAcceptable() -> Bool {
         return true
     }

@@ -55,7 +55,7 @@ class MintWorkspaceController:NSObject {
         workspace.frame = newframerect
     }
     
-    func addLinkBetween(argleafID: UInt, retleafID: UInt) {
+    func addLinkBetween(argleafID: UInt, retleafID: UInt, isRef: Bool) {
         
         for link in linkviews {
             if link.argleafID == argleafID && link.retleafID == retleafID {
@@ -114,6 +114,10 @@ class MintWorkspaceController:NSObject {
         newlink.argleafID = argleafID
         newlink.retleafID = retleafID
         newlink.linkcounter++
+        
+        if isRef {
+            newlink.setRefColor()
+        }
         
         linkviews.append(newlink)
         
@@ -175,6 +179,15 @@ class MintWorkspaceController:NSObject {
         for view in viewStack {
             if view.uid == leafID {
                 // view.removeLinkObserverFromView(link)
+                break
+            }
+        }
+    }
+    
+    func return_value(output: String, uid: UInt) {
+        for leaf in viewStack {
+            if leaf.uid == uid {
+                leaf.output.stringValue = output
                 break
             }
         }

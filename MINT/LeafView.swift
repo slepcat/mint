@@ -13,7 +13,7 @@ import Cocoa
 @objc(LeafView) class LeafView : NSView, NSTextFieldDelegate, MintLinkSubject {
     @IBOutlet weak var controller : MintLeafViewController!
     @IBOutlet weak var nameTag : NSTextField!
-    @IBOutlet weak var errStdOut : NSTextField!
+    //@IBOutlet weak var errStdOut : NSTextField!
     
     var linkviews : [MintLinkObserver] = []
     
@@ -201,8 +201,8 @@ import Cocoa
 }
 
 // Return value button represent return value of leaf in LeafView
-// Accept drag & drop from 'MintArgumentCellView'
-// Source of drag & drop to 'MintArgumentCellView'
+// Accept drag & drop from 'MintOperandCellView'
+// Source of drag & drop to 'MintOperandCellView'
 class MintReturnButton : NSButton, NSDraggingSource, NSPasteboardItemDataProvider {
     @IBOutlet weak var controller : MintLeafViewController!
     
@@ -234,7 +234,11 @@ class MintReturnButton : NSButton, NSDraggingSource, NSPasteboardItemDataProvide
                         let leafID = NSString(string: leafIDstr).integerValue
                         let argID = NSString(string: argIDstr).integerValue
                         
-                        controller.setLinkFrom(UInt(leafID), withArg: UInt(argID))
+                        if controller.leafName == "define" {
+                            //controller.setRefFrom
+                        } else {
+                            controller.setLinkFrom(UInt(leafID), withArg: UInt(argID))
+                        }
                         
                         return true
                     }
@@ -250,7 +254,12 @@ class MintReturnButton : NSButton, NSDraggingSource, NSPasteboardItemDataProvide
     /// override mousedown()
     override func mouseDown(theEvent: NSEvent) {
         let pbItem : NSPasteboardItem = NSPasteboardItem()
-        pbItem.setDataProvider(self, forTypes: ["com.mint.mint.returnLeafID"])
+        
+        if controller.leafName == "define" {
+            pbItem.setDataProvider(self, forTypes: ["com.mint.mint.referenceLeafID"])
+        } else {
+            pbItem.setDataProvider(self, forTypes: ["com.mint.mint.returnLeafID"])
+        }
         
         let dragItem = NSDraggingItem(pasteboardWriter:pbItem)
         
@@ -265,9 +274,16 @@ class MintReturnButton : NSButton, NSDraggingSource, NSPasteboardItemDataProvide
     func pasteboard(pasteboard: NSPasteboard?, item: NSPasteboardItem, provideDataForType type: String) {
         if let pb = pasteboard {
             pb.clearContents()
-            pb.declareTypes(["com.mint.mint.returnLeafID"], owner: self)
+            if controller.leafName == "define" {
+                pb.declareTypes(["com.mint.mint.referenceLeafID"], owner: self)
+            } else {
+                pb.declareTypes(["com.mint.mint.returnLeafID"], owner: self)
+            }
             
             switch type {
+            case "com.mint.mint.referenceLeafID":
+                pb.setString("\(controller.uid)", forType: "com.mint.mint.referenceLeafID")
+                item.setString("\(controller.uid)", forType: "com.mint.mint.referenceLeafID")
             case "com.mint.mint.returnLeafID":
                 pb.setString("\(controller.uid)", forType: "com.mint.mint.returnLeafID")
                 item.setString("\(controller.uid)", forType: "com.mint.mint.returnLeafID")
@@ -294,7 +310,7 @@ class MintArgumentButton : NSButton {
     // drag from return value
     /// set acceptable drag items
     override func awakeFromNib() {
-        self.registerForDraggedTypes(["com.mint.mint.returnLeafID"])
+        self.registerForDraggedTypes(["com.mint.mint.returnLeafID", "com.mint.mint.referenceLeafID"])
     }
     
     // 'MintArgumentButton just show argument list. Drop will be catched by 'MintArgumentCell'
@@ -304,7 +320,7 @@ class MintArgumentButton : NSButton {
         case NSDragOperation.Link:
             if controller.isLinkReqAcceptable() {
                 
-                controller.showArgPopover(self)
+                controller.showOpdsPopover(self)
                 return NSDragOperation.Link
             }
         default:
@@ -331,7 +347,7 @@ class LinkView : NSView, MintLinkObserver {
     
     var needCalc : Bool = true
     var path : NSBezierPath = NSBezierPath()
-    var color : NSColor = NSColor(calibratedRed: 0, green: 0.5, blue: 0.6, alpha: 0.6)
+    var color : NSColor = NSColor(calibratedRed: 0, green: 0.5, blue: 0.6, alpha: 0.5)
     
     // debugging: unexpected repositioning of leafview
     /*
@@ -356,6 +372,10 @@ class LinkView : NSView, MintLinkObserver {
         color.setStroke()
         path.lineWidth = 3.0
         path.stroke()
+    }
+    
+    override func hitTest(aPoint: NSPoint) -> NSView? {
+        return nil
     }
     
     func calcLinkPath() {
@@ -408,5 +428,13 @@ class LinkView : NSView, MintLinkObserver {
         needCalc = true
         
         setNeedsDisplayInRect(frame)
+    }
+    
+    func setRefColor() {
+        color = NSColor(calibratedRed: 0.7, green: 0, blue: 0.6, alpha: 0.5)
+    }
+    
+    func setLinkColor() {
+        color = NSColor(calibratedRed: 0, green: 0.5, blue: 0.6, alpha: 0.5)
     }
 }

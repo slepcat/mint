@@ -26,16 +26,30 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         global.define_variable("display", val: Display(port: port))
     }
     
+    // update run when 'trees' are edited.
+    
+    func run_around(uid: UInt) -> (SExpr, UInt) {
+        let i = lookup_treeindex_of(uid)
+        
+        if i >= 0 {
+            return (eval(trees[i]), trees[i].uid)
+        }
+        
+        return (MNull.errNull, 0)
+    }
+    
     // register observer (mint leaf view) protocol
     func registerObserver(observer: MintLeafObserver) {
         observers.append(observer)
         let obs = lookup(observer.uid)
         
         if let pair = obs.target as? Pair {
-            if let f = pair.car as? Form {
-                observer.initArgs(delayed_list_of_values(pair.cdr), labels: f.params_str())
+            if let f = pair.car.eval(global) as? Form {
+                observer.init_opds(delayed_list_of_values(pair), labels: ["proc"] + f.params_str())
             } else if let p = pair.car.eval(global) as? Procedure {
-                observer.initArgs(delayed_list_of_values(pair.cdr), labels: p.params_str())
+                observer.init_opds(delayed_list_of_values(pair), labels: ["proc"] + p.params_str())
+            } else {
+                observer.init_opds(delayed_list_of_values(pair), labels: [])
             }
             
             observer.setName(pair.car.str("", level: 0))
@@ -55,9 +69,9 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     }
     
     // update observer
-    func update(leafid: UInt, newargs:[SExpr], newuid: UInt, olduid: UInt) {
+    func update(leafid: UInt, newopds:[SExpr], newuid: UInt, olduid: UInt) {
         for obs in observers {
-            obs.update(leafid, newargs: newargs, newuid: newuid, olduid: olduid)
+            obs.update(leafid, newopds: newopds, newuid: newuid, olduid: olduid)
         }
     }
     
@@ -191,6 +205,12 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
             
             trees.append(list)
             return list.uid
+            
+        // add empty parathentes
+        } else if let _ = expr as? MNull {
+            let emptylist = Pair()
+            trees.append(emptylist)
+            return emptylist.uid
         }
         
         return nil//failed to add exp
@@ -220,7 +240,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
                         pair.cdr = pair.cddr
                     }
                 } else {
-                    print("fail to remove. bad conscell", terminator: "")
+                    print("fail to remove. bad conscell", terminator: "\n")
                 }
                 
                 for exp in opds {
@@ -235,14 +255,36 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         return MNull()
     }
     
-    public func new_arg(uid: UInt, rawstr: String) {
+    public func add_arg(uid: UInt, rawstr: String) -> UInt {
+        let res = lookup(uid)
+        if let pair = res.target as? Pair {
+            var head = pair
+            
+            while !head.cdr.isNull() {
+                if let pair2 = head.cdr as? Pair {
+                    head = pair2
+                }
+            }
+            
+            head.cdr = Pair(car: read(rawstr + "\n"))
+            
+            update(uid, newopds: [head.cadr], newuid: head.cadr.uid, olduid: 0)
+            print("arg (id: \(head.cadr.uid)) is added to leaf (id: \(uid))", terminator: "\n")
+            print_exps()
+            
+            return head.cadr.uid
+        }
         
+        return 0
     }
     
-    public func overwrite_arg(uid: UInt, rawstr: String) {
+    public func overwrite_arg(uid: UInt, leafid: UInt, rawstr: String) {
         let res = lookup(uid)
         if let pair = res.conscell as? Pair {
-            pair.car = readln(rawstr)
+            pair.car = read(rawstr + "\n")
+            
+            update(leafid, newopds: [pair.car], newuid: pair.car.uid, olduid: uid)
+            print("arg (id: \(uid)) of leaf (id: \(leafid)) is overwritten by the new arg (id: \(pair.car.uid))", terminator: "\n")
         }
         
         print_exps()
@@ -277,7 +319,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
             pair.car = rewrite.target
         }
         
-        update(ofleafid, newargs: [rewrite.target], newuid: fromUid, olduid: uid)
+        update(ofleafid, newopds: [rewrite.target], newuid: fromUid, olduid: uid)
         
         print_exps()
     }
@@ -297,23 +339,41 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
             
             print("unlink old arg (id: \(uid)) in leaf (id: \(ofleafid))", terminator: "\n")
             
-            update(ofleafid, newargs: [pair.car], newuid: pair.car.uid, olduid: uid)
+            update(ofleafid, newopds: [pair.car], newuid: pair.car.uid, olduid: uid)
         }
     }
     
-    public func remove_arg(uid:UInt) {
+    public func remove_arg(uid:UInt, ofleafid: UInt) {
         let removedArg = lookup(uid)
         let parent = lookup(removedArg.conscell.uid)
         
         if let parentPair = parent.conscell as? Pair, let removedPair = removedArg.conscell as? Pair {
             parentPair.cdr = removedPair.cdr
+            
+            update(ofleafid, newopds: [], newuid: 0, olduid: uid)
         } else {
             print("error: unexpected remove of element", terminator: "\n")
         }
     }
     
-    public func set_ref(uid:UInt, symbolUid: UInt) {
+    public func set_ref(toArg:UInt, ofleafid:UInt, symbolUid: UInt) -> Bool{
+        let def = lookup(symbolUid)
         
+        if let pair = def.target as? Pair {
+            if let symbol = pair.cadr as? MSymbol {
+                overwrite_arg(toArg, leafid: ofleafid, rawstr: symbol.key)
+                return true
+            } else if let symbol = pair.caadr as? MSymbol {
+                overwrite_arg(toArg, leafid: ofleafid, rawstr: symbol.key)
+                return true
+            } else {
+                print("error: unexpectedly symbol not found", terminator:"\n")
+            }
+        } else {
+            print("error: leaf is not define?", terminator: "\n")
+        }
+        
+        return false
     }
     
     public func move_arg(uid: UInt, toNextOfUid: UInt) {
@@ -331,6 +391,47 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     }
     
     ///// read Env /////
+    
+    public func isSymbol(str:String) -> Bool {
+        if let _ = global.hash_table.indexForKey(str) {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    public func isSymbol_as_proc(str:String) -> Bool {
+        if isSymbol(str) {
+            if let _ = global.hash_table[str] as? Procedure {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
+    public func who_define(key: String) -> UInt {
+        
+        //::: todo: must implement lexical scope applicable code. currently only apply to global.
+        
+        for t in trees {
+            if let pair = t as? Pair {
+                if let _ = pair.car as? MDefine {
+                    if let symbol = pair.cadr as? MSymbol {
+                        if symbol.key == key {
+                            return pair.uid
+                        }
+                    } else if let symbol = pair.caadr as? MSymbol {
+                        if symbol.key == key {
+                            return pair.uid
+                        }
+                    }
+                }
+            }
+        }
+        
+        return 0
+    }
     
     public func defined_exps() -> [String : [String]] {
         
@@ -352,7 +453,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
             }
         }
         
-        acc["lisp special form"] = ["define", "set!", "if", "quote", "lambda", "begin"]
+        acc["lisp special form"] = ["define", "set!", "if", "quote", "lambda", "begin", "null"]
         
         return acc
     }

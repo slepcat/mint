@@ -25,9 +25,9 @@ protocol MintSubject:class {
 protocol MintLeafObserver:class {
     var uid : UInt {get set}
     
-    func initArgs(args: [SExpr], labels:[String])
+    func init_opds(args: [SExpr], labels:[String])
     func setName(name: String)
-    func update(leafid: UInt, newargs: [SExpr], newuid: UInt, olduid: UInt)
+    func update(leafid: UInt, newopds: [SExpr], newuid: UInt, olduid: UInt)
 }
 
 protocol MintLeafSubject:class{
