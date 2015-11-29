@@ -68,8 +68,10 @@ class MintOperandCellView : NSTableCellView, NSTextFieldDelegate {
     override func controlTextDidEndEditing(obj: NSNotification) {
         Swift.print("cell value edited (id: \(uid))", terminator: "\n")
         
+        let row = controller.operandList.rowForView(self)
+        
         if let newvalue = self.textField?.stringValue {
-            controller.operand(uid, valueDidEndEditing: newvalue)
+            controller.operand(uid, valueDidEndEditing: newvalue, atRow: row)
         }
         
     }

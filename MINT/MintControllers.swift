@@ -22,7 +22,7 @@ class MintController:NSObject {
     
     var undoStack : [MintCommand] = []
     var redoStack : [MintCommand] = []
-    
+        
     func sendCommand(newCommand: MintCommand) {
         newCommand.prepare(workspace, modelView: modelView, interpreter: interpreter)
         newCommand.execute()

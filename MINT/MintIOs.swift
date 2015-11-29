@@ -8,6 +8,8 @@
 
 import Foundation
 
+/*
+
 class Display: Primitive {
     
     let port : Mint3DPort
@@ -99,3 +101,5 @@ class Display: Primitive {
         }
     }
 }
+
+*/

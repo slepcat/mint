@@ -15,8 +15,25 @@ class MintModelViewController:NSWindowController {
     @IBOutlet weak var modelview: MintModelView!
     weak var port : Mint3DPort!
     
+    func addMesh(uid: UInt) -> GLmesh {
+        let newmesh = GLmesh(leafID: uid)
+        modelview.stack.append(newmesh)
+        return newmesh
+    }
     
+    func removeMesh(uid: UInt) -> GLmesh? {
+        for var i = 0; modelview.stack.count > i; i++ {
+            if modelview.stack[i].leafID == uid {
+                return modelview.stack.removeAtIndex(i)
+            }
+        }
+        
+        return nil
+    }
     
+    func resetMesh() {
+        modelview.stack = []
+    }
     
     // update mesh & redraw
     func setNeedDisplay() {

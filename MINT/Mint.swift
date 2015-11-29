@@ -11,19 +11,15 @@ import Foundation
 public class MintInterpreter : Interpreter, MintLeafSubject {
     var observers:[MintLeafObserver] = []
     
-    let stderrout : MintErrPort
-    let std3dout : Mint3DPort
-    
     init(port: Mint3DPort, errport: MintErrPort) {
         
-        stderrout = errport
-        std3dout = port
+        MintStdPort.get.setPort(port)
+        MintStdPort.get.setErrPort(errport)
         
         super.init()
         
         // add IOs
-        
-        global.define_variable("display", val: Display(port: port))
+        //global.define_variable("display", val: Display())
     }
     
     // update run when 'trees' are edited.
@@ -106,7 +102,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         return 0
     }
     
-    private func rec_lookup_leaf(uid: UInt, expr: Pair) -> UInt {
+    public func rec_lookup_leaf(uid: UInt, expr: Pair) -> UInt {
         var unchecked : [Pair] = []
         let chain = gen_pairchain_of_leaf(expr)
         
@@ -278,16 +274,19 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         return 0
     }
     
-    public func overwrite_arg(uid: UInt, leafid: UInt, rawstr: String) {
+    public func overwrite_arg(uid: UInt, leafid: UInt, rawstr: String) -> UInt {
         let res = lookup(uid)
         if let pair = res.conscell as? Pair {
             pair.car = read(rawstr + "\n")
             
             update(leafid, newopds: [pair.car], newuid: pair.car.uid, olduid: uid)
             print("arg (id: \(uid)) of leaf (id: \(leafid)) is overwritten by the new arg (id: \(pair.car.uid))", terminator: "\n")
+            print_exps()
+            
+            return pair.car.uid
         }
         
-        print_exps()
+        return 0
     }
     
     public func link_toArg(ofleafid:UInt, uid: UInt, fromUid: UInt) {
@@ -390,7 +389,32 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         }
     }
     
+    ///// output /////
+    
+    public func str_with_pos(var positions: [(uid: UInt, pos: NSPoint)]) -> String {
+        
+        var acc : String = ""
+        
+        for expr in trees {
+            acc += expr.str_with_pos(&positions, indent: indent, level: 1) + "\n\n"
+        }
+        
+        return acc
+    }
+    
     ///// read Env /////
+    
+    public func init_env() {
+        global.hash_table = global_environment()
+        
+        for tree in trees {
+            if let pair = tree as? Pair {
+                if let def = pair.car as? MDefine {
+                    run_around(def.uid)
+                }
+            }
+        }
+    }
     
     public func isSymbol(str:String) -> Bool {
         if let _ = global.hash_table.indexForKey(str) {
@@ -453,6 +477,11 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
             }
         }
         
+        if let leaves = acc["3D Primitives"] {
+            acc["3D Primitives"] = leaves + ["display"]
+        } else {
+            acc["3D Primitives"] = ["display"]
+        }
         acc["lisp special form"] = ["define", "set!", "if", "quote", "lambda", "begin", "null"]
         
         return acc
@@ -464,6 +493,69 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         for tree in trees {
             //print(tree._debug_string(),terminator: "\n")
             print(tree.str("  ", level: 1),terminator: "\n")
+        }
+    }
+}
+
+extension SExpr {
+    func str_with_pos(inout positions: [(uid: UInt, pos: NSPoint)], indent: String, level: Int) -> String {
+        
+        if let _ = self as? Pair {
+            
+            var leveledIndent : String = ""
+            for var i = 0; level > i; i++ {
+                leveledIndent += indent
+            }
+            
+            let res = str_pos_list_of_exprs(self, positions: &positions, indent: indent, level: level + 1 )
+            
+            var acc : String = ""
+            var pos : String = "("
+            
+            for var i = 0; positions.count > i; i++ {
+                if self.uid == positions[i].uid {
+                    pos += "_pos_ \(positions[i].pos.x) \(positions[i].pos.y)                "
+                    positions.removeAtIndex(i)
+                }
+            }
+            
+            for s in res {
+                if s[s.startIndex] == "(" {
+                    if indent == "" {
+                        acc += s
+                    } else {
+                        acc += "\n" + leveledIndent + s
+                    }
+                } else {
+                    if acc == "" {
+                        acc += s
+                    } else {
+                        acc += " " + s
+                    }
+                }
+            }
+            
+            return pos + "(" + acc + "))"
+            
+        } else {
+            return self.str(indent, level: level)
+        }
+    }
+    
+    private func str_pos_list_of_exprs(_opds :SExpr, inout positions: [(uid: UInt, pos: NSPoint)], indent:String, level: Int) -> [String] {
+        if let atom = _opds as? Atom {
+            return [atom.str(indent, level: level)]
+        } else {
+            return tail_str_pos_list_of_exprs(_opds, acc: [], positions: &positions, indent: indent, level: level)
+        }
+    }
+    
+    private func tail_str_pos_list_of_exprs(_opds :SExpr, var acc: [String], inout positions: [(uid: UInt, pos: NSPoint)], indent:String, level: Int) -> [String] {
+        if let pair = _opds as? Pair {
+            acc.append(pair.car.str_with_pos(&positions, indent: indent, level: level))
+            return tail_str_pos_list_of_exprs(pair.cdr, acc: acc, positions: &positions, indent: indent, level: level)
+        } else {
+            return acc
         }
     }
 }

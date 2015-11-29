@@ -118,6 +118,8 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                         opds.append((uid: pair.uid, param: "", value: "link to: \(pair.car.str("", level: 0))", type: type.link))
                     case let def as MDefine:
                         self.opds.append((uid: def.uid, param: "", value: def.str("", level: 0), type: type.def))
+                    case let io as Display:
+                        self.opds.append((uid: io.uid, param: "", value: io.str("", level: 0), type: type.def))
                     case let form as Form:
                         self.opds.append((uid: form.uid, param: "proc", value: form.str("", level: 0), type: type.proc))
                     case let proc as Procedure:
@@ -156,6 +158,9 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                                 opds[i].type = type.link
                             case let def as MDefine:
                                 opds[i].value = def.str("", level: 0)
+                                opds[i].type = type.def
+                            case let io as Display:
+                                opds[i].value = io.str("", level: 0)
                                 opds[i].type = type.def
                             case let form as Form:
                                 opds[i].value = form.str("", level: 0)
@@ -201,6 +206,8 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                 self.opds.append((uid: pair.uid, param: labels[i], value: "link to: \(pair.car.str("", level: 0))", type: type.link))
             case let def as MDefine:
                 self.opds.append((uid: def.uid, param: labels[i], value: def.str("", level: 0), type: type.def))
+            case let io as Display:
+                self.opds.append((uid: io.uid, param: labels[i], value: io.str("", level: 0), type: type.def))
             case let form as Form:
                 self.opds.append((uid: form.uid, param: labels[i], value: form.str("", level: 0), type: type.proc))
             default:
@@ -222,7 +229,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     ///////// Mint Command ////////////
     
     /// tell 'controller' when a operand is modified
-    func operand(uid: UInt ,valueDidEndEditing value: String) {
+    func operand(uid: UInt ,valueDidEndEditing value: String, atRow: Int) {
         
         // if uid is '0', new opd added.
         if uid == 0 {
@@ -233,17 +240,24 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
             let setOpd = SetOperand(argid: uid, leafid: self.uid, newvalue: value)
             controller.sendCommand(setOpd)
         }
+        
+        
+        // automatically select next row to comfort editing.
+        // back to focus to tableview and select next row.
+        operandList.window?.makeFirstResponder(operandList)
+        
+        if atRow < numberOfRowsInTableView(operandList) {
+            operandList.selectRowIndexes(NSIndexSet(index: (atRow + 1)), byExtendingSelection: false)
+        }
     }
     
-    /*
     
     // hand over 'MintCommand' from view to 'MintController'
     /// tell 'controller' to remove a Leaf
     func removeSelf() {
-        let command = RemoveLeaf(removeID: leafID)
+        let command = RemoveLeaf(removeID: uid)
         controller.sendCommand(command)
     }
-    */
     
     /// when dragged "argument" dropped in return button, generate link command for controller
     /// called by MintReturnButton

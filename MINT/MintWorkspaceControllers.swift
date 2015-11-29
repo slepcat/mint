@@ -12,7 +12,7 @@ import Cocoa
 
 // Controller of workspace view
 // Responsible to interact user action and manage leaf views
-class MintWorkspaceController:NSObject {
+class MintWorkspaceController:NSObject, NSFilePresenter {
     @IBOutlet weak var workspace: WorkspaceView!
     @IBOutlet weak var controller: MintController!
     weak var interpreter:MintInterpreter!
@@ -20,6 +20,33 @@ class MintWorkspaceController:NSObject {
     
     var viewStack : [MintLeafViewController] = []
     var linkviews : [LinkView] = []
+    
+    
+    // file management
+    
+    var presentedItemURL : NSURL? {
+        get {
+            return fileurl
+        }
+    }
+    
+    var presentedItemOperationQueue : NSOperationQueue {
+        get {
+            return opqueue
+        }
+    }
+    
+    var fileurl : NSURL? = nil
+    var opqueue : NSOperationQueue = NSOperationQueue()
+    var edited : Bool = false
+    
+    override func awakeFromNib() {
+        NSFileCoordinator.addFilePresenter(self)
+    }
+    
+    func presentedItemDidMoveToURL(newURL: NSURL) {
+        fileurl = newURL
+    }
     
     // Instantiate a leaf when tool dragged to workspace from toolbar.
     // Responsible for create leaf's view and model.
@@ -217,4 +244,36 @@ class MintWorkspaceController:NSObject {
             }
         }
     }
+    
+    ///// workspace save and load /////
+    
+    @IBAction func save(sender: AnyObject?) {
+        
+        let command = SaveWorkspace(leafpositions: positions())
+        controller.sendCommand(command)
+    }
+    
+    @IBAction func load(sender: AnyObject?) {
+        
+        let command = LoadWorkspace()
+        controller.sendCommand(command)
+        
+    }
+    
+    func positions() -> [(uid: UInt, pos: NSPoint)] {
+        var acc : [(uid: UInt, pos: NSPoint)] = []
+        
+        for leaf in viewStack {
+            acc.append((uid: leaf.uid, pos: leaf.leafview!.frame.origin))
+        }
+        return acc
+    }
+    
+    func reset_leaves() {
+        for ctrl in viewStack {
+            removeLeaf(ctrl.uid)
+            removeLinkFrom(ctrl.uid)
+        }
+    }
+    
 }

@@ -144,7 +144,7 @@ import Cocoa
                 let v = s[s.startIndex].value
                 
                 if Int(v) == NSDeleteCharacter {
-                    //controller.removeSelf()
+                    controller.removeSelf()
                     return
                 }
             }

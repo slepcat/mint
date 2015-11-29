@@ -85,7 +85,7 @@
                 <rect key="frame" x="1" y="0.0" width="205" height="150"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
-                    <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" autosaveColumns="NO" rowHeight="20" rowSizeStyle="automatic" headerView="ynb-HU-QSj" viewBased="YES" id="qCx-JS-iXd">
+                    <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="20" rowSizeStyle="automatic" headerView="ynb-HU-QSj" viewBased="YES" id="qCx-JS-iXd">
                         <rect key="frame" x="0.0" y="0.0" width="205" height="127"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <animations/>

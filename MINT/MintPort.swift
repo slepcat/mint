@@ -14,14 +14,14 @@ class Mint3DPort : MintPort, MintSubject {
     var obs : [MintObserver] = []
     var data : MintIO? = nil
     
-    func write(data: MintIO, port: Int){
+    func write(data: MintIO, uid: UInt){
         
         if let _ = data as? IOMesh {
             
             self.data = data
 
             for o in obs {
-                o.update(self, uid: 0)
+                o.update(self, uid: uid)
             }
         }
     }
@@ -50,6 +50,14 @@ class Mint3DPort : MintPort, MintSubject {
         return []
     }
     
+    func alpha() -> [Float] {
+        if let mesh = data as? IOMesh {
+            return mesh.alpha
+        }
+        
+        return []
+    }
+    
     func registerObserver(observer: MintObserver) {
         obs.append(observer)
     }
@@ -69,7 +77,7 @@ class MintErrPort : MintPort, MintSubject {
     var obs : [MintObserver] = []
     var err : String = ""
     
-    func write(data: MintIO, port: Int){
+    func write(data: MintIO, uid: UInt){
         if let errobj = data as? IOErr {
             
             err = errobj.err

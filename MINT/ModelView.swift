@@ -107,7 +107,13 @@ struct ViewAngle {
     }
     
     override func drawRect(dirtyRect: NSRect) {
-        glClear(UInt32(GL_COLOR_BUFFER_BIT) | UInt32(GL_DEPTH_BUFFER_BIT))
+        glClear(GLbitfield(GL_COLOR_BUFFER_BIT) | GLbitfield(GL_DEPTH_BUFFER_BIT))
+        glEnable(UInt32(GL_DEPTH_TEST))
+        //glDepthFunc(GLenum(GL_LESS))
+        
+        if let shader = lightingShader {
+            glUseProgram(shader.program)
+        }
         
         //Set Model View Matrix
         glLoadIdentity()
@@ -128,6 +134,8 @@ struct ViewAngle {
         }
         
         glFlush()
+        
+        glDisable(GLenum(GL_DEPTH_TEST))
     }
     
     // draw mesh from stack
@@ -146,6 +154,12 @@ struct ViewAngle {
             glBindBuffer(GLenum(GL_ARRAY_BUFFER), mesh.nbufferid)
             glVertexAttribPointer(self.gl_normal, 3, GLenum(GL_DOUBLE), GLboolean(GL_FALSE), 0, nil)
             
+            /*
+            glEnableVertexAttribArray(gl_alpha)
+            glBindBuffer(GLenum(GL_ARRAY_BUFFER), mesh.abufferid)
+            glVertexAttribPointer(self.gl_alpha, 1, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
+            */
+            
             // 'count' is number of vertices
             glDrawArrays(GLenum(GL_TRIANGLES), 0, mesh.buffersize / 3)
         }
@@ -153,6 +167,8 @@ struct ViewAngle {
         glDisableVertexAttribArray(gl_vertex)
         glDisableVertexAttribArray(gl_color)
         glDisableVertexAttribArray(gl_normal)
+        //glDisableVertexAttribArray(gl_alpha)
+
         
         glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
     }
@@ -339,6 +355,7 @@ class GLmesh:MintObserver {
     var vbufferid : GLuint = 0
     var nbufferid : GLuint = 0
     var cbufferid : GLuint = 0
+    var abufferid : GLuint = 0
     //length of mesh array
     var buffersize : GLsizei = 0
     
@@ -356,55 +373,70 @@ class GLmesh:MintObserver {
         if cbufferid != 0 {
             glDeleteBuffers(1, &cbufferid)
         }
+        if cbufferid != 0 {
+            glDeleteBuffers(1, &abufferid)
+        }
     }
     
     // update open gl vertices & attribute array
     func update(subject: MintSubject, uid: UInt) {
-        if vbufferid == 0 { // In case of inital update
-            if let meshio = subject as? Mint3DPort {
-                var glmesh = meshio.mesh()
-                var glnormal = meshio.normal()
-                var glcolor = meshio.color()
-                
-                buffersize = GLsizei(glmesh.count)
-                
-                if buffersize != 0 {// Check 'result' have valid mesh
+        
+        if uid == leafID {
+            if vbufferid == 0 { // In case of inital update
+                if let meshio = subject as? Mint3DPort {
+                    var glmesh = meshio.mesh()
+                    var glnormal = meshio.normal()
+                    var glcolor = meshio.color()
+                    var glalpha = meshio.alpha()
+                    
+                    buffersize = GLsizei(glmesh.count)
+                    
+                    if buffersize != 0 {// Check 'result' have valid mesh
+                        //mesh
+                        glGenBuffers(1, &self.vbufferid)
+                        glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vbufferid)
+                        glBufferData(GLenum(GL_ARRAY_BUFFER), glmesh.count * sizeof(GLdouble), &glmesh, GLenum(GL_STATIC_DRAW))
+                        //normal
+                        glGenBuffers(1, &self.nbufferid)
+                        glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.nbufferid)
+                        glBufferData(GLenum(GL_ARRAY_BUFFER), glnormal.count * sizeof(GLdouble), &glnormal, GLenum(GL_STATIC_DRAW))
+                        //color
+                        glGenBuffers(1, &self.cbufferid)
+                        glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.cbufferid)
+                        glBufferData(GLenum(GL_ARRAY_BUFFER), glcolor.count * sizeof(GLfloat), &glcolor, GLenum(GL_STATIC_DRAW))
+                        //color
+                        glGenBuffers(1, &self.abufferid)
+                        glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.cbufferid)
+                        glBufferData(GLenum(GL_ARRAY_BUFFER), glalpha.count * sizeof(GLfloat), &glalpha, GLenum(GL_STATIC_DRAW))
+                        
+                        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+                    }
+                    
+                }
+            } else { // In case of update
+                if let meshio = subject as? Mint3DPort {
+                    var glmesh = meshio.mesh()
+                    var glnormal = meshio.normal()
+                    var glcolor = meshio.color()
+                    var glalpha = meshio.alpha()
+                    
+                    buffersize = GLsizei(glmesh.count)
+                    
                     //mesh
-                    glGenBuffers(1, &self.vbufferid)
                     glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vbufferid)
                     glBufferData(GLenum(GL_ARRAY_BUFFER), glmesh.count * sizeof(GLdouble), &glmesh, GLenum(GL_STATIC_DRAW))
                     //normal
-                    glGenBuffers(1, &self.nbufferid)
                     glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.nbufferid)
                     glBufferData(GLenum(GL_ARRAY_BUFFER), glnormal.count * sizeof(GLdouble), &glnormal, GLenum(GL_STATIC_DRAW))
                     //color
-                    glGenBuffers(1, &self.cbufferid)
                     glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.cbufferid)
                     glBufferData(GLenum(GL_ARRAY_BUFFER), glcolor.count * sizeof(GLfloat), &glcolor, GLenum(GL_STATIC_DRAW))
+                    //alpha
+                    glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.abufferid)
+                    glBufferData(GLenum(GL_ARRAY_BUFFER), glalpha.count * sizeof(GLfloat), &glalpha, GLenum(GL_STATIC_DRAW))
                     
                     glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
                 }
-
-            }
-        } else { // In case of update
-            if let meshio = subject as? Mint3DPort {
-                var glmesh = meshio.mesh()
-                var glnormal = meshio.normal()
-                var glcolor = meshio.color()
-                
-                buffersize = GLsizei(glmesh.count)
-                
-                //mesh
-                glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vbufferid)
-                glBufferData(GLenum(GL_ARRAY_BUFFER), glmesh.count * sizeof(GLdouble), &glmesh, GLenum(GL_STATIC_DRAW))
-                //normal
-                glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.nbufferid)
-                glBufferData(GLenum(GL_ARRAY_BUFFER), glnormal.count * sizeof(GLdouble), &glnormal, GLenum(GL_STATIC_DRAW))
-                //color
-                glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.cbufferid)
-                glBufferData(GLenum(GL_ARRAY_BUFFER), glcolor.count * sizeof(GLfloat), &glcolor, GLenum(GL_STATIC_DRAW))
-                
-                glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
             }
         }
     }
