@@ -24,6 +24,7 @@ class MintController:NSObject {
     var redoStack : [MintCommand] = []
         
     func sendCommand(newCommand: MintCommand) {
+                
         newCommand.prepare(workspace, modelView: modelView, interpreter: interpreter)
         newCommand.execute()
         
@@ -55,3 +56,12 @@ class MintController:NSObject {
     }
 }
 
+extension MintController {
+    func mark_edited() {
+        workspace.edited = true
+    }
+    
+    func is_proc(symbol: String) -> Bool {
+        return interpreter.isSymbol_as_proc(symbol)
+    }
+}

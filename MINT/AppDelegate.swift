@@ -29,18 +29,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         controller.interpreter = interpreter
         workspace.interpreter = interpreter
-        modelView.port = mint3dout
+        //modelView.port = mint3dout
         
         //prepare leafpanel
         leafpanel.updateContents(interpreter.defined_exps())
     }
-
+    
+    func applicationShouldTerminate(sender: NSApplication) -> NSApplicationTerminateReply {
+        let command = AppQuit()
+        controller.sendCommand(command)
+        
+        if command.willQuit {
+            return .TerminateNow
+        } else {
+            return .TerminateCancel
+        }
+    }
+    
     func applicationWillTerminate(aNotification: NSNotification) {
         // Insert code here to tear down your application
-    }
-
-    func test() {
-        //controller.createTestLeaf()
+        
     }
 }
 

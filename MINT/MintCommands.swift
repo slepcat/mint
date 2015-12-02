@@ -54,6 +54,8 @@ class AddLeaf:MintCommand {
             
             let res = interpreter.run_around(uid)
             workspace.return_value(res.0.str("", level: 0), uid: res.1)
+            
+            workspace.edited = true
         }
 
     }
@@ -111,6 +113,7 @@ class AddOperand:MintCommand {
         
         let res = interpreter.run_around(leafid)
         workspace.return_value(res.0.str("", level: 0), uid: res.1)
+        workspace.edited = true
         
         modelView.setNeedDisplay()
     }
@@ -183,6 +186,7 @@ class SetOperand:MintCommand {
         
         let res = interpreter.run_around(leafid)
         workspace.return_value(res.0.str("", level: 0), uid: res.1)
+        workspace.edited = true
         
         modelView.setNeedDisplay()
     }
@@ -237,6 +241,7 @@ class RemoveOperand:MintCommand {
         
         let res = interpreter.run_around(leafid)
         workspace.return_value(res.0.str("", level: 0), uid: res.1)
+        workspace.edited = true
         
         modelView.setNeedDisplay()
     }
@@ -322,6 +327,7 @@ class LinkOperand:MintCommand {
         
         let res = interpreter.run_around(argumentLeafID)
         workspace.return_value(res.0.str("", level: 0), uid: res.1)
+        workspace.edited = true
         
         modelView.setNeedDisplay()
     }
@@ -367,6 +373,7 @@ class RemoveLink:MintCommand {
         
         let res2 = interpreter.run_around(argumentID)
         workspace.return_value(res2.0.str("", level: 0), uid: res2.1)
+        workspace.edited = true
         
         workspace.removeLinkBetween(argleafID, retleafID: argumentID)
         modelView.setNeedDisplay()
@@ -438,6 +445,7 @@ class SetReference:MintCommand {
             let res = interpreter.run_around(argumentLeafID)
             workspace.return_value(res.0.str("", level: 0), uid: res.1)
         }
+        workspace.edited = true
         
         modelView.setNeedDisplay()
     }
@@ -484,6 +492,8 @@ class RemoveReference:MintCommand {
             workspace.return_value(res.0.str("", level: 0), uid: res.1)
             
             workspace.removeLinkBetween(argleafID, retleafID: defLeafID)
+            workspace.edited = true
+            
             modelView.setNeedDisplay()
         }
 
@@ -533,6 +543,8 @@ class RemoveLeaf:MintCommand {
         }
         
         workspace.removeLeaf(removeID)
+        workspace.edited = true
+        
         interpreter.remove(removeID)
         
         modelView.setNeedDisplay()
@@ -631,6 +643,7 @@ class SaveWorkspace:MintCommand {
                     if let url = panel.URL {
                         self.workspace.fileurl = url
                         write(url, output: output)
+                        self.workspace.edited = false
                     }
                 }
             }
@@ -714,7 +727,7 @@ class LoadWorkspace:MintCommand {
         }
         
         
-        if let _ = workspace.fileurl {
+        if workspace.edited {
             
             let alert = NSAlert()
             alert.informativeText = "Do you want to save the current document?"
@@ -735,12 +748,6 @@ class LoadWorkspace:MintCommand {
             default:
                 break
             }
-            
-            interpreter.trees = []
-            interpreter.init_env()
-            workspace.reset_leaves()
-            modelView.resetMesh()
-            modelView.setNeedDisplay()
         }
         
         let panel = NSOpenPanel()
@@ -748,6 +755,13 @@ class LoadWorkspace:MintCommand {
         
         panel.beginWithCompletionHandler(){ (result:Int) in
             if result == NSFileHandlingPanelOKButton {
+                
+                self.interpreter.trees = []
+                self.interpreter.init_env()
+                self.workspace.reset_leaves()
+                self.modelView.resetMesh()
+                self.modelView.setNeedDisplay()
+                
                 if let url = panel.URL {
                     
                     let input : String = load(url)
@@ -880,6 +894,189 @@ class LoadWorkspace:MintCommand {
         }
         
         return NSPoint(x: 0, y: 0)
+    }
+    
+    func undo() {
+        
+    }
+    
+    func redo() {
+        
+    }
+}
+
+class NewWorkspace:MintCommand {
+    weak var workspace:MintWorkspaceController!
+    weak var modelView: MintModelViewController!
+    weak var interpreter: MintInterpreter!
+    
+    var temptree : SExpr = MNull.errNull
+    
+    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
+        self.workspace = workspace
+        self.modelView = modelView
+        self.interpreter = interpreter
+    }
+    
+    func execute() {
+        
+        if workspace.edited {
+            
+            let alert = NSAlert()
+            alert.informativeText = "Do you want to save the current document?"
+            alert.messageText = "Your change will be lost, if you don't save them"
+            alert.alertStyle = .WarningAlertStyle
+            alert.addButtonWithTitle("Save")
+            alert.addButtonWithTitle("Cancel")
+            alert.addButtonWithTitle("Don't Save")
+            
+            let ret = alert.runModal()
+            
+            switch ret {
+            case NSAlertFirstButtonReturn:
+                let command = SaveWorkspace(leafpositions: workspace.positions())
+                workspace.controller.sendCommand(command)
+            case NSAlertSecondButtonReturn:
+                return
+            default:
+                break
+            }
+        }
+        
+        // all reset current workspace
+        interpreter.trees = []
+        interpreter.init_env()
+        workspace.reset_leaves()
+        modelView.resetMesh()
+        workspace.fileurl = nil
+        modelView.setNeedDisplay()
+    }
+    
+    func undo() {
+        
+    }
+    
+    func redo() {
+        
+    }
+}
+
+class AppQuit:MintCommand {
+    weak var workspace:MintWorkspaceController!
+    weak var modelView: MintModelViewController!
+    weak var interpreter: MintInterpreter!
+    
+    var willQuit = false
+    
+    
+    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
+        self.workspace = workspace
+        self.modelView = modelView
+        self.interpreter = interpreter
+    }
+    
+    func execute() {
+        
+        if workspace.edited {
+            
+            let alert = NSAlert()
+            alert.informativeText = "Do you want to save the current document?"
+            alert.messageText = "Your change will be lost, if you don't save them"
+            alert.alertStyle = .WarningAlertStyle
+            alert.addButtonWithTitle("Save")
+            alert.addButtonWithTitle("Cancel")
+            alert.addButtonWithTitle("Don't Save")
+            
+            let ret = alert.runModal()
+            
+            switch ret {
+            case NSAlertFirstButtonReturn:
+                let command = SaveWorkspace(leafpositions: workspace.positions())
+                workspace.controller.sendCommand(command)
+            case NSAlertSecondButtonReturn:
+                return
+            default:
+                break
+            }
+        }
+        
+        willQuit = true
+    }
+    
+    func undo() {
+        
+    }
+    
+    func redo() {
+        
+    }
+}
+
+class ExportSTL : MintCommand {
+    weak var workspace:MintWorkspaceController!
+    weak var modelView: MintModelViewController!
+    weak var interpreter: MintInterpreter!
+    
+    let uid : UInt
+    
+    init(uid: UInt) {
+        self.uid = uid
+    }
+    
+    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
+        self.workspace = workspace
+        self.modelView = modelView
+        self.interpreter = interpreter
+    }
+    
+    func execute() {
+        
+        func export(url: NSURL, output: String) {
+            
+            let coordinator = NSFileCoordinator(filePresenter: workspace)
+            let error : NSErrorPointer = NSErrorPointer()
+            
+            coordinator.coordinateWritingItemAtURL(url, options: .ForMerging, error: error) { (fileurl: NSURL) in
+                do {
+                    try output.writeToURL(url, atomically: true, encoding: NSUTF8StringEncoding)
+                } catch {
+                    print("fail to save", terminator:"\n")
+                    return
+                }
+            }
+        }
+        
+        let mesh = polygons_from_exp(interpreter.eval(uid))
+        
+        var stlascii = "solid csg.mint\n"
+        for p in mesh {
+            stlascii += p.toStlString()
+        }
+        stlascii += "endsolid csg.mint\n"
+            
+        let panel = NSSavePanel()
+        
+        panel.nameFieldStringValue = "untitled.stl"
+        panel.beginWithCompletionHandler(){ (result:Int) in
+            if result == NSFileHandlingPanelOKButton {
+                if let url = panel.URL {
+                    export(url, output: stlascii)
+                }
+            }
+        }
+    }
+    
+    func polygons_from_exp(exp: SExpr) -> [Polygon] {
+        let exps = delayed_list_of_values(exp)
+        var mesh : [Polygon] = []
+        
+        for p in exps {
+            if let poly = p as? MPolygon {
+                mesh.append(poly.value)
+            }
+        }
+        
+        return mesh
     }
     
     func undo() {

@@ -106,6 +106,20 @@ struct ViewAngle {
         Swift.print("open gl view prepared")
     }
     
+    override func reshape() {
+        let rect = self.bounds
+        let aspect = self.frame.size.width / self.frame.size.height
+        
+        glViewport(0, 0, GLsizei(rect.size.width), GLsizei(rect.size.height))
+        glMatrixMode(GLenum(GL_PROJECTION))
+        glLoadIdentity()
+        glFrustum(Double(-aspect / (2.0 * 1.79259098692)), Double(aspect / (2.0 * 1.79259098692)), -0.5 / 1.79259098692, 0.5 / 1.79259098692, 0.5, 1500)
+        glMatrixMode(GLenum(GL_MODELVIEW))
+        glLoadIdentity()
+        
+        glEnable(GLenum(GL_DEPTH_TEST))
+    }
+    
     override func drawRect(dirtyRect: NSRect) {
         glClear(GLbitfield(GL_COLOR_BUFFER_BIT) | GLbitfield(GL_DEPTH_BUFFER_BIT))
         glEnable(UInt32(GL_DEPTH_TEST))
@@ -142,26 +156,28 @@ struct ViewAngle {
     func drawObjects() {
         
         for mesh in stack {
-            glEnableVertexAttribArray(gl_vertex)
-            glBindBuffer(GLenum(GL_ARRAY_BUFFER), mesh.vbufferid)
-            glVertexAttribPointer(self.gl_vertex, 3, GLenum(GL_DOUBLE), GLboolean(GL_FALSE), 0, nil)
-            
-            glEnableVertexAttribArray(gl_color)
-            glBindBuffer(GLenum(GL_ARRAY_BUFFER), mesh.cbufferid)
-            glVertexAttribPointer(self.gl_color, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
-            
-            glEnableVertexAttribArray(gl_normal)
-            glBindBuffer(GLenum(GL_ARRAY_BUFFER), mesh.nbufferid)
-            glVertexAttribPointer(self.gl_normal, 3, GLenum(GL_DOUBLE), GLboolean(GL_FALSE), 0, nil)
-            
-            /*
-            glEnableVertexAttribArray(gl_alpha)
-            glBindBuffer(GLenum(GL_ARRAY_BUFFER), mesh.abufferid)
-            glVertexAttribPointer(self.gl_alpha, 1, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
-            */
-            
-            // 'count' is number of vertices
-            glDrawArrays(GLenum(GL_TRIANGLES), 0, mesh.buffersize / 3)
+            if mesh.buffersize > 0 {
+                glEnableVertexAttribArray(gl_vertex)
+                glBindBuffer(GLenum(GL_ARRAY_BUFFER), mesh.vbufferid)
+                glVertexAttribPointer(self.gl_vertex, 3, GLenum(GL_DOUBLE), GLboolean(GL_FALSE), 0, nil)
+                
+                glEnableVertexAttribArray(gl_color)
+                glBindBuffer(GLenum(GL_ARRAY_BUFFER), mesh.cbufferid)
+                glVertexAttribPointer(self.gl_color, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
+                
+                glEnableVertexAttribArray(gl_normal)
+                glBindBuffer(GLenum(GL_ARRAY_BUFFER), mesh.nbufferid)
+                glVertexAttribPointer(self.gl_normal, 3, GLenum(GL_DOUBLE), GLboolean(GL_FALSE), 0, nil)
+                
+                /*
+                glEnableVertexAttribArray(gl_alpha)
+                glBindBuffer(GLenum(GL_ARRAY_BUFFER), mesh.abufferid)
+                glVertexAttribPointer(self.gl_alpha, 1, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
+                */
+                
+                // 'count' is number of vertices
+                glDrawArrays(GLenum(GL_TRIANGLES), 0, mesh.buffersize / 3)
+            }
         }
         
         glDisableVertexAttribArray(gl_vertex)
@@ -387,7 +403,7 @@ class GLmesh:MintObserver {
                     var glmesh = meshio.mesh()
                     var glnormal = meshio.normal()
                     var glcolor = meshio.color()
-                    var glalpha = meshio.alpha()
+                    //var glalpha = meshio.alpha()
                     
                     buffersize = GLsizei(glmesh.count)
                     
@@ -404,11 +420,12 @@ class GLmesh:MintObserver {
                         glGenBuffers(1, &self.cbufferid)
                         glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.cbufferid)
                         glBufferData(GLenum(GL_ARRAY_BUFFER), glcolor.count * sizeof(GLfloat), &glcolor, GLenum(GL_STATIC_DRAW))
-                        //color
+                        //alpha
+                        /*
                         glGenBuffers(1, &self.abufferid)
                         glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.cbufferid)
                         glBufferData(GLenum(GL_ARRAY_BUFFER), glalpha.count * sizeof(GLfloat), &glalpha, GLenum(GL_STATIC_DRAW))
-                        
+                        */
                         glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
                     }
                     
@@ -418,7 +435,7 @@ class GLmesh:MintObserver {
                     var glmesh = meshio.mesh()
                     var glnormal = meshio.normal()
                     var glcolor = meshio.color()
-                    var glalpha = meshio.alpha()
+                    //var glalpha = meshio.alpha()
                     
                     buffersize = GLsizei(glmesh.count)
                     
@@ -432,9 +449,10 @@ class GLmesh:MintObserver {
                     glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.cbufferid)
                     glBufferData(GLenum(GL_ARRAY_BUFFER), glcolor.count * sizeof(GLfloat), &glcolor, GLenum(GL_STATIC_DRAW))
                     //alpha
+                    /*
                     glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.abufferid)
                     glBufferData(GLenum(GL_ARRAY_BUFFER), glalpha.count * sizeof(GLfloat), &glalpha, GLenum(GL_STATIC_DRAW))
-                    
+                    */
                     glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
                 }
             }

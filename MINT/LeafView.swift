@@ -107,6 +107,8 @@ import Cocoa
             autoscroll(theEvent)
             
             setNeedsDisplayInRect(frame)
+            
+            //controller.leaf_moved()
         }
     }
     

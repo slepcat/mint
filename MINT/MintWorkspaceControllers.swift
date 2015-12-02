@@ -245,6 +245,7 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
         }
     }
     
+    
     ///// workspace save and load /////
     
     @IBAction func save(sender: AnyObject?) {
@@ -260,6 +261,12 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
         
     }
     
+    @IBAction func newworkspace(sender: AnyObject?) {
+        
+        let command = NewWorkspace()
+        controller.sendCommand(command)
+    }
+    
     func positions() -> [(uid: UInt, pos: NSPoint)] {
         var acc : [(uid: UInt, pos: NSPoint)] = []
         
@@ -273,6 +280,19 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
         for ctrl in viewStack {
             removeLeaf(ctrl.uid)
             removeLinkFrom(ctrl.uid)
+        }
+    }
+    
+    func windowShouldClose(sender: AnyObject) -> Bool {
+        
+        let command = AppQuit()
+        controller.sendCommand(command)
+        
+        if command.willQuit {
+            NSApp.terminate(self)
+            return true
+        } else {
+            return false
         }
     }
     

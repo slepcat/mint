@@ -64,6 +64,7 @@
             <animations/>
             <connections>
                 <outlet property="controller" destination="-2" id="jwd-pt-nqH"/>
+                <outlet property="menu" destination="vrf-bd-cRd" id="fDh-qB-HnH"/>
                 <outlet property="nameTag" destination="QRY-od-rqg" id="i4a-Gy-T8b"/>
             </connections>
             <point key="canvasLocation" x="103.5" y="276.5"/>
@@ -220,6 +221,28 @@
             </tableHeaderView>
             <point key="canvasLocation" x="398.5" y="262.5"/>
         </scrollView>
+        <menu id="vrf-bd-cRd">
+            <items>
+                <menuItem title="Run" id="ksf-K3-VXf">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="IXI-KY-XVH"/>
+                <menuItem title="Copy" id="sIx-7y-mVW">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+                <menuItem title="Delete" id="0pk-jX-LoY">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="kwf-cC-QmR"/>
+                <menuItem title="Export STL" id="HMO-J0-Lbn">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="export_stl:" target="-2" id="Nxf-I8-9uh"/>
+                    </connections>
+                </menuItem>
+            </items>
+            <point key="canvasLocation" x="102.5" y="99.5"/>
+        </menu>
     </objects>
     <resources>
         <image name="arg" width="12" height="12"/>

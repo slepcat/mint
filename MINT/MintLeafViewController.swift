@@ -83,6 +83,12 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         }
     }
     
+    @IBAction func export_stl(sender: AnyObject?) {
+        
+        let command = ExportSTL(uid: uid)
+        controller.sendCommand(command)
+    }
+    
     // observer protocol implementation
     /// update as observer
     func update(leafid: UInt, newopds: [SExpr], newuid: UInt, olduid: UInt) {
@@ -224,6 +230,14 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     func setName(name: String) {
         leafName = name
         leafview.nameTag.stringValue = name
+    }
+    
+    func leaf_moved() {
+        controller.mark_edited()
+    }
+    
+    func move_to_outside() {
+        
     }
     
     ///////// Mint Command ////////////
