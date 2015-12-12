@@ -542,10 +542,9 @@ class RemoveLeaf:MintCommand {
             }
         }
         
+        interpreter.remove(removeID)
         workspace.removeLeaf(removeID)
         workspace.edited = true
-        
-        interpreter.remove(removeID)
         
         modelView.setNeedDisplay()
     }
@@ -778,8 +777,19 @@ class LoadWorkspace:MintCommand {
                             self.rec_generate_leaf(unwrapped, parentid: 0, pos_acc: acc)
                         }
                     }
-                    
+
                     self.workspace.fileurl = url
+                    
+                    
+                    // expand frame size of workspace if need.
+                    var rectacc : NSRect = self.workspace.frame
+                    
+                    for ctrl in self.workspace.viewStack {
+                        rectacc = CGRectUnion(rectacc, ctrl.frame)
+                    }
+                    
+                    self.workspace.frame = rectacc
+                    
                 }
             }
         }

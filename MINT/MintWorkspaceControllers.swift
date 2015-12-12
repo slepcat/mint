@@ -21,6 +21,10 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
     var viewStack : [MintLeafViewController] = []
     var linkviews : [LinkView] = []
     
+    var frame : CGRect {
+        get{ return workspace.frame }
+        set{ workspace.frame = newValue }
+    }
     
     // file management
     

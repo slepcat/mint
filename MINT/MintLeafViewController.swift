@@ -29,6 +29,8 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     
     var obs : [MintLinkObserver] = []
     
+    var frame : CGRect { get { return leafview.frame } }
+    
     var uid : UInt
     var leafType : String = "Test"
     var leafName : String = ""
@@ -357,16 +359,11 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         }
     }
     
-    /*
-    
     /// rehape workspace to fit leaves
     func reshapeWorkspace(newframe: CGRect) {
-        let newcommand = ReshapeWorkspace(newframe: newframe)
-        controller.sendCommand(newcommand)
+        controller.reshape_workspace(newframe)
     }
-    
-    
-    */
+
     
     ///////// Interact with Table View ////////////
     

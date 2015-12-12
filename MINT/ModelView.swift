@@ -157,6 +157,9 @@ struct ViewAngle {
         
         for mesh in stack {
             if mesh.buffersize > 0 {
+                
+                //objc_sync_enter(mesh)
+                
                 glEnableVertexAttribArray(gl_vertex)
                 glBindBuffer(GLenum(GL_ARRAY_BUFFER), mesh.vbufferid)
                 glVertexAttribPointer(self.gl_vertex, 3, GLenum(GL_DOUBLE), GLboolean(GL_FALSE), 0, nil)
@@ -177,6 +180,8 @@ struct ViewAngle {
                 
                 // 'count' is number of vertices
                 glDrawArrays(GLenum(GL_TRIANGLES), 0, mesh.buffersize / 3)
+                
+                //objc_sync_exit(mesh)
             }
         }
         

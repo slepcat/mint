@@ -98,6 +98,14 @@ import Cocoa
             pos.x += theEvent.deltaX
             pos.y -= theEvent.deltaY
             
+            if pos.x < 0 {
+                pos.x = 0
+            }
+            
+            if pos.y < 0 {
+                pos.y = 0
+            }
+            
             setFrameOrigin(pos)
             
             for link in linkviews {
@@ -117,7 +125,7 @@ import Cocoa
         
         //print("before reshape x: \(frame.origin.x), y: \(frame.origin.y), width: \(frame.size.width), height:\(frame.size.height)")
 
-        //controller.reshapeWorkspace(frame)
+        controller.reshapeWorkspace(frame)
         
         //print("after reshape x: \(frame.origin.x), y: \(frame.origin.y), width: \(frame.size.width), height:\(frame.size.height)")
         

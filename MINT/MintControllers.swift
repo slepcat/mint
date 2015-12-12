@@ -64,4 +64,8 @@ extension MintController {
     func is_proc(symbol: String) -> Bool {
         return interpreter.isSymbol_as_proc(symbol)
     }
+    
+    func reshape_workspace(newframe: NSRect) {
+        workspace.reshapeFrame(newframe)
+    }
 }

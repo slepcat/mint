@@ -10,19 +10,24 @@ import Foundation
 
 class Mint3DPort : MintPort, MintSubject {
     
-    var portid : Int = -1
+    var portid : UInt = 0
     var obs : [MintObserver] = []
     var data : MintIO? = nil
     
-    func write(data: MintIO, uid: UInt){
+    override func write(data: MintIO, uid: UInt){
+        
+        portid = uid
         
         if let _ = data as? IOMesh {
             
             self.data = data
 
-            for o in obs {
-                o.update(self, uid: uid)
-            }
+        }
+    }
+    
+    func update() {
+        for o in obs {
+            o.update(self, uid: portid)
         }
     }
     
@@ -77,7 +82,7 @@ class MintErrPort : MintPort, MintSubject {
     var obs : [MintObserver] = []
     var err : String = ""
     
-    func write(data: MintIO, uid: UInt){
+    override func write(data: MintIO, uid: UInt){
         if let errobj = data as? IOErr {
             
             err = errobj.err
