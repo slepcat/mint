@@ -54,7 +54,7 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
     
     // Instantiate a leaf when tool dragged to workspace from toolbar.
     // Responsible for create leaf's view and model.
-    func addLeaf(toolName:String, setName:String, pos:NSPoint, uid:UInt) {
+    func addLeaf(toolName:String, setName:String, pos:NSPoint, uid:UInt) -> MintLeafViewController {
         
         if leafViewXib == nil {
             leafViewXib = NSNib(nibNamed: "LeafView", bundle: nil)
@@ -77,6 +77,8 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
         }
         
         workspace.needsDisplay = true
+        
+        return viewStack.last!
     }
     
     func reshapeFrame(newframe: CGRect) {
@@ -233,7 +235,7 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
         }
     }
     
-    func removeLeaf(removeID: UInt) {
+    func removeLeaf(removeID: UInt) -> MintLeafViewController? {
         for var i = 0; viewStack.count > i; i++ {
             if viewStack[i].uid == removeID {
                 viewStack[i].removeView()
@@ -242,11 +244,11 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
                 
                 //interpreter.removeObserver(viewStack[i])
                 
-                viewStack.removeAtIndex(i)
-                
-                break
+                return viewStack.removeAtIndex(i)
             }
         }
+        
+        return nil
     }
     
     
@@ -281,10 +283,16 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
     }
     
     func reset_leaves() {
-        for ctrl in viewStack {
-            removeLeaf(ctrl.uid)
-            removeLinkFrom(ctrl.uid)
+        
+        if let port = MintStdPort.get.errport as? MintSubject {
+            
+            for ctrl in viewStack {
+                removeLeaf(ctrl.uid)
+                removeLinkFrom(ctrl.uid)
+                port.removeObserver(ctrl)
+            }
         }
+
     }
     
     func windowShouldClose(sender: AnyObject) -> Bool {

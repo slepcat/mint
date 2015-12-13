@@ -192,7 +192,7 @@
 		A6616AE61AE3BBE90048EA2D /* MintLeafViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintLeafViewController.swift; sourceTree = "<group>"; };
 		A66425881B0832BD00A6D0F0 /* MintMatrix4x4UnitTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintMatrix4x4UnitTest.swift; sourceTree = "<group>"; };
 		A685F8D71AC7C95A005123D5 /* MintWorkspaceControllers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintWorkspaceControllers.swift; sourceTree = "<group>"; };
-		A68607EC19EEC1E1005E858A /* mint.temp_caseinsensitive_rename.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mint.temp_caseinsensitive_rename.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A68607EC19EEC1E1005E858A /* mint.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mint.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A68607F019EEC1E1005E858A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A68607F119EEC1E1005E858A /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		A68607F319EEC1E1005E858A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -338,7 +338,7 @@
 		A68607ED19EEC1E1005E858A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A68607EC19EEC1E1005E858A /* mint.temp_caseinsensitive_rename.app */,
+				A68607EC19EEC1E1005E858A /* mint.app */,
 				A68607FE19EEC1E1005E858A /* mint.temp_caseinsensitive_renameTests.xctest */,
 			);
 			name = Products;
@@ -445,7 +445,7 @@
 			);
 			name = mint.temp_caseinsensitive_rename;
 			productName = MINT;
-			productReference = A68607EC19EEC1E1005E858A /* mint.temp_caseinsensitive_rename.app */;
+			productReference = A68607EC19EEC1E1005E858A /* mint.app */;
 			productType = "com.apple.product-type.application";
 		};
 		A68607FD19EEC1E1005E858A /* mint.temp_caseinsensitive_renameTests */ = {
@@ -797,7 +797,7 @@
 				INFOPLIST_FILE = MINT/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "b2a.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = mint.temp_caseinsensitive_rename;
+				PRODUCT_NAME = mint;
 				SWIFT_OBJC_BRIDGING_HEADER = "MINT/MINT-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -817,7 +817,7 @@
 				INFOPLIST_FILE = MINT/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "b2a.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = mint.temp_caseinsensitive_rename;
+				PRODUCT_NAME = mint;
 				SWIFT_OBJC_BRIDGING_HEADER = "MINT/MINT-Bridging-Header.h";
 			};
 			name = Release;

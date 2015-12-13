@@ -68,4 +68,36 @@ extension MintController {
     func reshape_workspace(newframe: NSRect) {
         workspace.reshapeFrame(newframe)
     }
+    
+    func setNeedsDisplay() {
+        modelView.setNeedDisplay()
+    }
+    
+    func run_all() {
+        interpreter.run_all()
+    }
+    
+    func cancell() {
+        interpreter.cancell()
+    }
+    
+    @IBAction func redraw(sender: AnyObject?) {
+        run_all()
+    }
+    
+    @IBAction func stop(sender: AnyObject?) {
+        cancell()
+    }
+    
+    @IBAction func toggleAutoupdate(sender: AnyObject?) {
+        if let menuitem = sender as? NSMenuItem {
+            if interpreter.autoupdate {
+                interpreter.autoupdate = false
+                menuitem.state = NSOffState
+            } else {
+                interpreter.autoupdate = true
+                menuitem.state = NSOnState
+            }
+        }
+    }
 }

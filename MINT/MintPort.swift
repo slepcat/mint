@@ -79,6 +79,7 @@ class Mint3DPort : MintPort, MintSubject {
 
 class MintErrPort : MintPort, MintSubject {
     
+    var portid : UInt = 0
     var obs : [MintObserver] = []
     var err : String = ""
     
@@ -86,10 +87,13 @@ class MintErrPort : MintPort, MintSubject {
         if let errobj = data as? IOErr {
             
             err = errobj.err
-            
-            for o in obs {
-                o.update(self, uid: errobj.uid_err)
-            }
+            portid = errobj.uid_err
+        }
+    }
+    
+    func update() {
+        for o in obs {
+            o.update(self, uid: portid)
         }
     }
     

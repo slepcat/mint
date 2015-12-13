@@ -19,7 +19,7 @@ enum type {
 
 // Controller of leaf view
 // Manage user actions: Arguments inputs and link.
-class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegate, NSTextFieldDelegate, NSDraggingDestination, MintLeafObserver {
+class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegate, NSTextFieldDelegate, NSDraggingDestination, MintLeafObserver, MintObserver {
     @IBOutlet weak var opdsPopover:NSPopover!
     @IBOutlet weak var leafview:LeafView!
     @IBOutlet weak var operandList:NSTableView!
@@ -191,6 +191,15 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
             }
             print("reload data at leaf(id: \(uid))", terminator:"\n")
             operandList.reloadData()
+        }
+    }
+    
+    /// err output
+    func update(subject: MintSubject, uid: UInt) {
+        if self.uid == uid {
+            if let errout = subject as? MintErrPort {
+                output.stringValue = errout.err
+            }
         }
     }
     

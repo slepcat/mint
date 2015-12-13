@@ -26,6 +26,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         // prepare MintInterpreter
         let interpreter = MintInterpreter(port: mint3dout, errport: minterrout)
+        interpreter.controller = controller
         
         controller.interpreter = interpreter
         workspace.interpreter = interpreter

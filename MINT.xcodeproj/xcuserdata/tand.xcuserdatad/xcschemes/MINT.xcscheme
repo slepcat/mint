@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A68607EB19EEC1E1005E858A"
-               BuildableName = "mint.temp_caseinsensitive_rename.app"
+               BuildableName = "mint.app"
                BlueprintName = "mint.temp_caseinsensitive_rename"
                ReferencedContainer = "container:mint.xcodeproj">
             </BuildableReference>
@@ -43,7 +43,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A68607EB19EEC1E1005E858A"
-            BuildableName = "mint.temp_caseinsensitive_rename.app"
+            BuildableName = "mint.app"
             BlueprintName = "mint.temp_caseinsensitive_rename"
             ReferencedContainer = "container:mint.xcodeproj">
          </BuildableReference>
@@ -52,9 +52,9 @@
       </AdditionalOptions>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Debug"
-      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
-      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      buildConfiguration = "Release"
+      selectedDebuggerIdentifier = ""
+      selectedLauncherIdentifier = "Xcode.IDEFoundation.Launcher.PosixSpawn"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
@@ -66,7 +66,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A68607EB19EEC1E1005E858A"
-            BuildableName = "mint.temp_caseinsensitive_rename.app"
+            BuildableName = "mint.app"
             BlueprintName = "mint.temp_caseinsensitive_rename"
             ReferencedContainer = "container:mint.xcodeproj">
          </BuildableReference>
@@ -92,7 +92,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A68607EB19EEC1E1005E858A"
-            BuildableName = "mint.temp_caseinsensitive_rename.app"
+            BuildableName = "mint.app"
             BlueprintName = "mint.temp_caseinsensitive_rename"
             ReferencedContainer = "container:mint.xcodeproj">
          </BuildableReference>

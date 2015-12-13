@@ -37,7 +37,7 @@ class AddLeaf:MintCommand {
         // add leaf
         if let uid = interpreter.newSExpr(leafType) {
             // add view
-            workspace.addLeaf(leafType, setName: category, pos: pos, uid: uid)
+            let leaf = workspace.addLeaf(leafType, setName: category, pos: pos, uid: uid)
             
             // add glmesh
             if leafType == "display\n" {
@@ -51,6 +51,10 @@ class AddLeaf:MintCommand {
                 }
             }
             //modelView.addMesh(newID)
+            
+            if let port = MintStdPort.get.errport as? MintSubject {
+                port.registerObserver(leaf)
+            }
             
             let res = interpreter.run_around(uid)
             workspace.return_value(res.0.str("", level: 0), uid: res.1)
@@ -543,7 +547,9 @@ class RemoveLeaf:MintCommand {
         }
         
         interpreter.remove(removeID)
-        workspace.removeLeaf(removeID)
+        if let leaf = workspace.removeLeaf(removeID), let port = MintStdPort.get.errport as? MintSubject {
+            port.removeObserver(leaf)
+        }
         workspace.edited = true
         
         modelView.setNeedDisplay()
@@ -777,7 +783,21 @@ class LoadWorkspace:MintCommand {
                             self.rec_generate_leaf(unwrapped, parentid: 0, pos_acc: acc)
                         }
                     }
-
+                    
+                    
+                    self.interpreter.init_env()
+                    let symbols = self.interpreter.collect_symbols()
+                    
+                    for sym in symbols {
+                        let def = self.interpreter.who_define(sym.key, uid: sym.uid)
+                        
+                        if def > 0 {
+                            let arg = self.interpreter.lookup_leaf_of(sym.uid)
+                            self.workspace.addLinkBetween(arg, retleafID: def, isRef: true)
+                        }
+                    }
+                    
+                    
                     self.workspace.fileurl = url
                     
                     
@@ -872,7 +892,11 @@ class LoadWorkspace:MintCommand {
         
         // generate leaf
         
-        workspace.addLeaf("", setName: head.car.str("", level: 0), pos: get_pos(pos_acc, uid: head.uid), uid: head.uid)
+        let leaf = workspace.addLeaf("", setName: head.car.str("", level: 0), pos: get_pos(pos_acc, uid: head.uid), uid: head.uid)
+        
+        if let port = MintStdPort.get.errport as? MintSubject {
+            port.registerObserver(leaf)
+        }
         
         // add glmesh
         if head.car.str("", level: 0) == "display" {

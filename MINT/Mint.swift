@@ -11,6 +11,10 @@ import Foundation
 public class MintInterpreter : Interpreter, MintLeafSubject {
     var observers:[MintLeafObserver] = []
     var threadPool : [NSThread] = []
+    weak var controller : MintController!
+    
+    var autoupdate : Bool = true
+    var executing : Bool = false
     
     init(port: Mint3DPort, errport: MintErrPort) {
         
@@ -18,52 +22,96 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         MintStdPort.get.setErrPort(errport)
                 
         super.init()
+    }
+    
+    // run all trees
+    
+    func run_all() {
         
-        // add IOs
-        //global.define_variable("display", val: Display())
+        cancell()
+        
+        init_env()
+        
+        // Boolean methods (originaly from openJSCAD) use deep recursion & require large call stack.
+        //::::: Todo> Boolean without recursive call (may be with GCD concurrent iteration?), NSThread -> NSOperation
+        
+        var treearray : [SExpr] = []
+        
+        for tree in trees {
+            treearray.append(tree.mirror_for_thread())
+        }
+        
+        let task = MintEval(exps: treearray, env: global, retTo: self)
+        
+        let thread = NSThread(target: task, selector: "main", object: nil)
+        thread.stackSize = 8388608 // set 8 MB stack size
+        
+        //thread.addObserver(self, forKeyPath: "cancelled", options: .New, context: nil)
+        //thread.addObserver(self, forKeyPath: "finished", options: .New, context: nil)
+        //thread.addObserver(self, forKeyPath: "executing", options: .New, context: nil)
+        
+        threadPool.append(thread)
+        
+        for th in threadPool {
+            th.start()
+        }
+        
+        executing = true
+    }
+    
+    // stop all execution
+    
+    func cancell() {
+        for th in threadPool {
+            if th.executing {
+                th.cancel()
+            }
+            //th.removeObserver(self, forKeyPath: "cancelled")
+            //th.removeObserver(self, forKeyPath: "finished")
+            //th.removeObserver(self, forKeyPath: "executing")
+        }
+        
+        threadPool = []
+        
+        executing = false
     }
     
     // update run when 'trees' are edited.
     
     func run_around(uid: UInt) -> (SExpr, UInt) {
-        let i = lookup_treeindex_of(uid)
         
-        for th in threadPool {
-            if th.executing {
-                th.cancel()
-            }
-            th.removeObserver(self, forKeyPath: "cancelled")
-            th.removeObserver(self, forKeyPath: "finished")
-            th.removeObserver(self, forKeyPath: "executing")
+        if !autoupdate {
+            return (MNull(), 0)
         }
         
+        let i = lookup_treeindex_of(uid)
         
-        threadPool = []
+        cancell()
         
-        // 
-        
+        // Boolean methods (originaly from openJSCAD) use deep recursion & require large call stack.
+        //::::: Todo> Boolean without recursive call (may be with GCD concurrent iteration?), NSThread -> NSOperation
         if i >= 0 {
             if let pair = trees[i] as? Pair {
                 if let _ = pair.car as? MDefine {
-                    let task = MintEval(exp: trees[i].mirror_for_thread(), env: global)
+                    let task = MintEval(exp: trees[i].mirror_for_thread(), env: global, retTo: self)
 
                     let thread = NSThread(target: task, selector: "main", object: nil)
                     thread.stackSize = 8388608 // set 8 MB stack size
                                         
-                    thread.addObserver(self, forKeyPath: "cancelled", options: .New, context: nil)
-                    thread.addObserver(self, forKeyPath: "finished", options: .New, context: nil)
-                    thread.addObserver(self, forKeyPath: "executing", options: .New, context: nil)
+                    //thread.addObserver(self, forKeyPath: "cancelled", options: .New, context: nil)
+                    //thread.addObserver(self, forKeyPath: "finished", options: .New, context: nil)
+                    //thread.addObserver(self, forKeyPath: "executing", options: .New, context: nil)
                     
                     threadPool.append(thread)
                 } else {
-                    let task = MintEval(exp: trees[i].mirror_for_thread(), env: global.clone())
+                    let task = MintEval(exp: trees[i].mirror_for_thread(), env: global.clone(), retTo: self)
                     
                     let thread = NSThread(target: task, selector: "main", object: nil)
                     thread.stackSize = 8388608 // set 8 MB stack size
                     
-                    thread.addObserver(self, forKeyPath: "cancelled", options: .New, context: nil)
-                    thread.addObserver(self, forKeyPath: "finished", options: .New, context: nil)
-                    thread.addObserver(self, forKeyPath: "executing", options: .New, context: nil)
+                    //thread.addObserver(self, forKeyPath: "cancelled", options: .New, context: nil)
+                    //thread.addObserver(self, forKeyPath: "finished", options: .New, context: nil)
+                    //thread.addObserver(self, forKeyPath: "executing", options: .New, context: nil)
                     
                     threadPool.append(thread)
                 }
@@ -75,9 +123,21 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
             th.start()
         }
         
+        executing = true
+        
         return (MNull.errNull, 0)
     }
     
+    // call back from NSThread when eval finished.
+    func eval_result(result: AnyObject?) {
+        
+        print("eval finished", terminator: "\n")
+        
+        controller.setNeedsDisplay()
+        executing = false
+    }
+    
+    /*
     public override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if let key = keyPath, let ev = object as? MintEval {
             switch key {
@@ -93,6 +153,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
             }
         }
     }
+    */
     
     // register observer (mint leaf view) protocol
     func registerObserver(observer: MintLeafObserver) {
@@ -466,14 +527,6 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     
     public func init_env() {
         global.hash_table = global_environment()
-        
-        for tree in trees {
-            if let pair = tree as? Pair {
-                if let def = pair.car as? MDefine {
-                    run_around(def.uid)
-                }
-            }
-        }
     }
     
     public func isSymbol(str:String) -> Bool {
@@ -496,8 +549,6 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     
     public func who_define(key: String) -> UInt {
         
-        //::: todo: must implement lexical scope applicable code. currently only apply to global.
-        
         for t in trees {
             if let pair = t as? Pair {
                 if let _ = pair.car as? MDefine {
@@ -507,7 +558,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
                         }
                     } else if let symbol = pair.caadr as? MSymbol {
                         if symbol.key == key {
-                            return pair.uid
+                            return 0//pair.uid //proc is not take ref link
                         }
                     }
                 }
@@ -515,6 +566,156 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         }
         
         return 0
+    }
+    
+    public func who_define(key: String, uid:UInt) -> UInt {
+        
+        // search from bottom of binary tree
+        // to applicable for lexical scope
+        // ::: todo> macro applicable
+        let i = lookup_treeindex_of(uid)
+        let path = rec_root2leaf_path(key, uid: uid, exps: trees[i])
+        
+        for exp in path {
+            
+            if let pair = exp as? Pair {
+                switch pair.car {
+                case _ as MDefine:
+                    if let param = pair.cadr as? MSymbol {
+                        
+                        if (param.uid != uid) && (param.key == key) {
+                            return lookup_leaf_of(param.uid)
+                        }
+                        
+                    } else if let paramPair = pair.cadr as? Pair {
+                        let syms = delayed_list_of_values(paramPair.cdr)
+                        
+                        for sym in syms {
+                            if let symbol = sym as? MSymbol {
+                                if (symbol.uid != uid) && (symbol.key == key) {
+                                    return lookup_leaf_of(symbol.uid)
+                                }
+                            }
+                        }
+                    }
+                case _ as MLambda:
+                    
+                    let syms = delayed_list_of_values(pair.cadr)
+                    
+                    for sym in syms {
+                        if let symbol = sym as? MSymbol {
+                            if (symbol.uid != uid) && (symbol.key == key) {
+                                return lookup_leaf_of(symbol.uid)
+                            }
+                        }
+                    }
+                default:
+                    break
+                }
+            }
+        }
+        
+        // if local define is not found, search global
+        for var j = 0; trees.count > j; j++ {
+            // skip already searched tree
+            if i == j { continue }
+            
+            // check if this tree has the symbol
+            let resid = rec_search_symbol(key, tree: trees[j])
+            if resid > 0 {
+                // search from root to bottom
+                let path = rec_root2leaf_path(key, uid: resid, exps: trees[j]).reverse()
+                
+                for exp in path {
+                    if let pair = exp as? Pair {
+                        if let _  = pair.car as? MDefine {
+                            
+                            if let param = pair.cadr as? MSymbol {
+                                
+                                if (param.uid != uid) && (param.key == key) {
+                                    return lookup_leaf_of(param.uid)
+                                }
+                                
+                            }
+                            
+                        } else if let _ = pair.car as? MLambda {
+                            break
+                        }
+                    }
+                }
+            }
+        }
+        
+        
+        return 0
+    }
+    
+    // get chain of exps from target exp to tree root exp
+    private func rec_root2leaf_path(key: String, uid:UInt, exps:SExpr) -> [SExpr] {
+        if let atom = exps as? Atom {
+            if atom.uid == uid {
+                return [atom]
+            } else {
+                return []
+            }
+        } else {
+            if let pair = exps as? Pair {
+                if pair.uid == uid {
+                    return [pair]
+                } else {
+                    var ret : [SExpr] = []
+                    
+                    let resl = rec_root2leaf_path(key, uid: uid, exps: pair.car)
+                    if resl.count > 0 {
+                        ret = resl + [pair]
+                    }
+                    
+                    let resr = rec_root2leaf_path(key, uid: uid, exps: pair.cdr)
+                    if resr.count > 0 {
+                        ret = resr + [pair]
+                    }
+                    
+                    return ret
+                }
+            }
+        }
+        
+        return []
+    }
+    
+    private func rec_search_symbol(key: String, tree: SExpr) -> UInt {
+        if let atom = tree as? Atom {
+            if let sym = atom as? MSymbol {
+                if sym.key == key {
+                    return sym.uid
+                }
+            }
+        } else if let pair = tree as? Pair {
+            return rec_search_symbol(key, tree: pair.car) + rec_search_symbol(key, tree: pair.cdr)
+        }
+        return 0
+    }
+    
+    func collect_symbols() -> [MSymbol] {
+        var acc :[MSymbol] = []
+        
+        for tree in trees {
+            acc += rec_collect_symbols(tree)
+        }
+        
+        return acc
+    }
+    
+    private func rec_collect_symbols(tree: SExpr) -> [MSymbol] {
+        if let sym = tree as? MSymbol {
+            if !isSymbol_as_proc(sym.key) {
+                return [sym]
+            }
+        } else if let pair = tree as? Pair {
+            return rec_collect_symbols(pair.car) + rec_collect_symbols(pair.cdr)
+        }
+        
+        return []
     }
     
     public func defined_exps() -> [String : [String]] {
