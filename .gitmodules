@@ -7,3 +7,6 @@
 [submodule "OpenJSCAD"]
 	path = OpenJSCAD
 	url = https://github.com/Spiritdude/OpenJSCAD.org.git
+[submodule "mint-lisp"]
+	path = mint-lisp
+	url = /Users/tand/Documents/Developer/mint-lisp/
