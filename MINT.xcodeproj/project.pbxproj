@@ -36,6 +36,7 @@
 		A65D00911C231660009F4013 /* mintlisp_parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A65D00811C231660009F4013 /* mintlisp_parser.swift */; };
 		A65D00921C231660009F4013 /* mintlisp_primitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = A65D00821C231660009F4013 /* mintlisp_primitive.swift */; };
 		A65D00931C231660009F4013 /* mintlisp_util.swift in Sources */ = {isa = PBXBuildFile; fileRef = A65D00831C231660009F4013 /* mintlisp_util.swift */; };
+		A65D00991C25425E009F4013 /* mintlisp_3d_operator_prims.swift in Sources */ = {isa = PBXBuildFile; fileRef = A65D00981C25425E009F4013 /* mintlisp_3d_operator_prims.swift */; };
 		A6616AE31AE3B8100048EA2D /* LeafView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6616AE21AE3B8100048EA2D /* LeafView.swift */; };
 		A6616AE51AE3B8560048EA2D /* ArgumentCellViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6616AE41AE3B8560048EA2D /* ArgumentCellViews.swift */; };
 		A6616AE71AE3BBE90048EA2D /* MintLeafViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6616AE61AE3BBE90048EA2D /* MintLeafViewController.swift */; };
@@ -173,6 +174,7 @@
 		A65D00811C231660009F4013 /* mintlisp_parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_parser.swift; path = "mint-lisp/mint-lisp/mintlisp_parser.swift"; sourceTree = SOURCE_ROOT; };
 		A65D00821C231660009F4013 /* mintlisp_primitive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_primitive.swift; path = "mint-lisp/mint-lisp/mintlisp_primitive.swift"; sourceTree = SOURCE_ROOT; };
 		A65D00831C231660009F4013 /* mintlisp_util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_util.swift; path = "mint-lisp/mint-lisp/mintlisp_util.swift"; sourceTree = SOURCE_ROOT; };
+		A65D00981C25425E009F4013 /* mintlisp_3d_operator_prims.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_3d_operator_prims.swift; path = "mint-lisp/mint-lisp/mintlisp_3d_operator_prims.swift"; sourceTree = SOURCE_ROOT; };
 		A6616AE21AE3B8100048EA2D /* LeafView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeafView.swift; sourceTree = "<group>"; };
 		A6616AE41AE3B8560048EA2D /* ArgumentCellViews.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArgumentCellViews.swift; sourceTree = "<group>"; };
 		A6616AE61AE3BBE90048EA2D /* MintLeafViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintLeafViewController.swift; sourceTree = "<group>"; };
@@ -245,6 +247,7 @@
 				A65D00791C231660009F4013 /* mint_matrix4x4.swift */,
 				A65D007B1C231660009F4013 /* mintlisp_3d_objprocs.swift */,
 				A65D007C1C231660009F4013 /* mintlisp_3d_primitives.swift */,
+				A65D00981C25425E009F4013 /* mintlisp_3d_operator_prims.swift */,
 				A65D007D1C231660009F4013 /* mintlisp_env.swift */,
 				A65D007E1C231660009F4013 /* mintlisp_evaluator.swift */,
 				A65D007F1C231660009F4013 /* mintlisp_lispobj.swift */,
@@ -606,6 +609,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A65D00991C25425E009F4013 /* mintlisp_3d_operator_prims.swift in Sources */,
 				A651F7091BCA41F200193B5B /* MintPort.swift in Sources */,
 				A64779E51BB2A30400A36E66 /* MintLeafPanelController.swift in Sources */,
 				A6616AE31AE3B8100048EA2D /* LeafView.swift in Sources */,

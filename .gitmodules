@@ -9,4 +9,4 @@
 	url = https://github.com/Spiritdude/OpenJSCAD.org.git
 [submodule "mint-lisp"]
 	path = mint-lisp
-	url = /Users/tand/Documents/Developer/mint-lisp/
+	url = https://github.com/slepcat/mint-lisp.git
