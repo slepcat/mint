@@ -220,15 +220,32 @@ class MintEval : NSObject {
                             isRet = true
                         }
                     } else {
-                        if let _bool = cf.seq[1] as? MBool {
-                            
-                            if !_bool.value {
-                                cf = (cf.seq[3], delayed_list_of_values(cf.seq[3]), 0, cf.env)
+                        
+                        if cf.seq.count > 3 {
+                            if let _bool = cf.seq[1] as? MBool {
+                                
+                                if !_bool.value {
+                                    cf = (cf.seq[3], delayed_list_of_values(cf.seq[3]), 0, cf.env)
+                                    continue
+                                }
+                            }
+                            cf = (cf.seq[2], delayed_list_of_values(cf.seq[2]), 0, cf.env)
+                            continue
+                        } else {
+                            if let _bool = cf.seq[1] as? MBool {
+                                
+                                if !_bool.value {
+                                    isRet = true // if there is no <else> statement, do nothing.
+                                } else {
+                                    cf = (cf.seq[2], delayed_list_of_values(cf.seq[2]), 0, cf.env)
+                                    continue
+                                }
+                                
+                            } else {
+                                cf = (cf.seq[2], delayed_list_of_values(cf.seq[2]), 0, cf.env)
                                 continue
                             }
                         }
-                        cf = (cf.seq[2], delayed_list_of_values(cf.seq[2]), 0, cf.env)
-                        continue
                     }
                     
                 } else if let _ = pair.car as? MLambda {
