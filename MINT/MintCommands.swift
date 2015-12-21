@@ -805,7 +805,7 @@ class LoadWorkspace:MintCommand {
                     var rectacc : NSRect = self.workspace.frame
                     
                     for ctrl in self.workspace.viewStack {
-                        rectacc = CGRectUnion(rectacc, ctrl.frame)
+                        rectacc = mintUnionRect(rectacc, leaf: ctrl.frame)
                     }
                     
                     self.workspace.frame = rectacc

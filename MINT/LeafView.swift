@@ -32,7 +32,7 @@ import Cocoa
     /*
     override var frame : NSRect {
         set (newvalue){
-            print("leaf: \(controller.leafName), x: \(newvalue.origin.x), y: \(newvalue.origin.y)")
+            Swift.print("leaf: \(controller.leafName), x: \(newvalue.origin.x), y: \(newvalue.origin.y)")
             super.frame = newvalue
         }
         

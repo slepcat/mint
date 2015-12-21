@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9059"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9531"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="MintLeafViewController" customModule="mint_temp_caseinsensitive_rename" customModuleProvider="target">
+        <customObject id="-2" userLabel="File's Owner" customClass="MintLeafViewController" customModule="mint" customModuleProvider="target">
             <connections>
                 <outlet property="leafview" destination="MpU-Wu-ttb" id="M4B-9K-OcL"/>
                 <outlet property="opdsPopover" destination="2os-vJ-9xb" id="sR3-yx-d4T"/>
@@ -21,16 +21,14 @@
             <subviews>
                 <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QRY-od-rqg">
                     <rect key="frame" x="5" y="56" width="85" height="19"/>
-                    <animations/>
                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" enabled="NO" refusesFirstResponder="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="center" drawsBackground="YES" id="uQx-Fc-1UV">
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
                     </textFieldCell>
                 </textField>
-                <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6nA-t8-YZA" customClass="MintReturnButton" customModule="mint_temp_caseinsensitive_rename" customModuleProvider="target">
+                <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6nA-t8-YZA" customClass="MintReturnButton" customModule="mint" customModuleProvider="target">
                     <rect key="frame" x="-5" y="23" width="39" height="38"/>
-                    <animations/>
                     <buttonCell key="cell" type="round" bezelStyle="circular" image="ret" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ork-SD-NTJ">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
@@ -39,9 +37,8 @@
                         <outlet property="controller" destination="-2" id="3xZ-G9-ElL"/>
                     </connections>
                 </button>
-                <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gie-wI-25b" customClass="MintArgumentButton" customModule="mint_temp_caseinsensitive_rename" customModuleProvider="target">
+                <button horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gie-wI-25b" customClass="MintArgumentButton" customModule="mint" customModuleProvider="target">
                     <rect key="frame" x="61" y="23" width="39" height="38"/>
-                    <animations/>
                     <buttonCell key="cell" type="round" bezelStyle="circular" image="arg" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="cvv-hc-ybV">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
@@ -53,7 +50,6 @@
                 </button>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tfd-l4-SDy">
                     <rect key="frame" x="3" y="0.0" width="89" height="27"/>
-                    <animations/>
                     <textFieldCell key="cell" enabled="NO" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" alignment="justified" id="voV-K5-hpz">
                         <font key="font" metaFont="system" size="10"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -61,7 +57,6 @@
                     </textFieldCell>
                 </textField>
             </subviews>
-            <animations/>
             <connections>
                 <outlet property="controller" destination="-2" id="jwd-pt-nqH"/>
                 <outlet property="menu" destination="vrf-bd-cRd" id="fDh-qB-HnH"/>
@@ -89,7 +84,6 @@
                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="20" rowSizeStyle="automatic" headerView="ynb-HU-QSj" viewBased="YES" id="qCx-JS-iXd">
                         <rect key="frame" x="0.0" y="0.0" width="205" height="127"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <size key="intercellSpacing" width="3" height="2"/>
                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                         <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
@@ -106,13 +100,12 @@
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <prototypeCellViews>
-                                    <tableCellView identifier="paramCell" id="Cba-Ig-JHe" customClass="MintOperandCellView" customModule="mint_temp_caseinsensitive_rename" customModuleProvider="target">
+                                    <tableCellView identifier="paramCell" id="Cba-Ig-JHe" customClass="MintOperandCellView" customModule="mint" customModuleProvider="target">
                                         <rect key="frame" x="1" y="1" width="76" height="20"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WG1-DA-zZr">
                                                 <rect key="frame" x="2" y="2" width="71" height="17"/>
-                                                <animations/>
                                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" drawsBackground="YES" id="Lnr-ol-Srj">
                                                     <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="disabledControlTextColor" catalog="System" colorSpace="catalog"/>
@@ -120,7 +113,6 @@
                                                 </textFieldCell>
                                             </textField>
                                         </subviews>
-                                        <animations/>
                                         <connections>
                                             <outlet property="textField" destination="WG1-DA-zZr" id="Jau-bT-WhY"/>
                                         </connections>
@@ -140,13 +132,12 @@
                                 </textFieldCell>
                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                 <prototypeCellViews>
-                                    <tableCellView identifier="valueCell" id="2d5-LU-auG" customClass="MintOperandCellView" customModule="mint_temp_caseinsensitive_rename" customModuleProvider="target">
+                                    <tableCellView identifier="valueCell" id="2d5-LU-auG" customClass="MintOperandCellView" customModule="mint" customModuleProvider="target">
                                         <rect key="frame" x="80" y="1" width="88" height="20"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="psI-83-cLC">
                                                 <rect key="frame" x="2" y="2" width="83" height="17"/>
-                                                <animations/>
                                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" drawsBackground="YES" id="Wrl-Jv-1du">
                                                     <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -154,7 +145,6 @@
                                                 </textFieldCell>
                                             </textField>
                                         </subviews>
-                                        <animations/>
                                         <connections>
                                             <outlet property="textField" destination="psI-83-cLC" id="Uyn-y7-ZfR"/>
                                         </connections>
@@ -174,13 +164,12 @@
                                 </textFieldCell>
                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                 <prototypeCellViews>
-                                    <tableCellView identifier="rmCell" id="WfH-ht-a70" customClass="MintRmOpdCellView" customModule="mint_temp_caseinsensitive_rename" customModuleProvider="target">
+                                    <tableCellView identifier="rmCell" id="WfH-ht-a70" customClass="MintRmOpdCellView" customModule="mint" customModuleProvider="target">
                                         <rect key="frame" x="171" y="1" width="32" height="20"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eXO-9I-vmq">
                                                 <rect key="frame" x="7" y="1" width="20" height="17"/>
-                                                <animations/>
                                                 <buttonCell key="cell" type="inline" title="×" bezelStyle="inline" imagePosition="overlaps" alignment="center" borderStyle="border" inset="2" id="bvm-Vb-OYH">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="smallSystemBold"/>
@@ -190,7 +179,6 @@
                                                 </connections>
                                             </button>
                                         </subviews>
-                                        <animations/>
                                         <connections>
                                             <outlet property="rmbutton" destination="eXO-9I-vmq" id="511-o1-xa0"/>
                                         </connections>
@@ -200,24 +188,19 @@
                         </tableColumns>
                     </tableView>
                 </subviews>
-                <animations/>
                 <nil key="backgroundColor"/>
             </clipView>
-            <animations/>
             <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="MzI-wv-p0Z">
                 <rect key="frame" x="1" y="134" width="205" height="16"/>
                 <autoresizingMask key="autoresizingMask"/>
-                <animations/>
             </scroller>
             <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="SDg-H4-LV2">
                 <rect key="frame" x="224" y="17" width="15" height="102"/>
                 <autoresizingMask key="autoresizingMask"/>
-                <animations/>
             </scroller>
             <tableHeaderView key="headerView" id="ynb-HU-QSj">
                 <rect key="frame" x="0.0" y="0.0" width="205" height="23"/>
                 <autoresizingMask key="autoresizingMask"/>
-                <animations/>
             </tableHeaderView>
             <point key="canvasLocation" x="398.5" y="262.5"/>
         </scrollView>

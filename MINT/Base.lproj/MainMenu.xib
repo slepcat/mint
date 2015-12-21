@@ -12,7 +12,7 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="mint_temp_caseinsensitive_rename" customModuleProvider="target">
+        <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="mint" customModuleProvider="target">
             <connections>
                 <outlet property="controller" destination="a2f-zn-Vx6" id="Rza-3C-Rxd"/>
                 <outlet property="leafpanel" destination="NAm-X9-eSI" id="454-zr-58r"/>
@@ -276,7 +276,7 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="UN3-r2-Lb1">
-                            <rect key="frame" x="1212" y="1" width="16" height="740"/>
+                            <rect key="frame" x="1213" y="1" width="15" height="740"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <connections>
@@ -296,19 +296,19 @@
             </connections>
             <point key="canvasLocation" x="201.5" y="-140"/>
         </window>
-        <customObject id="a2f-zn-Vx6" customClass="MintController" customModule="mint_temp_caseinsensitive_rename" customModuleProvider="target">
+        <customObject id="a2f-zn-Vx6" customClass="MintController" customModule="mint" customModuleProvider="target">
             <connections>
                 <outlet property="modelView" destination="czX-Ux-6fY" id="umw-kI-cSp"/>
                 <outlet property="workspace" destination="qTW-t7-DNO" id="2oj-Dy-M2F"/>
             </connections>
         </customObject>
-        <customObject id="qTW-t7-DNO" customClass="MintWorkspaceController" customModule="mint_temp_caseinsensitive_rename" customModuleProvider="target">
+        <customObject id="qTW-t7-DNO" customClass="MintWorkspaceController" customModule="mint" customModuleProvider="target">
             <connections>
                 <outlet property="controller" destination="a2f-zn-Vx6" id="Kk3-90-HM5"/>
                 <outlet property="workspace" destination="a6P-RF-7to" id="shM-YJ-c5z"/>
             </connections>
         </customObject>
-        <customObject id="NAm-X9-eSI" customClass="MintLeafPanelController" customModule="mint_temp_caseinsensitive_rename" customModuleProvider="target">
+        <customObject id="NAm-X9-eSI" customClass="MintLeafPanelController" customModule="mint" customModuleProvider="target">
             <connections>
                 <outlet property="leafList" destination="35a-Au-iLy" id="iVd-uN-Y8u"/>
                 <outlet property="toggleMenu" destination="Kx7-D3-xHX" id="Uaw-Ph-F15"/>
@@ -316,7 +316,7 @@
                 <outlet property="window" destination="HeK-tW-Hnd" id="AAq-V7-y1e"/>
             </connections>
         </customObject>
-        <customObject id="czX-Ux-6fY" customClass="MintModelViewController" customModule="mint_temp_caseinsensitive_rename" customModuleProvider="target">
+        <customObject id="czX-Ux-6fY" customClass="MintModelViewController" customModule="mint" customModuleProvider="target">
             <connections>
                 <outlet property="modelview" destination="Zek-9d-GHB" id="sBE-3n-g0V"/>
                 <outlet property="toggleMenu" destination="YKd-gs-7DP" id="zcw-4t-17L"/>

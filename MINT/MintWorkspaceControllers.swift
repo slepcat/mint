@@ -82,10 +82,11 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
     }
     
     func reshapeFrame(newframe: CGRect) {
-        //let newrect = workspace.convertRect(newframe, toView: workspace.superview)
-        let newframerect = CGRectUnion(newframe, workspace.frame)
+        //let newrect = workspace.convertRect(newframe, toView: workspace)
         
-        workspace.frame = newframerect
+        workspace.frame = mintUnionRect(workspace.frame, leaf:newframe)
+        
+        //print(workspace.frame)
     }
     
     func addLinkBetween(argleafID: UInt, retleafID: UInt, isRef: Bool) {
@@ -308,4 +309,25 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
         }
     }
     
+}
+
+
+func mintUnionRect(workspace: NSRect, leaf: NSRect) -> NSRect {
+    
+    var unionRect: NSRect = workspace
+    
+    let h_w = workspace.origin.y + workspace.size.height
+    let w_w = workspace.origin.x + workspace.size.width
+    let h_l = leaf.origin.y + leaf.size.height + workspace.origin.y
+    let w_l = leaf.origin.x + leaf.size.width + workspace.origin.x
+    
+    if h_l > h_w {
+        unionRect.size.height = h_l - workspace.origin.y
+    }
+    
+    if w_l > w_w {
+        unionRect.size.width = w_l - workspace.origin.x
+    }
+    
+    return unionRect
 }
