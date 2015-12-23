@@ -15,8 +15,8 @@ mintはまだ開発中の要素が多く、実装されていない機能（そ�
 #Getting Started
 ##hello world!
 簡単な立方体を描画してみる。
-![01_leaf_pallete.png](readme/01_leaf_pallete.png)
 
+![01_leaf_pallete.png](readme/01_leaf_pallete.png)
 リーフはパレットから選択する。（あまり整理されていないので改善項目...）
 
 ![02_drag_leaf.png](readme/02_drag_leaf.png)
@@ -51,6 +51,7 @@ cubeの他のパラメータを入力する。幅、高さ、奥行き。（ち�
 最後にdisplayへcubeの戻り値をリンクしてやると、view画面に立方体が表示される。
 
 ![10_helloworld.png](readme/10_helloworld.png)
+
 ![11_draw_menu.png](readme/11_draw_menu.png)
 
 なお、リーフを編集するたびに自動計算するのを止めたい場合はDrawメニューのAuto UpdateをOffにする。また、無限再帰などになった場合はStopで止めることができる(バックグラウンドで計算するのは常に1つだけなので、新しい計算処理を始めれば（計算中に何か別のリーフを編集すれば）古い計算はキャンセルされる)。Draw Allは全て（変数のバインドも）を再計算する。
@@ -64,6 +65,7 @@ defineを使うことでリーフの戻り値を変数にバインドするこ�
 ![30_define.png](readme/30_define.png)
 
 ※set!もあるが使用は非推奨。visual programming languageのため、計算順序が保証されない。begin等で制御する必要があり。
+
 ※値だけでなく手続きもバインドできます。名前空間は変数と同一(Lisp1)
 #todo/やることリスト
 - [ ] プリプロセッサの追加
