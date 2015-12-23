@@ -47,10 +47,12 @@ cubeの他のパラメータを入力する。幅、高さ、奥行き。（ち�
 ![08_link_evaled.png](readme/08_link_evaled.png)
 
 計算はリーフを編集するたびにバックグランドで自動で行われるので、リーフの下側に計算結果が表示される。
+
 ![09_leaves.png](readme/09_leaves.png)
-最後にdisplayへcubeの戻り値をリンクしてやると、view画面に立方体が表示される。
 
 ![10_helloworld.png](readme/10_helloworld.png)
+
+最後にdisplayへcubeの戻り値をリンクしてやると、view画面に立方体が表示される。
 
 ![11_draw_menu.png](readme/11_draw_menu.png)
 
