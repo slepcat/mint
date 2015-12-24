@@ -317,7 +317,7 @@ class LinkOperand:MintCommand {
         }
         
         if let oldargLeaf = oldvalue as? Pair {
-            workspace.removeLinkBetween(oldargLeaf.uid, retleafID: returnLeafID)
+            workspace.removeLinkBetween(argumentLeafID, retleafID: oldargLeaf.uid)
             
             workspace.return_value("", uid: oldargLeaf.uid)
             
