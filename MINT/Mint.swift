@@ -10,11 +10,9 @@ import Foundation
 
 public class MintInterpreter : Interpreter, MintLeafSubject {
     var observers:[MintLeafObserver] = []
-    var threadPool : [NSThread] = []
     weak var controller : MintController!
     
     var autoupdate : Bool = true
-    var executing : Bool = false
     
     init(port: Mint3DPort, errport: MintErrPort) {
         
@@ -23,137 +21,6 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
                 
         super.init()
     }
-    
-    // run all trees
-    
-    func run_all() {
-        
-        cancell()
-        
-        init_env()
-        
-        // Boolean methods (originaly from openJSCAD) use deep recursion & require large call stack.
-        //::::: Todo> Boolean without recursive call (may be with GCD concurrent iteration?), NSThread -> NSOperation
-        
-        var treearray : [SExpr] = []
-        
-        for tree in trees {
-            treearray.append(tree.mirror_for_thread())
-        }
-        
-        let task = MintEval(exps: treearray, env: global, retTo: self)
-        
-        let thread = NSThread(target: task, selector: "main", object: nil)
-        thread.stackSize = 8388608 // set 8 MB stack size
-        
-        //thread.addObserver(self, forKeyPath: "cancelled", options: .New, context: nil)
-        //thread.addObserver(self, forKeyPath: "finished", options: .New, context: nil)
-        //thread.addObserver(self, forKeyPath: "executing", options: .New, context: nil)
-        
-        threadPool.append(thread)
-        
-        for th in threadPool {
-            th.start()
-        }
-        
-        executing = true
-    }
-    
-    // stop all execution
-    
-    func cancell() {
-        for th in threadPool {
-            if th.executing {
-                th.cancel()
-            }
-            //th.removeObserver(self, forKeyPath: "cancelled")
-            //th.removeObserver(self, forKeyPath: "finished")
-            //th.removeObserver(self, forKeyPath: "executing")
-        }
-        
-        threadPool = []
-        
-        executing = false
-    }
-    
-    // update run when 'trees' are edited.
-    
-    func run_around(uid: UInt) -> (SExpr, UInt) {
-        
-        if !autoupdate {
-            return (MNull(), 0)
-        }
-        
-        let i = lookup_treeindex_of(uid)
-        
-        cancell()
-        
-        // Boolean methods (originaly from openJSCAD) use deep recursion & require large call stack.
-        //::::: Todo> Boolean without recursive call (may be with GCD concurrent iteration?), NSThread -> NSOperation
-        if i >= 0 {
-            if let pair = trees[i] as? Pair {
-                if let _ = pair.car as? MDefine {
-                    let task = MintEval(exp: trees[i].mirror_for_thread(), env: global, retTo: self)
-
-                    let thread = NSThread(target: task, selector: "main", object: nil)
-                    thread.stackSize = 8388608 // set 8 MB stack size
-                                        
-                    //thread.addObserver(self, forKeyPath: "cancelled", options: .New, context: nil)
-                    //thread.addObserver(self, forKeyPath: "finished", options: .New, context: nil)
-                    //thread.addObserver(self, forKeyPath: "executing", options: .New, context: nil)
-                    
-                    threadPool.append(thread)
-                } else {
-                    let task = MintEval(exp: trees[i].mirror_for_thread(), env: global.clone(), retTo: self)
-                    
-                    let thread = NSThread(target: task, selector: "main", object: nil)
-                    thread.stackSize = 8388608 // set 8 MB stack size
-                    
-                    //thread.addObserver(self, forKeyPath: "cancelled", options: .New, context: nil)
-                    //thread.addObserver(self, forKeyPath: "finished", options: .New, context: nil)
-                    //thread.addObserver(self, forKeyPath: "executing", options: .New, context: nil)
-                    
-                    threadPool.append(thread)
-                }
-            }
-            //return (eval(trees[i]), trees[i].uid)
-        }
-        
-        for th in threadPool {
-            th.start()
-        }
-        
-        executing = true
-        
-        return (MNull.errNull, 0)
-    }
-    
-    // call back from NSThread when eval finished.
-    func eval_result(result: AnyObject?) {
-        
-        print("eval finished", terminator: "\n")
-        
-        controller.setNeedsDisplay()
-        executing = false
-    }
-    
-    /*
-    public override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if let key = keyPath, let ev = object as? MintEval {
-            switch key {
-            case "finished":
-                print("eval finished", terminator:"\n")
-                print(ev.res?.str("  ", level: 0), terminator:"\n")
-            case "executing":
-                print("eval start", terminator: "\n")
-            case "cancelled":
-                print("eval cancelled", terminator:"\n")
-            default:
-                break
-            }
-        }
-    }
-    */
     
     // register observer (mint leaf view) protocol
     func registerObserver(observer: MintLeafObserver) {
@@ -190,20 +57,6 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         for obs in observers {
             obs.update(leafid, newopds: newopds, newuid: newuid, olduid: olduid)
         }
-    }
-    
-    ///// Look up location of uid /////
-    
-    public func lookup_treeindex_of(uid: UInt) -> Int {
-        for var i = 0; trees.count > i; i++ {
-            let res = trees[i].lookup_exp(uid)
-            
-            if !res.target.isNull() {
-                return i
-            }
-        }
-        
-        return -1
     }
     
     // lookup uid of s-expression which include designated uid object.
@@ -272,6 +125,16 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
             }
         }
         
+    }
+    
+    ///// run around /////
+    
+    public func run_around(uid : UInt) -> (SExpr, UInt) {
+        if autoupdate {
+            return eval(uid)
+        } else {
+            return (MNull(), 0)
+        }
     }
     
     ///// Manipulating S-Expression /////
@@ -524,10 +387,6 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     }
     
     ///// read Env /////
-    
-    public func init_env() {
-        global.hash_table = global_environment()
-    }
     
     public func isSymbol(str:String) -> Bool {
         if let _ = global.hash_table.indexForKey(str) {

@@ -1080,7 +1080,7 @@ class ExportSTL : MintCommand {
             }
         }
         
-        let mesh = polygons_from_exp(interpreter.eval(uid))
+        let mesh = polygons_from_exp(interpreter.eval_mainthread(uid))
         
         var stlascii = "solid csg.mint\n"
         for p in mesh {
