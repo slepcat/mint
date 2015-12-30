@@ -46,6 +46,9 @@ protocol MintLinkSubject: class {
 }
 
 protocol MintCommand {
+    weak var workspace: MintWorkspaceController! {get set}
+    weak var modelView: MintModelViewController! {get set}
+    weak var interpreter: MintInterpreter! {get set}
     func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter)
     func execute()
     func undo()

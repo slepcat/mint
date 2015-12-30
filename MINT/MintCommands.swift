@@ -94,9 +94,8 @@ class AddOperand:MintCommand {
     }
     
     func execute() {
-        let def = interpreter.who_define(newvalue)
-        
         addedargid = interpreter.add_arg(leafid, rawstr: newvalue)
+        let def = interpreter.who_define(newvalue, uid: addedargid)
         
         // add glmesh
         if newvalue == "display" {
@@ -108,15 +107,10 @@ class AddOperand:MintCommand {
         }
         
         if def > 0 {
-            if interpreter.set_ref(addedargid, ofleafid: leafid, symbolUid: def) {
-                workspace.addLinkBetween(leafid, retleafID: def, isRef: true)
-            }
+            workspace.addLinkBetween(leafid, retleafID: def, isRef: true)
         }
         
-        workspace.return_value("", uid: leafid)
-        
-        let res = interpreter.run_around(leafid)
-        workspace.return_value(res.0.str("", level: 0), uid: res.1)
+        interpreter.run_around(leafid)
         workspace.edited = true
         
         modelView.setNeedDisplay()
@@ -167,15 +161,20 @@ class SetOperand:MintCommand {
             }
         }
         
-        let def = interpreter.who_define(newvalue)
+        if let sym = oldarg as? MSymbol {
+            let olddef = interpreter.who_define(sym.key, uid: sym.uid)
+            workspace.removeLinkBetween(leafid, retleafID: olddef)
+        }
+        
+        let uid = interpreter.overwrite_arg(argid, leafid: leafid, rawstr: newvalue)
+        
+        let def = interpreter.who_define(newvalue, uid: uid)
         
         if def > 0 {
             if interpreter.set_ref(argid, ofleafid: leafid, symbolUid: def) {
                 workspace.addLinkBetween(leafid, retleafID: def, isRef: true)
             }
         }
-        
-        let uid = interpreter.overwrite_arg(argid, leafid: leafid, rawstr: newvalue)
         
         // add glmesh
         if newvalue == "display" {
@@ -241,10 +240,10 @@ class RemoveOperand:MintCommand {
         
         interpreter.remove_arg(argid, ofleafid: leafid)
         
-        workspace.return_value("", uid: leafid)
+        //workspace.return_value("", uid: leafid)
         
-        let res = interpreter.run_around(leafid)
-        workspace.return_value(res.0.str("", level: 0), uid: res.1)
+        interpreter.run_around(leafid)
+        //workspace.return_value(res.0.str("", level: 0), uid: res.1)
         workspace.edited = true
         
         modelView.setNeedDisplay()
@@ -305,32 +304,42 @@ class LinkOperand:MintCommand {
         
         workspace.addLinkBetween(argumentLeafID, retleafID: returnLeafID, isRef: false)
         
+        // remove ref links if added ret leaf and argument leaf before scope change
+        remove_ref_links(ofleaf: returnLeafID)
+        remove_ref_links(ofleaf: argumentLeafID)
+        
+        // if added leaf have link with another leaf, remove it
         let target = interpreter.lookup(returnLeafID)
         if !target.conscell.isNull() {
             let oldargLeafID = interpreter.lookup_leaf_of(target.conscell.uid)
+            
             workspace.removeLinkBetween(oldargLeafID, retleafID: returnLeafID)
-            
-            workspace.return_value("", uid: oldargLeafID)
-            
-            let res = interpreter.run_around(oldargLeafID)
-            workspace.return_value(res.0.str("", level: 0), uid: res.1)
+            interpreter.run_around(oldargLeafID)
         }
         
+        // if arg is link to another leaf, remove it
         if let oldargLeaf = oldvalue as? Pair {
+            
+            // remove ref links before scope change
+            remove_ref_links(ofleaf: oldargLeaf.uid)
+            
             workspace.removeLinkBetween(argumentLeafID, retleafID: oldargLeaf.uid)
-            
-            workspace.return_value("", uid: oldargLeaf.uid)
-            
-            let res = interpreter.run_around(oldargLeaf.uid)
-            workspace.return_value(res.0.str("", level: 0), uid: res.1)
+            interpreter.run_around(oldargLeaf.uid)
         }
         
         interpreter.link_toArg(argumentLeafID, uid: argumentID, fromUid: returnLeafID)
         
-        workspace.return_value("", uid: argumentLeafID)
+        // update ref links to new scope
+        add_ref_links(ofleaf: argumentLeafID)
         
-        let res = interpreter.run_around(argumentLeafID)
-        workspace.return_value(res.0.str("", level: 0), uid: res.1)
+        // if removed arg is link to another leaf, update ref of the leaf to new scope
+        if let oldargLeaf = oldvalue as? Pair {
+            
+            // update ref links of removed leaf after scope change
+            add_ref_links(ofleaf: oldargLeaf.uid)
+        }
+        
+        interpreter.run_around(argumentLeafID)
         workspace.edited = true
         
         modelView.setNeedDisplay()
@@ -367,16 +376,22 @@ class RemoveLink:MintCommand {
     func execute() {
         //let argleafID = interpreter.lookup_leaf_of(argumentID)
         
+        remove_ref_links(ofleaf: argumentID)
+        remove_ref_links(ofleaf: argleafID)
+        
         interpreter.unlink_arg(argumentID, ofleafid: argleafID)
         
-        workspace.return_value("", uid: argleafID)
-        workspace.return_value("", uid: argumentID)
+        add_ref_links(ofleaf: argumentID)
+        add_ref_links(ofleaf: argleafID)
         
-        let res = interpreter.run_around(argleafID)
-        workspace.return_value(res.0.str("", level: 0), uid: res.1)
+        //workspace.return_value("", uid: argleafID)
+        //workspace.return_value("", uid: argumentID)
         
-        let res2 = interpreter.run_around(argumentID)
-        workspace.return_value(res2.0.str("", level: 0), uid: res2.1)
+        interpreter.run_around(argumentID)
+        //workspace.return_value(res2.0.str("", level: 0), uid: res2.1)
+        interpreter.run_around(argleafID)
+        //workspace.return_value(res.0.str("", level: 0), uid: res.1)
+
         workspace.edited = true
         
         workspace.removeLinkBetween(argleafID, retleafID: argumentID)
@@ -438,6 +453,11 @@ class SetReference:MintCommand {
         
         if interpreter.set_ref(argumentID, ofleafid: argumentLeafID, symbolUid: returnLeafID) {
             
+            if let sym = oldvalue as? MSymbol {
+                let def = interpreter.who_define(sym.key , uid: sym.uid)
+                workspace.removeLinkBetween(argumentLeafID, retleafID: def)
+            }
+            
             workspace.addLinkBetween(argumentLeafID, retleafID: returnLeafID, isRef: true)
             
             if let oldargLeaf = oldvalue as? Pair {
@@ -486,7 +506,7 @@ class RemoveReference:MintCommand {
         let res = interpreter.lookup(argumentID)
         
         if let sym = res.target as? MSymbol {
-            let defLeafID = interpreter.who_define(sym.key)
+            let defLeafID = interpreter.who_define(sym.key, uid: sym.uid)
             
             interpreter.remove_arg(argumentID, ofleafid: argleafID)
             
@@ -1119,5 +1139,59 @@ class ExportSTL : MintCommand {
     
     func redo() {
         
+    }
+}
+
+extension MintCommand {
+    func remove_ref_links(ofleaf uid: UInt) {
+        if let res = interpreter.lookup(uid).target as? Pair {
+            rec_remove_ref(res, ofleafid: res.uid)
+        }
+    }
+    
+    private func rec_remove_ref(pair: Pair, ofleafid: UInt) {
+        if let pair_car = pair.car as? Pair {
+            rec_remove_ref(pair_car, ofleafid: pair_car.uid)
+        } else if let sym = pair.car as? MSymbol {
+            let def = interpreter.who_define(sym.key, uid: sym.uid)
+            if def > 0 {
+                workspace.removeLinkBetween(ofleafid, retleafID: def)
+            }
+        }
+        
+        if let pair_cdr = pair.cdr as? Pair {
+            rec_remove_ref(pair_cdr, ofleafid: ofleafid)
+        } else if let sym = pair.cdr as? MSymbol {
+            let def = interpreter.who_define(sym.key, uid: sym.uid)
+            if def > 0 {
+                workspace.removeLinkBetween(ofleafid, retleafID: def)
+            }
+        }
+    }
+    
+    func add_ref_links(ofleaf uid: UInt) {
+        if let res = interpreter.lookup(uid).target as? Pair {
+            rec_add_ref(res, ofleafid: res.uid)
+        }
+    }
+    
+    private func rec_add_ref(pair: Pair, ofleafid: UInt) {
+        if let pair_car = pair.car as? Pair {
+            rec_add_ref(pair_car, ofleafid: pair_car.uid)
+        } else if let sym = pair.car as? MSymbol {
+            let def = interpreter.who_define(sym.key, uid: sym.uid)
+            if def > 0 {
+                workspace.addLinkBetween(ofleafid, retleafID: def, isRef: true)
+            }
+        }
+        
+        if let pair_cdr = pair.cdr as? Pair {
+            rec_add_ref(pair_cdr, ofleafid: ofleafid)
+        } else if let sym = pair.cdr as? MSymbol {
+            let def = interpreter.who_define(sym.key, uid: sym.uid)
+            if def > 0 {
+                workspace.addLinkBetween(ofleafid, retleafID: def, isRef: true)
+            }
+        }
     }
 }

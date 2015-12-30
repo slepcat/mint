@@ -429,25 +429,44 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     
     public func who_define(key: String, uid:UInt) -> UInt {
         
+        if isSymbol_as_proc(key) {
+            return 0
+        }
+        
         // search from bottom of binary tree
         // to applicable for lexical scope
         // ::: todo> macro applicable
         let i = lookup_treeindex_of(uid)
-        let path = rec_root2leaf_path(key, uid: uid, exps: trees[i])
-        
-        for exp in path {
+        if i >= 0 {
+            let path = rec_root2leaf_path(key, uid: uid, exps: trees[i])
             
-            if let pair = exp as? Pair {
-                switch pair.car {
-                case _ as MDefine:
-                    if let param = pair.cadr as? MSymbol {
-                        
-                        if (param.uid != uid) && (param.key == key) {
-                            return lookup_leaf_of(param.uid)
+            for exp in path {
+                
+                if let pair = exp as? Pair {
+                    switch pair.car {
+                    case _ as MDefine:
+                        if let param = pair.cadr as? MSymbol {
+                            
+                            if (param.uid != uid) && (param.key == key) {
+                                return lookup_leaf_of(param.uid)
+                            }
+                            
+                        } else if let paramPair = pair.cadr as? Pair {
+                            let syms = delayed_list_of_values(paramPair.cdr)
+                            
+                            for sym in syms {
+                                if let symbol = sym as? MSymbol {
+                                    if (symbol.uid != uid) && (symbol.key == key) {
+                                        return lookup_leaf_of(symbol.uid)
+                                    } else if (symbol.uid == uid) && (symbol.key == key) {
+                                        return 0
+                                    }
+                                }
+                            }
                         }
+                    case _ as MLambda:
                         
-                    } else if let paramPair = pair.cadr as? Pair {
-                        let syms = delayed_list_of_values(paramPair.cdr)
+                        let syms = delayed_list_of_values(pair.cadr)
                         
                         for sym in syms {
                             if let symbol = sym as? MSymbol {
@@ -456,20 +475,9 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
                                 }
                             }
                         }
+                    default:
+                        break
                     }
-                case _ as MLambda:
-                    
-                    let syms = delayed_list_of_values(pair.cadr)
-                    
-                    for sym in syms {
-                        if let symbol = sym as? MSymbol {
-                            if (symbol.uid != uid) && (symbol.key == key) {
-                                return lookup_leaf_of(symbol.uid)
-                            }
-                        }
-                    }
-                default:
-                    break
                 }
             }
         }

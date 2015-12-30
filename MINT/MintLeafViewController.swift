@@ -428,7 +428,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                     case .link:
                         valueView.textField?.editable = false
                     case .ref:
-                        valueView.textField?.editable = false
+                        valueView.textField?.editable = true
                     case .def:
                         valueView.textField?.editable = false
                     }
