@@ -60,6 +60,8 @@
 		A6B8B4491AB7207300235759 /* WorkspaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B8B4481AB7207300235759 /* WorkspaceView.swift */; };
 		A6B8B44B1AB9D5E400235759 /* MintCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B8B44A1AB9D5E400235759 /* MintCommands.swift */; };
 		A6CA06761AC5B8DA00AB2135 /* LeafView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A6CA06751AC5B8DA00AB2135 /* LeafView.xib */; };
+		A6D34FE21C354772004D633A /* MintCommandUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6D34FE11C354772004D633A /* MintCommandUtil.swift */; };
+		A6D34FE41C3547AC004D633A /* MintCommandsFileIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6D34FE31C3547AC004D633A /* MintCommandsFileIO.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -202,6 +204,8 @@
 		A6B8B4481AB7207300235759 /* WorkspaceView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceView.swift; sourceTree = "<group>"; };
 		A6B8B44A1AB9D5E400235759 /* MintCommands.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintCommands.swift; sourceTree = "<group>"; };
 		A6CA06751AC5B8DA00AB2135 /* LeafView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LeafView.xib; sourceTree = "<group>"; };
+		A6D34FE11C354772004D633A /* MintCommandUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintCommandUtil.swift; sourceTree = "<group>"; };
+		A6D34FE31C3547AC004D633A /* MintCommandsFileIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintCommandsFileIO.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -277,6 +281,8 @@
 				A64779E41BB2A30400A36E66 /* MintLeafPanelController.swift */,
 				A6616AE61AE3BBE90048EA2D /* MintLeafViewController.swift */,
 				A6B8B44A1AB9D5E400235759 /* MintCommands.swift */,
+				A6D34FE31C3547AC004D633A /* MintCommandsFileIO.swift */,
+				A6D34FE11C354772004D633A /* MintCommandUtil.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -617,6 +623,7 @@
 				A6B8B4451AB54F2E00235759 /* MintControllers.swift in Sources */,
 				A65D008B1C231660009F4013 /* mintlisp_3d_objprocs.swift in Sources */,
 				A60DA1301BBA698A002F6EA3 /* MintModelViewController.swift in Sources */,
+				A6D34FE41C3547AC004D633A /* MintCommandsFileIO.swift in Sources */,
 				A686081119EEC93B005E858A /* ModelView.swift in Sources */,
 				A6616AE51AE3B8560048EA2D /* ArgumentCellViews.swift in Sources */,
 				A65D008C1C231660009F4013 /* mintlisp_3d_primitives.swift in Sources */,
@@ -633,6 +640,7 @@
 				A6B8B44B1AB9D5E400235759 /* MintCommands.swift in Sources */,
 				A64660B01A2B3A7D00648FD9 /* Shader.swift in Sources */,
 				A6B8B4491AB7207300235759 /* WorkspaceView.swift in Sources */,
+				A6D34FE21C354772004D633A /* MintCommandUtil.swift in Sources */,
 				A6616AE71AE3BBE90048EA2D /* MintLeafViewController.swift in Sources */,
 				A65D00881C231660009F4013 /* mint_foundation.swift in Sources */,
 				A65D00911C231660009F4013 /* mintlisp_parser.swift in Sources */,

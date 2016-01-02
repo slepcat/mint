@@ -60,23 +60,22 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     }
     
     // lookup uid of s-expression which include designated uid object.
-    public func lookup_leaf_of(uid: UInt) -> UInt {
+    public func lookup_leaf_of(uid: UInt) -> UInt? {
         for tree in trees {
             if tree.uid == uid {
                 return uid
             } else {
                 if let pair = tree as? Pair {
-                    let res = rec_lookup_leaf(uid, expr: pair)
-                    if res > 0 {
+                    if let res = rec_lookup_leaf(uid, expr: pair) {
                         return res
                     }
                 }
             }
         }
-        return 0
+        return nil
     }
     
-    public func rec_lookup_leaf(uid: UInt, expr: Pair) -> UInt {
+    public func rec_lookup_leaf(uid: UInt, expr: Pair) -> UInt? {
         var unchecked : [Pair] = []
         let chain = gen_pairchain_of_leaf(expr)
         
@@ -103,13 +102,12 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         
         while unchecked.count > 0 {
             let head = unchecked.removeLast()
-            let res = rec_lookup_leaf(uid, expr: head)
-            if res > 0 {
+            if let res = rec_lookup_leaf(uid, expr: head) {
                 return res
             }
         }
         
-        return 0
+        return nil
     }
     
     private func gen_pairchain_of_leaf(exp:SExpr) -> [Pair] {
@@ -212,9 +210,9 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
                     if pair.car.uid == uid {
                         pair.car = MStr(_value: "<unlinked>")
                         
-                        let leafid = lookup_leaf_of(pair.uid)
-                        
-                        update(leafid, newopds: [pair.car], newuid: pair.car.uid, olduid: res.target.uid)
+                        if let leafid = lookup_leaf_of(pair.uid) {
+                            update(leafid, newopds: [pair.car], newuid: pair.car.uid, olduid: res.target.uid)
+                        }
                     } else {
                         print("unexpected err, failed to remove leaf")
                     }
@@ -279,8 +277,9 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         
         // if target leaf has been linked, unlink from member of tree.
         if !rewrite.conscell.isNull() {
-            let oldleafid = lookup_leaf_of(fromUid)
-            unlink_arg(fromUid, ofleafid: oldleafid)
+            if let oldleafid = lookup_leaf_of(fromUid) {
+                unlink_arg(fromUid, ofleafid: oldleafid)
+            }
         }
         
         // remove from trees of interpreter
@@ -339,16 +338,14 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         }
     }
     
-    public func set_ref(toArg:UInt, ofleafid:UInt, symbolUid: UInt) -> Bool{
+    public func set_ref(toArg:UInt, ofleafid:UInt, symbolUid: UInt) -> UInt?{
         let def = lookup(symbolUid)
         
         if let pair = def.target as? Pair {
             if let symbol = pair.cadr as? MSymbol {
-                overwrite_arg(toArg, leafid: ofleafid, rawstr: symbol.key)
-                return true
+                return overwrite_arg(toArg, leafid: ofleafid, rawstr: symbol.key)
             } else if let symbol = pair.caadr as? MSymbol {
-                overwrite_arg(toArg, leafid: ofleafid, rawstr: symbol.key)
-                return true
+                return overwrite_arg(toArg, leafid: ofleafid, rawstr: symbol.key)
             } else {
                 print("error: unexpectedly symbol not found", terminator:"\n")
             }
@@ -356,7 +353,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
             print("error: leaf is not define?", terminator: "\n")
         }
         
-        return false
+        return nil
     }
     
     public func move_arg(uid: UInt, toNextOfUid: UInt) {
@@ -388,24 +385,42 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     
     ///// read Env /////
     
-    public func isSymbol(str:String) -> Bool {
-        if let _ = global.hash_table.indexForKey(str) {
+    public func isSymbol_as_global(exp:MSymbol) -> Bool {
+        if let _ = global.hash_table.indexForKey(exp.key) {
+            return true
+        } else if !autoupdate {
+            // if autoupdate is off, global table may not have the key yet
+            // return true. because true mean reset all ref links in MintCommand
             return true
         } else {
             return false
         }
     }
     
-    public func isSymbol_as_proc(str:String) -> Bool {
-        if isSymbol(str) {
-            if let _ = global.hash_table[str] as? Procedure {
-                return true
+    public func isSymbol_as_proc(exp: MSymbol) -> Bool {
+        if let _ = global.hash_table[exp.key] as? Procedure {
+            return true
+        } else {
+            if let i = lookup_treeindex_of(exp.uid) {
+                
+                let path = rec_root2leaf_path(exp.uid, exps: trees[i])
+                
+                for elem in path {
+                    if let pair = elem as? Pair {
+                        if let _ = pair.car as? MDefine, let sym = pair.cadr as? MSymbol {
+                            if sym.key == exp.key {
+                                return true
+                            }
+                        }
+                    }
+                }
+                
             }
         }
         
         return false
     }
-    
+    /*
     public func who_define(key: String) -> UInt {
         
         for t in trees {
@@ -425,29 +440,101 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         }
         
         return 0
+    }*/
+    
+    /// check if designated symbol is declaration of define variable or define itself
+    public func isDeclaration_of_var(exp: SExpr) -> Bool {
+        if let i = lookup_treeindex_of(exp.uid) {
+            let path = rec_root2leaf_path(exp.uid, exps: trees[i]) // <- macro expansion : todo
+            
+            for elem in path {
+                if let pair = elem as? Pair {
+                    switch pair.car {
+                    case _ as MDefine:
+                        // uid is define var
+                        if pair.cadr.uid == exp.uid {
+                            return true
+                            
+                        // uid is element of defined var list
+                        } else if let paramPair = pair.cadr as? Pair {
+                            let syms = delayed_list_of_values(paramPair.cdr)
+                            
+                            for sym in syms {
+                                if sym.uid == exp.uid {
+                                    return true
+                                }
+                            }
+                        }
+                    case _ as MLambda:
+                        
+                        let syms = delayed_list_of_values(pair.cadr)
+                        
+                        for sym in syms {
+                            if sym.uid == exp.uid {
+                                return true
+                            }
+                        }
+                    default:
+                        break
+                    }
+                }
+            }
+        }
+        
+        return false
     }
     
-    public func who_define(key: String, uid:UInt) -> UInt {
+    
+    // check if designated uid is define or lambda
+    public func isDefine(exp: SExpr) -> Bool {
         
-        if isSymbol_as_proc(key) {
-            return 0
+        // todo: macro expansion
+        
+        switch exp {
+        case _ as MDefine:
+            return true
+        case _ as MLambda:
+            return true
+        default:
+            return false
+        }
+    }
+    
+    /// check if designated exp is display
+    
+    public func isDisplay(exp: SExpr) -> Bool {
+        
+        // todo : macro expansion
+        
+        if let _ = exp as? Display {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    /// search interpreter trees to get node who define designated symbol
+    public func who_define(exp:MSymbol) -> UInt? {
+        
+        if isSymbol_as_proc(exp) {
+            return nil
         }
         
         // search from bottom of binary tree
         // to applicable for lexical scope
         // ::: todo> macro applicable
-        let i = lookup_treeindex_of(uid)
-        if i >= 0 {
-            let path = rec_root2leaf_path(key, uid: uid, exps: trees[i])
+        
+        if let i = lookup_treeindex_of(exp.uid) {
+            let path = rec_root2leaf_path(exp.uid, exps: trees[i])// <- macro expansion point :todo
             
-            for exp in path {
+            for elem in path {
                 
-                if let pair = exp as? Pair {
+                if let pair = elem as? Pair {
                     switch pair.car {
                     case _ as MDefine:
                         if let param = pair.cadr as? MSymbol {
                             
-                            if (param.uid != uid) && (param.key == key) {
+                            if (param.uid != exp.uid) && (param.key == exp.key) {
                                 return lookup_leaf_of(param.uid)
                             }
                             
@@ -456,10 +543,12 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
                             
                             for sym in syms {
                                 if let symbol = sym as? MSymbol {
-                                    if (symbol.uid != uid) && (symbol.key == key) {
+                                    if (symbol.uid != exp.uid) && (symbol.key == exp.key) {
                                         return lookup_leaf_of(symbol.uid)
-                                    } else if (symbol.uid == uid) && (symbol.key == key) {
-                                        return 0
+                                        
+                                    // if designated symbol is declaration of define, return nil
+                                    } else if (symbol.uid == exp.uid) && (symbol.key == exp.key) {
+                                        return nil
                                     }
                                 }
                             }
@@ -470,7 +559,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
                         
                         for sym in syms {
                             if let symbol = sym as? MSymbol {
-                                if (symbol.uid != uid) && (symbol.key == key) {
+                                if (symbol.uid != exp.uid) && (symbol.key == exp.key) {
                                     return lookup_leaf_of(symbol.uid)
                                 }
                             }
@@ -480,45 +569,40 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
                     }
                 }
             }
-        }
-        
-        // if local define is not found, search global
-        for var j = 0; trees.count > j; j++ {
-            // skip already searched tree
-            if i == j { continue }
             
-            // check if this tree has the symbol
-            let resid = rec_search_symbol(key, tree: trees[j])
-            if resid > 0 {
-                // search from root to bottom
-                let path = rec_root2leaf_path(key, uid: resid, exps: trees[j]).reverse()
+            // if local define is not found, search top level
+            for var j = 0; trees.count > j; j++ {
+                // skip already searched tree
+                if i == j { continue }
                 
-                for exp in path {
-                    if let pair = exp as? Pair {
-                        if let _  = pair.car as? MDefine {
-                            
-                            if let param = pair.cadr as? MSymbol {
-                                
-                                if (param.uid != uid) && (param.key == key) {
+                // check if this tree has the symbol
+                let resid = rec_search_symbol(exp.key, tree: trees[j])
+                if resid > 0 {
+                    // search from root to bottom
+                    let path2 = rec_root2leaf_path(resid, exps: trees[j]).reverse() //<- macro expantion point : todo
+                    
+                    for elem in path2 {
+                        if let pair = elem as? Pair {
+                            if let _  = pair.car as? MDefine, let param = pair.cadr as? MSymbol {
+
+                                if (param.uid != exp.uid) && (param.key == exp.key) {
                                     return lookup_leaf_of(param.uid)
                                 }
                                 
+                            } else if let _ = pair.car as? MLambda {
+                                break
                             }
-                            
-                        } else if let _ = pair.car as? MLambda {
-                            break
                         }
                     }
                 }
             }
         }
         
-        
-        return 0
+        return nil
     }
     
     // get chain of exps from target exp to tree root exp
-    private func rec_root2leaf_path(key: String, uid:UInt, exps:SExpr) -> [SExpr] {
+    private func rec_root2leaf_path(uid:UInt, exps:SExpr) -> [SExpr] {
         if let atom = exps as? Atom {
             if atom.uid == uid {
                 return [atom]
@@ -532,12 +616,12 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
                 } else {
                     var ret : [SExpr] = []
                     
-                    let resl = rec_root2leaf_path(key, uid: uid, exps: pair.car)
+                    let resl = rec_root2leaf_path(uid, exps: pair.car)
                     if resl.count > 0 {
                         ret = resl + [pair]
                     }
                     
-                    let resr = rec_root2leaf_path(key, uid: uid, exps: pair.cdr)
+                    let resr = rec_root2leaf_path(uid, exps: pair.cdr)
                     if resr.count > 0 {
                         ret = resr + [pair]
                     }
@@ -575,7 +659,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     
     private func rec_collect_symbols(tree: SExpr) -> [MSymbol] {
         if let sym = tree as? MSymbol {
-            if !isSymbol_as_proc(sym.key) {
+            if !isSymbol_as_proc(sym) {
                 return [sym]
             }
         } else if let pair = tree as? Pair {

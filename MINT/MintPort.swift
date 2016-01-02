@@ -13,6 +13,7 @@ class Mint3DPort : MintPort, MintSubject {
     var portid : UInt = 0
     var obs : [MintObserver] = []
     var data : MintIO? = nil
+    var viewctrl : MintModelViewController? = nil
     
     override func write(data: MintIO, uid: UInt){
         
@@ -29,6 +30,8 @@ class Mint3DPort : MintPort, MintSubject {
         for o in obs {
             o.update(self, uid: portid)
         }
+        
+        viewctrl?.setNeedDisplay()
     }
     
     func mesh() -> [Double] {

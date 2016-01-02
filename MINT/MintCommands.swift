@@ -7,8 +7,6 @@
 //
 
 import Foundation
-import Cocoa
-
 
 class AddLeaf:MintCommand {
     weak var workspace:MintWorkspaceController!
@@ -36,28 +34,25 @@ class AddLeaf:MintCommand {
         
         // add leaf
         if let uid = interpreter.newSExpr(leafType) {
-            // add view
-            let leaf = workspace.addLeaf(leafType, setName: category, pos: pos, uid: uid)
             
-            // add glmesh
-            if leafType == "display\n" {
-                
-                if let pair = interpreter.lookup(uid).target as? Pair {
-                    
-                    let mesh = modelView.addMesh(pair.car.uid)
-                    if let port = MintStdPort.get.port as? MintSubject {
-                        port.registerObserver(mesh)
-                    }
+            // add view controller and view
+            let leafctrl = workspace.addLeaf(leafType, setName: category, pos: pos, uid: uid)
+            // register to standard err output port
+            if let port = MintStdPort.get.errport as? MintSubject {
+                port.registerObserver(leafctrl)
+            }
+            
+            // post process for link and ref
+            let leaf = interpreter.lookup(uid)
+            if let context = context(ofLeaf: leaf.target) {
+                if context == .Display {
+                    let proc = post_process(context)
+                    proc(next: leaf.target, conscell: leaf.conscell)
                 }
             }
-            //modelView.addMesh(newID)
+
             
-            if let port = MintStdPort.get.errport as? MintSubject {
-                port.registerObserver(leaf)
-            }
-            
-            let res = interpreter.run_around(uid)
-            workspace.return_value(res.0.str("", level: 0), uid: res.1)
+            interpreter.run_around(uid)
             
             workspace.edited = true
         }
@@ -95,24 +90,16 @@ class AddOperand:MintCommand {
     
     func execute() {
         addedargid = interpreter.add_arg(leafid, rawstr: newvalue)
-        let def = interpreter.who_define(newvalue, uid: addedargid)
-        
-        // add glmesh
-        if newvalue == "display" {
-            
-            let mesh = modelView.addMesh(addedargid)
-            if let port = MintStdPort.get.port as? MintSubject {
-                port.registerObserver(mesh)
-            }
-        }
-        
-        if def > 0 {
-            workspace.addLinkBetween(leafid, retleafID: def, isRef: true)
-        }
-        
         interpreter.run_around(leafid)
-        workspace.edited = true
         
+        // post process
+        let added = interpreter.lookup(addedargid)
+        if let context = context(ofElem: added.target) {
+            let post_proc = post_process(context)
+            post_proc(next: added.target, conscell: added.conscell)
+        }
+        
+        workspace.edited = true
         modelView.setNeedDisplay()
     }
     
@@ -150,47 +137,28 @@ class SetOperand:MintCommand {
     
     func execute() {
         // save old value for undo or exception restre operation
-        oldarg = interpreter.lookup(argid).target
+        let old = interpreter.lookup(argid)
+        oldarg = old.target
         
-        // if this is "display", remove observer
-        if let disp = oldarg as? Display {
-            if let mesh = modelView.removeMesh(disp.uid) {
-                if let port = MintStdPort.get.port as? MintSubject {
-                    port.removeObserver(mesh)
-                }
-            }
-        }
+        // pre process
         
-        if let sym = oldarg as? MSymbol {
-            let olddef = interpreter.who_define(sym.key, uid: sym.uid)
-            workspace.removeLinkBetween(leafid, retleafID: olddef)
+        if let context = context(ofElem: old.target) {
+            let prev_proc = pre_process(context)
+            prev_proc(prev: old.target, conscell: old.conscell)
         }
         
         let uid = interpreter.overwrite_arg(argid, leafid: leafid, rawstr: newvalue)
+        interpreter.run_around(leafid)
         
-        let def = interpreter.who_define(newvalue, uid: uid)
+        // post process
         
-        if def > 0 {
-            if interpreter.set_ref(argid, ofleafid: leafid, symbolUid: def) {
-                workspace.addLinkBetween(leafid, retleafID: def, isRef: true)
-            }
+        let newexp = interpreter.lookup(uid)
+        if let context = context(ofElem: newexp.target) {
+            let post_proc = post_process(context)
+            post_proc(next: newexp.target, conscell: newexp.conscell)
         }
         
-        // add glmesh
-        if newvalue == "display" {
-            
-            let mesh = modelView.addMesh(uid)
-            if let port = MintStdPort.get.port as? MintSubject {
-                port.registerObserver(mesh)
-            }
-        }
-        
-        workspace.return_value("", uid: leafid)
-        
-        let res = interpreter.run_around(leafid)
-        workspace.return_value(res.0.str("", level: 0), uid: res.1)
         workspace.edited = true
-        
         modelView.setNeedDisplay()
     }
     
@@ -227,25 +195,45 @@ class RemoveOperand:MintCommand {
     
     func execute() {
         // save old value for undo or exception restre operation
-        oldarg = interpreter.lookup(argid).target
+        let old = interpreter.lookup(argid)
+        oldarg = old.target
         
-        // if this is "display", remove observer
-        if let disp = oldarg as? Display {
-            if let mesh = modelView.removeMesh(disp.uid) {
-                if let port = MintStdPort.get.port as? MintSubject {
-                    port.removeObserver(mesh)
+        // pre process
+        
+        if let context = context(ofElem: old.target) {
+            let prev_proc = pre_process(context)
+            prev_proc(prev: old.target, conscell: old.conscell)
+            
+            var wasGlobal = false
+            
+            if let sym = old.target as? MSymbol {
+                wasGlobal = interpreter.isSymbol_as_global(sym)
+            }
+            
+            interpreter.remove_arg(argid, ofleafid: leafid)
+            interpreter.run_around(leafid)
+            
+            switch context {
+            case .DeclVar, .Define:
+                if wasGlobal {
+                    // if changed declaration is global, reset all ref links
+                    for tree in self.interpreter.trees {
+                        self.rec_add_ref_links(ofleaf: tree)
+                    }
+                } else {
+                    // if changed declaration is local, add ref links of the tree
+                    if let i = self.interpreter.lookup_treeindex_of(leafid) {
+                        self.rec_add_ref_links(ofleaf: self.interpreter.trees[i])
+                    }
                 }
+            default:
+                break
             }
         }
         
-        interpreter.remove_arg(argid, ofleafid: leafid)
         
-        //workspace.return_value("", uid: leafid)
         
-        interpreter.run_around(leafid)
-        //workspace.return_value(res.0.str("", level: 0), uid: res.1)
         workspace.edited = true
-        
         modelView.setNeedDisplay()
     }
     
@@ -286,62 +274,62 @@ class LinkOperand:MintCommand {
         // loop check
         
         if interpreter.lookup_treeindex_of(returnLeafID) == interpreter.lookup_treeindex_of(argumentLeafID) {
-            print("🚫⚠️Cannot ref or link within a tree", terminator:"\n")
+            print("🚫Cannot link within a tree", terminator:"\n")
             return
         }
         
         // save old value for undo
-        oldvalue = interpreter.lookup(argumentID).target
+        let old = interpreter.lookup(argumentID)
+        oldvalue = old.target
         
-        // if this is "display", remove observer
-        if let disp = oldvalue as? Display {
-            if let mesh = modelView.removeMesh(disp.uid) {
-                if let port = MintStdPort.get.port as? MintSubject {
-                    port.removeObserver(mesh)
-                }
+        // pre process for overwritten operand
+        if let context = context(ofElem: old.target) {
+            let prev_proc = pre_process(context)
+            prev_proc(prev: old.target, conscell: old.conscell)
+        }
+        
+        // pre process for linked (parent of the operand) leaf
+        let leaf = interpreter.lookup(argumentLeafID)
+        if let context = context(ofLeaf: leaf.target) {
+            if context == .Define {
+                let pre_proc = pre_process(context)
+                pre_proc(prev: leaf.target, conscell: leaf.conscell)
             }
         }
         
-        workspace.addLinkBetween(argumentLeafID, retleafID: returnLeafID, isRef: false)
-        
-        // remove ref links if added ret leaf and argument leaf before scope change
-        remove_ref_links(ofleaf: returnLeafID)
-        remove_ref_links(ofleaf: argumentLeafID)
-        
-        // if added leaf have link with another leaf, remove it
-        let target = interpreter.lookup(returnLeafID)
-        if !target.conscell.isNull() {
-            let oldargLeafID = interpreter.lookup_leaf_of(target.conscell.uid)
-            
-            workspace.removeLinkBetween(oldargLeafID, retleafID: returnLeafID)
-            interpreter.run_around(oldargLeafID)
-        }
-        
-        // if arg is link to another leaf, remove it
-        if let oldargLeaf = oldvalue as? Pair {
-            
-            // remove ref links before scope change
-            remove_ref_links(ofleaf: oldargLeaf.uid)
-            
-            workspace.removeLinkBetween(argumentLeafID, retleafID: oldargLeaf.uid)
-            interpreter.run_around(oldargLeaf.uid)
-        }
+        // pre process for linking leaf
+        let added = interpreter.lookup(returnLeafID)
+        let prev_proc = pre_process(.Link)
+        prev_proc(prev: added.target, conscell: added.conscell)
         
         interpreter.link_toArg(argumentLeafID, uid: argumentID, fromUid: returnLeafID)
+        interpreter.run_around(argumentLeafID)
         
         // update ref links to new scope
-        add_ref_links(ofleaf: argumentLeafID)
+        // for leaf of return value
+        let post_added = interpreter.lookup(returnLeafID)
+        let post_proc = post_process(.Link)
+        post_proc(next: post_added.target, conscell: post_added.conscell)
         
         // if removed arg is link to another leaf, update ref of the leaf to new scope
-        if let oldargLeaf = oldvalue as? Pair {
-            
-            // update ref links of removed leaf after scope change
-            add_ref_links(ofleaf: oldargLeaf.uid)
+        if let context = context(ofElem: old.target) {
+            if context == .Link {
+                let post_proc = post_process(context)
+                
+                let removed = interpreter.lookup(old.target.uid)
+                post_proc(next: removed.target, conscell: removed.conscell)
+            }
         }
         
-        interpreter.run_around(argumentLeafID)
-        workspace.edited = true
+        // psot process for linked (parent of the operand) leaf
+        if let context = context(ofLeaf: leaf.target) {
+            if context == .Define {
+                let post_proc = post_process(context)
+                post_proc(next: leaf.target, conscell: leaf.conscell)
+            }
+        }
         
+        workspace.edited = true
         modelView.setNeedDisplay()
     }
     
@@ -357,6 +345,7 @@ class LinkOperand:MintCommand {
 class RemoveLink:MintCommand {
     let argleafID : UInt
     let argumentID : UInt
+    var oldvalue : SExpr? = nil
     
     weak var workspace:MintWorkspaceController!
     weak var modelView: MintModelViewController!
@@ -374,27 +363,31 @@ class RemoveLink:MintCommand {
     }
     
     func execute() {
-        //let argleafID = interpreter.lookup_leaf_of(argumentID)
+        // save old value for undo
+        let old = interpreter.lookup(argumentID)
+        oldvalue = old.target
         
-        remove_ref_links(ofleaf: argumentID)
-        remove_ref_links(ofleaf: argleafID)
+        // pre process
+        let pre_argleaf = interpreter.lookup(argleafID)
+        let pre_retleaf = interpreter.lookup(argumentID)
+        let pre_proc = pre_process(.Link)
+        
+        pre_proc(prev: pre_argleaf.target, conscell: pre_argleaf.conscell)
+        pre_proc(prev: pre_retleaf.target, conscell: pre_retleaf.conscell)
         
         interpreter.unlink_arg(argumentID, ofleafid: argleafID)
-        
-        add_ref_links(ofleaf: argumentID)
-        add_ref_links(ofleaf: argleafID)
-        
-        //workspace.return_value("", uid: argleafID)
-        //workspace.return_value("", uid: argumentID)
-        
-        interpreter.run_around(argumentID)
-        //workspace.return_value(res2.0.str("", level: 0), uid: res2.1)
+        //interpreter.run_around(argumentID)
         interpreter.run_around(argleafID)
-        //workspace.return_value(res.0.str("", level: 0), uid: res.1)
+        
+        // post process
+        let argleaf = interpreter.lookup(argleafID)
+        let retleaf = interpreter.lookup(argumentID)
+        let post_proc = post_process(.Link)
+        
+        post_proc(next: argleaf.target, conscell: argleaf.conscell)
+        post_proc(next: retleaf.target, conscell: retleaf.conscell)
 
         workspace.edited = true
-        
-        workspace.removeLinkBetween(argleafID, retleafID: argumentID)
         modelView.setNeedDisplay()
     }
     
@@ -432,45 +425,30 @@ class SetReference:MintCommand {
     
     func execute() {
         
-        // loop check deleted: it can caught by interpreter as error
-        /*
-        if interpreter.lookup_treeindex_of(returnLeafID) == interpreter.lookup_treeindex_of(argumentLeafID) {
-            print("Cannot ref or link within a tree", terminator:"\n")
-            return
-        }
-        */
         // save old value for undo
-        oldvalue = interpreter.lookup(argumentID).target
+        let old = interpreter.lookup(argumentID)
+        oldvalue = old.target
         
-        // if this is "display", remove observer
-        if let disp = oldvalue as? Display {
-            if let mesh = modelView.removeMesh(disp.uid) {
-                if let port = MintStdPort.get.port as? MintSubject {
-                    port.removeObserver(mesh)
-                }
+        // pre process
+        if let context = context(ofElem: old.target) {
+            if context != .DeclVar {
+                let pre_proc = pre_process(context)
+                pre_proc(prev: old.target, conscell: old.conscell)
+            } else {
+                return
             }
         }
         
-        if interpreter.set_ref(argumentID, ofleafid: argumentLeafID, symbolUid: returnLeafID) {
+        if let newargid = interpreter.set_ref(argumentID, ofleafid: argumentLeafID, symbolUid: returnLeafID) {
+            interpreter.run_around(argumentLeafID)
             
-            if let sym = oldvalue as? MSymbol {
-                let def = interpreter.who_define(sym.key , uid: sym.uid)
-                workspace.removeLinkBetween(argumentLeafID, retleafID: def)
-            }
+            let newarg = interpreter.lookup(newargid)
             
-            workspace.addLinkBetween(argumentLeafID, retleafID: returnLeafID, isRef: true)
-            
-            if let oldargLeaf = oldvalue as? Pair {
-                workspace.removeLinkBetween(oldargLeaf.uid, retleafID: returnLeafID)
-            }
-            
-            workspace.return_value("", uid: argumentLeafID)
-            
-            let res = interpreter.run_around(argumentLeafID)
-            workspace.return_value(res.0.str("", level: 0), uid: res.1)
+            let post_proc = post_process(MintLeafContext.VarRef)
+            post_proc(next: newarg.target, conscell: newarg.conscell)
         }
+        
         workspace.edited = true
-        
         modelView.setNeedDisplay()
     }
     
@@ -486,6 +464,7 @@ class SetReference:MintCommand {
 class RemoveReference:MintCommand {
     let argleafID : UInt
     let argumentID : UInt
+    var oldvalue : SExpr? = nil
     
     weak var workspace:MintWorkspaceController!
     weak var modelView: MintModelViewController!
@@ -504,19 +483,15 @@ class RemoveReference:MintCommand {
     
     func execute() {
         let res = interpreter.lookup(argumentID)
+        oldvalue = res.target
         
-        if let sym = res.target as? MSymbol {
-            let defLeafID = interpreter.who_define(sym.key, uid: sym.uid)
+        if let _ = res.target as? MSymbol {
+            
+            let pre_proc = pre_process(.VarRef)
+            pre_proc(prev: res.target, conscell: res.conscell)
             
             interpreter.remove_arg(argumentID, ofleafid: argleafID)
-            
-            workspace.return_value("", uid: argleafID)
-            
-            let res = interpreter.run_around(argleafID)
-            workspace.return_value(res.0.str("", level: 0), uid: res.1)
-            
-            workspace.removeLinkBetween(argleafID, retleafID: defLeafID)
-            workspace.edited = true
+            interpreter.run_around(argleafID)
             
             modelView.setNeedDisplay()
         }
@@ -551,27 +526,45 @@ class RemoveLeaf:MintCommand {
     }
     
     func execute() {
+        let old = interpreter.lookup(removeID)
+        oldvalue = old.target
         
-        oldvalue = interpreter.lookup(removeID).target
-        
-        if let pair = oldvalue as? Pair {
+        if let context = context(ofLeaf: old.target) {
+            let pre_proc = pre_process(context)
+            pre_proc(prev: old.target, conscell: old.conscell)
             
-            // if this is "display", remove observer
-            if let disp = pair.car as? Display {
-                if let mesh = modelView.removeMesh(disp.uid) {
-                    if let port = MintStdPort.get.port as? MintSubject {
-                        port.removeObserver(mesh)
+            var leaves : [(target: SExpr, conscell: SExpr)] = []
+            
+            if context == .Link {
+                if let cons = interpreter.lookup_leaf_of(old.conscell.uid) {
+                    leaves.append(interpreter.lookup(cons))
+                }
+                
+                let opds = delayed_list_of_values(old.target)
+                for op in opds {
+                    if let pair = op as? Pair {
+                        leaves.append((pair, old.target))
                     }
+                }
+            }
+            
+            interpreter.remove(removeID)
+            if let leaf = workspace.removeLeaf(removeID), let port = MintStdPort.get.errport as? MintSubject {
+                port.removeObserver(leaf)
+            }
+            
+            if context != .Link {
+                let post_proc = post_process(context)
+                post_proc(next: MNull.errNull, conscell: MNull.errNull)
+            } else {
+                let post_proc = post_process(.Link)
+                for leaf in leaves {
+                    post_proc(next: leaf.target, conscell: leaf.conscell)
                 }
             }
         }
         
-        interpreter.remove(removeID)
-        if let leaf = workspace.removeLeaf(removeID), let port = MintStdPort.get.errport as? MintSubject {
-            port.removeObserver(leaf)
-        }
         workspace.edited = true
-        
         modelView.setNeedDisplay()
     }
     
@@ -581,617 +574,5 @@ class RemoveLeaf:MintCommand {
     
     func redo() {
         
-    }
-}
-
-/*
-class ReshapeWorkspace:MintCommand {
-    let newframe : CGRect
-    var oldFrame : CGRect
-    
-    weak var workspace:MintWorkspaceController!
-    weak var modelView: MintModelViewController!
-    weak var interpreter: MintInterpreter!
-    
-    init(newframe: CGRect) {
-        self.newframe = newframe
-        oldFrame = CGRect(x: 0, y: 0, width: 0, height: 0)
-    }
-    
-    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
-        self.workspace = workspace
-        self.modelView = modelView
-        self.interpreter = interpreter
-    }
-    
-    func execute() {
-        oldFrame = workspace.workspace.frame
-        workspace.reshapeFrame(newframe)
-    }
-    
-    func undo() {
-        
-    }
-    
-    func redo() {
-        
-    }
-}
-
-*/
-
-class SaveWorkspace:MintCommand {
-    weak var workspace:MintWorkspaceController!
-    weak var modelView: MintModelViewController!
-    weak var interpreter: MintInterpreter!
-    
-    var pos:[(uid:UInt, pos:NSPoint)]
-    
-    init(leafpositions: [(uid:UInt, pos:NSPoint)]) {
-        pos = leafpositions
-    }
-
-    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
-        self.workspace = workspace
-        self.modelView = modelView
-        self.interpreter = interpreter
-    }
-    
-    func execute() {
-        
-        func write(url: NSURL, output: String) {
-            
-            let coordinator = NSFileCoordinator(filePresenter: workspace)
-            let error : NSErrorPointer = NSErrorPointer()
-            
-            coordinator.coordinateWritingItemAtURL(url, options: .ForMerging, error: error) { (fileurl: NSURL) in
-                do {
-                    try output.writeToURL(url, atomically: true, encoding: NSUTF8StringEncoding)
-                } catch {
-                    print("fail to save", terminator:"\n")
-                    return
-                }
-            }
-        }
-        
-        let output = self.interpreter.str_with_pos(pos)
-        
-        if let url = workspace.presentedItemURL {
-            write(url, output: output)
-        } else {
-            
-            let panel = NSSavePanel()
-            
-            panel.nameFieldStringValue = "untitled.mint"
-            panel.beginWithCompletionHandler(){ (result:Int) in
-                if result == NSFileHandlingPanelOKButton {
-                    if let url = panel.URL {
-                        self.workspace.fileurl = url
-                        write(url, output: output)
-                        self.workspace.edited = false
-                    }
-                }
-            }
-        }
-        
-        /*
-        if let url = workspace.fileurl {
-            
-            do {
-                try output.writeToURL(url, atomically: true, encoding: NSUTF8StringEncoding)
-            } catch {
-                print("fail to save", terminator:"\n")
-                return
-            }
-            
-        } else {
-            
-            let panel = NSSavePanel()
-            
-            panel.nameFieldStringValue = "untitled.mint"
-            panel.beginWithCompletionHandler(){ (result:Int) in
-                if result == NSFileHandlingPanelOKButton {
-                    if let url = panel.URL {
-                        
-                        do {
-                            try output.writeToURL(url, atomically: true, encoding: NSUTF8StringEncoding)
-                        } catch {
-                            print("fail to save", terminator:"\n")
-                            return
-                        }
-                        
-                        self.workspace.fileurl = url
-                    }
-                }
-            }
-        }
-        */
-    }
-    
-    func undo() {
-        
-    }
-    
-    func redo() {
-        
-    }
-}
-
-class LoadWorkspace:MintCommand {
-    weak var workspace:MintWorkspaceController!
-    weak var modelView: MintModelViewController!
-    weak var interpreter: MintInterpreter!
-    
-    var temptree : SExpr = MNull.errNull
-    
-    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
-        self.workspace = workspace
-        self.modelView = modelView
-        self.interpreter = interpreter
-    }
-    
-    func execute() {
-        
-        func load(url: NSURL) -> String {
-            
-            let coordinator = NSFileCoordinator(filePresenter: workspace)
-            let error : NSErrorPointer = NSErrorPointer()
-            var output = ""
-            
-            coordinator.coordinateReadingItemAtURL(url, options: .WithoutChanges, error: error) { (fileurl: NSURL) in
-                
-                do {
-                    output = try NSString(contentsOfURL: url, encoding: NSUTF8StringEncoding) as String
-                } catch {
-                    print("fail to open", terminator:"\n")
-                    return
-                }
-            }
-            
-            return output
-        }
-        
-        
-        if workspace.edited {
-            
-            let alert = NSAlert()
-            alert.informativeText = "Do you want to save the current document?"
-            alert.messageText = "Your change will be lost, if you don't save them"
-            alert.alertStyle = .WarningAlertStyle
-            alert.addButtonWithTitle("Save")
-            alert.addButtonWithTitle("Cancel")
-            alert.addButtonWithTitle("Don't Save")
-            
-            let ret = alert.runModal()
-            
-            switch ret {
-            case NSAlertFirstButtonReturn:
-                let command = SaveWorkspace(leafpositions: workspace.positions())
-                workspace.controller.sendCommand(command)
-            case NSAlertSecondButtonReturn:
-                return
-            default:
-                break
-            }
-        }
-        
-        let panel = NSOpenPanel()
-        panel.allowedFileTypes = ["mint"]
-        
-        panel.beginWithCompletionHandler(){ (result:Int) in
-            if result == NSFileHandlingPanelOKButton {
-                
-                self.interpreter.trees = []
-                self.interpreter.init_env()
-                self.workspace.reset_leaves()
-                self.modelView.resetMesh()
-                self.modelView.setNeedDisplay()
-                
-                if let url = panel.URL {
-                    
-                    let input : String = load(url)
-                    let localtrees = self.interpreter.readfile(input)
-                    
-                    for tree in localtrees {
-                        
-                        self.temptree = tree
-                        
-                        if let pair = tree as? Pair {
-                            var acc : [(uid: UInt, pos: NSPoint)] = []
-                            let unwrapped = self.rec_unwrap_pos(pair, pos_acc: &acc)
-                            self.interpreter.trees.append(unwrapped)
-                            self.rec_generate_leaf(unwrapped, parentid: 0, pos_acc: acc)
-                        }
-                    }
-                    
-                    
-                    self.interpreter.init_env()
-                    let symbols = self.interpreter.collect_symbols()
-                    
-                    for sym in symbols {
-                        let def = self.interpreter.who_define(sym.key, uid: sym.uid)
-                        
-                        if def > 0 {
-                            let arg = self.interpreter.lookup_leaf_of(sym.uid)
-                            self.workspace.addLinkBetween(arg, retleafID: def, isRef: true)
-                        }
-                    }
-                    
-                    
-                    self.workspace.fileurl = url
-                    
-                    
-                    // expand frame size of workspace if need.
-                    var rectacc : NSRect = self.workspace.frame
-                    
-                    for ctrl in self.workspace.viewStack {
-                        rectacc = mintUnionRect(rectacc, leaf: ctrl.frame)
-                    }
-                    
-                    self.workspace.frame = rectacc
-                    
-                }
-            }
-        }
-    }
-    
-    private func rec_unwrap_pos(var head: Pair, inout pos_acc: [(uid: UInt, pos: NSPoint)]) -> Pair {
-        var is_pos : Bool = false
-        var pos_x : Double = 100
-        var pos_y : Double = 100
-        
-        // check if the s-expression is wrapped by "_pos_" expression
-        // if yes, unwrap and get position
-        if let pos = head.car as? MSymbol {
-            if pos.key == "_pos_" {
-                
-                is_pos = true
-                
-                switch head.cadr {
-                case let x as MDouble:
-                    pos_x = x.value
-                case let x as MInt:
-                    pos_x = Double(x.value)
-                default:
-                    if let prev = pos_acc.last, let pair = temptree as? Pair {
-                        let parent_uid = interpreter.rec_lookup_leaf(head.uid, expr: pair)
-                        if parent_uid == prev.uid {
-                            pos_x = Double(prev.pos.x) + 130
-                        }
-                    }
-                }
-                
-                switch head.caddr {
-                case let y as MDouble:
-                    pos_y = y.value
-                case let y as MInt:
-                    pos_y = Double(y.value)
-                default:
-                    if let prev = pos_acc.last, let pair = temptree as? Pair {
-                        let parent_uid = interpreter.rec_lookup_leaf(head.uid, expr: pair)
-                        if parent_uid != prev.uid {
-                            pos_y = Double(prev.pos.y) + 100
-                        }
-                    }
-                }
-                
-                if let leaf = head.cadddr as? Pair {
-                    head = leaf
-                }
-            }
-        }
-        
-        if !is_pos {
-            if let prev = pos_acc.last, let pair = temptree as? Pair {
-                let parent_uid = interpreter.rec_lookup_leaf(head.uid, expr: pair)
-                if parent_uid == prev.uid {
-                    pos_x = Double(prev.pos.x) + 130
-                } else {
-                    pos_y = Double(prev.pos.y) + 100
-                }
-            }
-        }
-        
-        pos_acc.append((head.uid, NSPoint(x: pos_x, y: pos_y)))
-        
-        let opds = delayed_list_of_values(head)
-        
-        for var i = 0; opds.count > i; i++ {
-            if let pair = opds[i] as? Pair {
-                
-                if let parent = temptree.lookup_exp(pair.uid).conscell as? Pair {
-                    parent.car = rec_unwrap_pos(pair, pos_acc: &pos_acc)
-                }
-            }
-        }
-        
-        return head
-    }
-    
-    private func rec_generate_leaf(head: Pair, parentid: UInt, pos_acc: [(uid: UInt, pos: NSPoint)]) {
-        
-        // generate leaf
-        
-        let leaf = workspace.addLeaf("", setName: head.car.str("", level: 0), pos: get_pos(pos_acc, uid: head.uid), uid: head.uid)
-        
-        if let port = MintStdPort.get.errport as? MintSubject {
-            port.registerObserver(leaf)
-        }
-        
-        // add glmesh
-        if head.car.str("", level: 0) == "display" {
-            let mesh = modelView.addMesh(head.car.uid)
-            if let port = MintStdPort.get.port as? MintSubject {
-                port.registerObserver(mesh)
-            }
-        }
-        
-        // generate link
-        if parentid != 0 {
-            workspace.addLinkBetween(parentid, retleafID: head.uid, isRef: false)
-        }
-        
-        let opds = delayed_list_of_values(head)
-        
-        for o in opds {
-            if let pair = o as? Pair {
-                rec_generate_leaf(pair, parentid: head.uid, pos_acc: pos_acc)
-            }
-        }
-    }
-    
-    private func get_pos(positions: [(uid: UInt, pos: NSPoint)], uid: UInt) -> NSPoint {
-        for pos in positions {
-            if pos.uid == uid {
-                return pos.pos
-            }
-        }
-        
-        return NSPoint(x: 0, y: 0)
-    }
-    
-    func undo() {
-        
-    }
-    
-    func redo() {
-        
-    }
-}
-
-class NewWorkspace:MintCommand {
-    weak var workspace:MintWorkspaceController!
-    weak var modelView: MintModelViewController!
-    weak var interpreter: MintInterpreter!
-    
-    var temptree : SExpr = MNull.errNull
-    
-    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
-        self.workspace = workspace
-        self.modelView = modelView
-        self.interpreter = interpreter
-    }
-    
-    func execute() {
-        
-        if workspace.edited {
-            
-            let alert = NSAlert()
-            alert.informativeText = "Do you want to save the current document?"
-            alert.messageText = "Your change will be lost, if you don't save them"
-            alert.alertStyle = .WarningAlertStyle
-            alert.addButtonWithTitle("Save")
-            alert.addButtonWithTitle("Cancel")
-            alert.addButtonWithTitle("Don't Save")
-            
-            let ret = alert.runModal()
-            
-            switch ret {
-            case NSAlertFirstButtonReturn:
-                let command = SaveWorkspace(leafpositions: workspace.positions())
-                workspace.controller.sendCommand(command)
-            case NSAlertSecondButtonReturn:
-                return
-            default:
-                break
-            }
-        }
-        
-        // all reset current workspace
-        interpreter.trees = []
-        interpreter.init_env()
-        workspace.reset_leaves()
-        modelView.resetMesh()
-        workspace.fileurl = nil
-        modelView.setNeedDisplay()
-    }
-    
-    func undo() {
-        
-    }
-    
-    func redo() {
-        
-    }
-}
-
-class AppQuit:MintCommand {
-    weak var workspace:MintWorkspaceController!
-    weak var modelView: MintModelViewController!
-    weak var interpreter: MintInterpreter!
-    
-    var willQuit = false
-    
-    
-    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
-        self.workspace = workspace
-        self.modelView = modelView
-        self.interpreter = interpreter
-    }
-    
-    func execute() {
-        
-        if workspace.edited {
-            
-            let alert = NSAlert()
-            alert.informativeText = "Do you want to save the current document?"
-            alert.messageText = "Your change will be lost, if you don't save them"
-            alert.alertStyle = .WarningAlertStyle
-            alert.addButtonWithTitle("Save")
-            alert.addButtonWithTitle("Cancel")
-            alert.addButtonWithTitle("Don't Save")
-            
-            let ret = alert.runModal()
-            
-            switch ret {
-            case NSAlertFirstButtonReturn:
-                let command = SaveWorkspace(leafpositions: workspace.positions())
-                workspace.controller.sendCommand(command)
-            case NSAlertSecondButtonReturn:
-                return
-            default:
-                break
-            }
-        }
-        
-        willQuit = true
-    }
-    
-    func undo() {
-        
-    }
-    
-    func redo() {
-        
-    }
-}
-
-class ExportSTL : MintCommand {
-    weak var workspace:MintWorkspaceController!
-    weak var modelView: MintModelViewController!
-    weak var interpreter: MintInterpreter!
-    
-    let uid : UInt
-    
-    init(uid: UInt) {
-        self.uid = uid
-    }
-    
-    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
-        self.workspace = workspace
-        self.modelView = modelView
-        self.interpreter = interpreter
-    }
-    
-    func execute() {
-        
-        func export(url: NSURL, output: String) {
-            
-            let coordinator = NSFileCoordinator(filePresenter: workspace)
-            let error : NSErrorPointer = NSErrorPointer()
-            
-            coordinator.coordinateWritingItemAtURL(url, options: .ForMerging, error: error) { (fileurl: NSURL) in
-                do {
-                    try output.writeToURL(url, atomically: true, encoding: NSUTF8StringEncoding)
-                } catch {
-                    print("fail to save", terminator:"\n")
-                    return
-                }
-            }
-        }
-        
-        let mesh = polygons_from_exp(interpreter.eval_mainthread(uid))
-        
-        var stlascii = "solid csg.mint\n"
-        for p in mesh {
-            stlascii += p.toStlString()
-        }
-        stlascii += "endsolid csg.mint\n"
-            
-        let panel = NSSavePanel()
-        
-        panel.nameFieldStringValue = "untitled.stl"
-        panel.beginWithCompletionHandler(){ (result:Int) in
-            if result == NSFileHandlingPanelOKButton {
-                if let url = panel.URL {
-                    export(url, output: stlascii)
-                }
-            }
-        }
-    }
-    
-    func polygons_from_exp(exp: SExpr) -> [Polygon] {
-        let exps = delayed_list_of_values(exp)
-        var mesh : [Polygon] = []
-        
-        for p in exps {
-            if let poly = p as? MPolygon {
-                mesh.append(poly.value)
-            }
-        }
-        
-        return mesh
-    }
-    
-    func undo() {
-        
-    }
-    
-    func redo() {
-        
-    }
-}
-
-extension MintCommand {
-    func remove_ref_links(ofleaf uid: UInt) {
-        if let res = interpreter.lookup(uid).target as? Pair {
-            rec_remove_ref(res, ofleafid: res.uid)
-        }
-    }
-    
-    private func rec_remove_ref(pair: Pair, ofleafid: UInt) {
-        if let pair_car = pair.car as? Pair {
-            rec_remove_ref(pair_car, ofleafid: pair_car.uid)
-        } else if let sym = pair.car as? MSymbol {
-            let def = interpreter.who_define(sym.key, uid: sym.uid)
-            if def > 0 {
-                workspace.removeLinkBetween(ofleafid, retleafID: def)
-            }
-        }
-        
-        if let pair_cdr = pair.cdr as? Pair {
-            rec_remove_ref(pair_cdr, ofleafid: ofleafid)
-        } else if let sym = pair.cdr as? MSymbol {
-            let def = interpreter.who_define(sym.key, uid: sym.uid)
-            if def > 0 {
-                workspace.removeLinkBetween(ofleafid, retleafID: def)
-            }
-        }
-    }
-    
-    func add_ref_links(ofleaf uid: UInt) {
-        if let res = interpreter.lookup(uid).target as? Pair {
-            rec_add_ref(res, ofleafid: res.uid)
-        }
-    }
-    
-    private func rec_add_ref(pair: Pair, ofleafid: UInt) {
-        if let pair_car = pair.car as? Pair {
-            rec_add_ref(pair_car, ofleafid: pair_car.uid)
-        } else if let sym = pair.car as? MSymbol {
-            let def = interpreter.who_define(sym.key, uid: sym.uid)
-            if def > 0 {
-                workspace.addLinkBetween(ofleafid, retleafID: def, isRef: true)
-            }
-        }
-        
-        if let pair_cdr = pair.cdr as? Pair {
-            rec_add_ref(pair_cdr, ofleafid: ofleafid)
-        } else if let sym = pair.cdr as? MSymbol {
-            let def = interpreter.who_define(sym.key, uid: sym.uid)
-            if def > 0 {
-                workspace.addLinkBetween(ofleafid, retleafID: def, isRef: true)
-            }
-        }
     }
 }

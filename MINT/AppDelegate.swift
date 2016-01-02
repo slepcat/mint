@@ -30,7 +30,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         controller.interpreter = interpreter
         workspace.interpreter = interpreter
-        //modelView.port = mint3dout
+        mint3dout.viewctrl = modelView
         
         //prepare leafpanel
         leafpanel.updateContents(interpreter.defined_exps())
