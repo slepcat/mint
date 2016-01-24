@@ -183,13 +183,12 @@ class LoadWorkspace:MintCommand {
                     
                     for tree in localtrees {
                         
-                        self.temptree = tree
-                        
                         if let pair = tree as? Pair {
-                            var acc : [(uid: UInt, pos: NSPoint)] = []
-                            let unwrapped = self.rec_unwrap_pos(pair, pos_acc: &acc)
-                            self.interpreter.trees.append(unwrapped)
-                            self.rec_generate_leaf(unwrapped, parentid: 0, pos_acc: acc)
+                            let posunwrapper = MintPosUnwrapper(expr: pair)
+                            if let pair2 = posunwrapper.unwrapped as? Pair {
+                                self.interpreter.trees.append(pair2)
+                                self.rec_generate_leaf(pair2, parentid: 0, pos: posunwrapper.leafpos)
+                            }
                         }
                     }
                     
@@ -223,84 +222,11 @@ class LoadWorkspace:MintCommand {
         }
     }
     
-    private func rec_unwrap_pos(var head: Pair, inout pos_acc: [(uid: UInt, pos: NSPoint)]) -> Pair {
-        var is_pos : Bool = false
-        var pos_x : Double = 100
-        var pos_y : Double = 100
-        
-        // check if the s-expression is wrapped by "_pos_" expression
-        // if yes, unwrap and get position
-        if let pos = head.car as? MSymbol {
-            if pos.key == "_pos_" {
-                
-                is_pos = true
-                
-                switch head.cadr {
-                case let x as MDouble:
-                    pos_x = x.value
-                case let x as MInt:
-                    pos_x = Double(x.value)
-                default:
-                    if let prev = pos_acc.last, let pair = temptree as? Pair {
-                        let parent_uid = interpreter.rec_lookup_leaf(head.uid, expr: pair)
-                        if parent_uid == prev.uid {
-                            pos_x = Double(prev.pos.x) + 130
-                        }
-                    }
-                }
-                
-                switch head.caddr {
-                case let y as MDouble:
-                    pos_y = y.value
-                case let y as MInt:
-                    pos_y = Double(y.value)
-                default:
-                    if let prev = pos_acc.last, let pair = temptree as? Pair {
-                        let parent_uid = interpreter.rec_lookup_leaf(head.uid, expr: pair)
-                        if parent_uid != prev.uid {
-                            pos_y = Double(prev.pos.y) + 100
-                        }
-                    }
-                }
-                
-                if let leaf = head.cadddr as? Pair {
-                    head = leaf
-                }
-            }
-        }
-        
-        if !is_pos {
-            if let prev = pos_acc.last, let pair = temptree as? Pair {
-                let parent_uid = interpreter.rec_lookup_leaf(head.uid, expr: pair)
-                if parent_uid == prev.uid {
-                    pos_x = Double(prev.pos.x) + 130
-                } else {
-                    pos_y = Double(prev.pos.y) + 100
-                }
-            }
-        }
-        
-        pos_acc.append((head.uid, NSPoint(x: pos_x, y: pos_y)))
-        
-        let opds = delayed_list_of_values(head)
-        
-        for var i = 0; opds.count > i; i++ {
-            if let pair = opds[i] as? Pair {
-                
-                if let parent = temptree.lookup_exp(pair.uid).conscell as? Pair {
-                    parent.car = rec_unwrap_pos(pair, pos_acc: &pos_acc)
-                }
-            }
-        }
-        
-        return head
-    }
-    
-    private func rec_generate_leaf(head: Pair, parentid: UInt, pos_acc: [(uid: UInt, pos: NSPoint)]) {
+    private func rec_generate_leaf(head: Pair, parentid: UInt, pos: LeafPositions) {
         
         // generate leaf
         
-        let leaf = workspace.addLeaf("", setName: head.car.str("", level: 0), pos: get_pos(pos_acc, uid: head.uid), uid: head.uid)
+        let leaf = workspace.addLeaf("", setName: head.car.str("", level: 0), pos: pos.get_pos(head.uid), uid: head.uid)
         
         if let port = MintStdPort.get.errport as? MintSubject {
             port.registerObserver(leaf)
@@ -323,19 +249,9 @@ class LoadWorkspace:MintCommand {
         
         for o in opds {
             if let pair = o as? Pair {
-                rec_generate_leaf(pair, parentid: head.uid, pos_acc: pos_acc)
+                rec_generate_leaf(pair, parentid: head.uid, pos: pos)
             }
         }
-    }
-    
-    private func get_pos(positions: [(uid: UInt, pos: NSPoint)], uid: UInt) -> NSPoint {
-        for pos in positions {
-            if pos.uid == uid {
-                return pos.pos
-            }
-        }
-        
-        return NSPoint(x: 0, y: 0)
     }
     
     func undo() {

@@ -7,10 +7,12 @@
 //
 
 import Foundation
+import Cocoa
 
 class Mint3DPort : MintPort, MintSubject {
     
     var portid : UInt = 0
+    var portidlist : [UInt] = []
     var obs : [MintObserver] = []
     var data : MintIO? = nil
     var viewctrl : MintModelViewController? = nil
@@ -78,6 +80,32 @@ class Mint3DPort : MintPort, MintSubject {
             }
         }
     }
+    
+    override func create_port(uid: UInt) {
+        for id in portidlist {
+            if id == uid {
+                return
+            }
+        }
+        
+        if let mesh = viewctrl?.addMesh(uid){
+            registerObserver(mesh)
+        }
+    }
+    
+    override func remove_port(uid: UInt) {
+        for var i = 0; portidlist.count > i; i++ {
+            if portidlist[i] == uid {
+                
+                if let mesh = viewctrl?.removeMesh(portidlist[i]) {
+                    removeObserver(mesh)
+                }
+                
+                portidlist.removeAtIndex(i)
+            }
+            
+        }
+    }
 }
 
 class MintErrPort : MintPort, MintSubject {
@@ -111,5 +139,65 @@ class MintErrPort : MintPort, MintSubject {
                 break
             }
         }
+    }
+}
+
+class MintImportPort : MintReadPort {
+    
+    override func read(path: String, uid: UInt) -> MintIO {
+        if let delegate = NSApplication.sharedApplication().delegate as? AppDelegate {
+            
+            if let url = getLibPath(path, docpath: delegate.workspace.fileurl?.URLByDeletingLastPathComponent?.path) {
+                
+                let coordinator = NSFileCoordinator(filePresenter: delegate.workspace)
+                let error : NSErrorPointer = NSErrorPointer()
+                var output = ""
+                
+                coordinator.coordinateReadingItemAtURL(url, options: .WithoutChanges, error: error) { (fileurl: NSURL) in
+                    
+                    do {
+                        output = try NSString(contentsOfURL: url, encoding: NSUTF8StringEncoding) as String
+                    } catch {
+                        print("fail to open", terminator:"\n")
+                        return
+                    }
+                }
+                
+                // load mint file. and unwrap "_pos_" expression
+                let interpreter = delegate.controller.interpreter
+                
+                var acc : [SExpr] = []
+                
+                for exp in interpreter.readfile(output) {
+                    if let pair = exp as? Pair {
+                        let posunwrap = MintPosUnwrapper(expr: pair)
+                        acc.append(posunwrap.unwrapped)
+                    } else {
+                        acc.append(exp)
+                    }
+                }
+                
+                return SExprIO(exps: acc)
+            }
+        }
+        
+        return SExprIO(exps: [])
+    }
+    
+    private func getLibPath(path: String, docpath: String?) -> NSURL? {
+        
+        if NSFileManager.defaultManager().fileExistsAtPath(path) {
+            return NSURL(fileURLWithPath: path)
+        } else {
+            let bundle = NSBundle.mainBundle()
+            if let libpath = bundle.pathForResource(path, ofType: "mint") {
+                return NSURL(fileURLWithPath: libpath)
+            } else if let dirpath = docpath {
+                if NSFileManager.defaultManager().fileExistsAtPath(dirpath + path) {
+                    return NSURL(fileURLWithPath: dirpath + path)
+                }
+            }
+        }
+        return nil
     }
 }

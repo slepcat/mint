@@ -257,7 +257,7 @@
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" id="EiT-Mj-1SZ">
                 <rect key="frame" x="0.0" y="0.0" width="1229" height="742"/>
-                <autoresizingMask key="autoresizingMask"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fa3-Ii-GEO" customClass="WSScrollView">
                         <rect key="frame" x="0.0" y="0.0" width="1229" height="742"/>
@@ -276,7 +276,7 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="UN3-r2-Lb1">
-                            <rect key="frame" x="1213" y="1" width="15" height="740"/>
+                            <rect key="frame" x="1212" y="1" width="16" height="740"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <connections>
@@ -465,7 +465,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="500" height="400"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <openGLView depthSize="24bit" useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zek-9d-GHB" customClass="MintModelView">
+                    <openGLView depthSize="24bit" rendererType="accelerated" useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zek-9d-GHB" customClass="MintModelView">
                         <rect key="frame" x="0.0" y="0.0" width="500" height="400"/>
                     </openGLView>
                 </subviews>

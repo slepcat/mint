@@ -62,6 +62,7 @@
 		A6CA06761AC5B8DA00AB2135 /* LeafView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A6CA06751AC5B8DA00AB2135 /* LeafView.xib */; };
 		A6D34FE21C354772004D633A /* MintCommandUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6D34FE11C354772004D633A /* MintCommandUtil.swift */; };
 		A6D34FE41C3547AC004D633A /* MintCommandsFileIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6D34FE31C3547AC004D633A /* MintCommandsFileIO.swift */; };
+		A6E2864F1C4D40B4005A08A3 /* MintLispUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E2864E1C4D40B4005A08A3 /* MintLispUtility.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -206,6 +207,7 @@
 		A6CA06751AC5B8DA00AB2135 /* LeafView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LeafView.xib; sourceTree = "<group>"; };
 		A6D34FE11C354772004D633A /* MintCommandUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintCommandUtil.swift; sourceTree = "<group>"; };
 		A6D34FE31C3547AC004D633A /* MintCommandsFileIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintCommandsFileIO.swift; sourceTree = "<group>"; };
+		A6E2864E1C4D40B4005A08A3 /* MintLispUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintLispUtility.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -339,6 +341,7 @@
 			children = (
 				A68607F319EEC1E1005E858A /* AppDelegate.swift */,
 				A6AACFE61A99DBC500BE0724 /* MintProtocols.swift */,
+				A6E2864E1C4D40B4005A08A3 /* MintLispUtility.swift */,
 				A686081219F01791005E858A /* mint.playground */,
 				A685F8D51AC7C4C5005123D5 /* Mint Language Model */,
 				A685F8D41AC7C4AC005123D5 /* Controllers */,
@@ -614,6 +617,7 @@
 			files = (
 				A65D00991C25425E009F4013 /* mintlisp_3d_operator_prims.swift in Sources */,
 				A651F7091BCA41F200193B5B /* MintPort.swift in Sources */,
+				A6E2864F1C4D40B4005A08A3 /* MintLispUtility.swift in Sources */,
 				A64779E51BB2A30400A36E66 /* MintLeafPanelController.swift in Sources */,
 				A6616AE31AE3B8100048EA2D /* LeafView.swift in Sources */,
 				A6B8B4471AB5C58300235759 /* Mint.swift in Sources */,

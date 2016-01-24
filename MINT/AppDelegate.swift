@@ -15,9 +15,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet var modelView: MintModelViewController!
     @IBOutlet var workspace: MintWorkspaceController!
     @IBOutlet var controller: MintController!
-    
-    let mint3dout = Mint3DPort()
-    let minterrout = MintErrPort()
 
     // MINT Controller
 
@@ -25,12 +22,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Insert code here to initialize your application
         
         // prepare MintInterpreter
-        let interpreter = MintInterpreter(port: mint3dout, errport: minterrout)
+        let interpreter = MintInterpreter()
         interpreter.controller = controller
         
         controller.interpreter = interpreter
         workspace.interpreter = interpreter
-        mint3dout.viewctrl = modelView
+        
+        if let port3d = MintStdPort.get.port as? Mint3DPort {
+            port3d.viewctrl = modelView
+        }
         
         //prepare leafpanel
         leafpanel.updateContents(interpreter.defined_exps())

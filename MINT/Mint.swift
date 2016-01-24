@@ -14,11 +14,12 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     
     var autoupdate : Bool = true
     
-    init(port: Mint3DPort, errport: MintErrPort) {
+    override init() {
         
-        MintStdPort.get.setPort(port)
-        MintStdPort.get.setErrPort(errport)
-                
+        MintStdPort.get.setPort(Mint3DPort())
+        MintStdPort.get.setErrPort(MintErrPort())
+        MintStdPort.get.setReadPort(MintImportPort())
+        
         super.init()
     }
     
@@ -127,11 +128,9 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     
     ///// run around /////
     
-    public func run_around(uid : UInt) -> (SExpr, UInt) {
+    public func run_around(uid : UInt) {
         if autoupdate {
-            return eval(uid)
-        } else {
-            return (MNull(), 0)
+            eval(uid)
         }
     }
     

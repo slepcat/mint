@@ -145,17 +145,7 @@ extension MintCommand {
                     self.rec_remove_ref_links(ofleaf: tree)
                 }
             }
-        case .Display:
-            return {(prev: SExpr, conscell: SExpr) in
-                if let disp = prev as? Display {
-                    if let mesh = self.modelView.removeMesh(disp.uid) {
-                        if let port = MintStdPort.get.port as? MintSubject {
-                            port.removeObserver(mesh)
-                        }
-                    }
-                }
-            }
-        case .Proc, .Other:
+        case .Display, .Proc, .Other:
             return {(prev: SExpr, conscell: SExpr) in }
         }
     }
@@ -214,16 +204,7 @@ extension MintCommand {
                     self.rec_add_ref_links(ofleaf: tree)
                 }
             }
-        case .Display:
-            return {(next: SExpr, conscell: SExpr) in
-                if let disp = next as? Display {
-                    let mesh = self.modelView.addMesh(disp.uid)
-                    if let port = MintStdPort.get.port as? MintSubject {
-                        port.registerObserver(mesh)
-                    }
-                }
-            }
-        case .Proc, .Other:
+        case .Display, .Proc, .Other:
             return {(next: SExpr, conscell: SExpr) in }
         }
     }
