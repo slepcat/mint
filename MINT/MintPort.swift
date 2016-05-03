@@ -28,7 +28,7 @@ class Mint3DPort : MintPort, MintSubject {
         }
     }
     
-    func update() {
+    override func update() {
         for o in obs {
             o.update(self, uid: portid)
         }
@@ -73,7 +73,7 @@ class Mint3DPort : MintPort, MintSubject {
     }
     
     func removeObserver(observer: MintObserver) {
-        for var i = 0; obs.count > i; i++ {
+        for i in 0..<obs.count {
             if obs[i] === observer {
                 obs.removeAtIndex(i)
                 break
@@ -95,7 +95,7 @@ class Mint3DPort : MintPort, MintSubject {
     }
     
     override func remove_port(uid: UInt) {
-        for var i = 0; portidlist.count > i; i++ {
+        for i in 0..<portidlist.count {
             if portidlist[i] == uid {
                 
                 if let mesh = viewctrl?.removeMesh(portidlist[i]) {
@@ -123,7 +123,7 @@ class MintErrPort : MintPort, MintSubject {
         }
     }
     
-    func update() {
+    override func update() {        
         for o in obs {
             o.update(self, uid: portid)
         }
@@ -134,7 +134,7 @@ class MintErrPort : MintPort, MintSubject {
     }
     
     func removeObserver(observer: MintObserver) {
-        for var i = 0; obs.count > i; i++ {
+        for i in 0..<obs.count {
             if obs[i] === observer {
                 obs.removeAtIndex(i)
                 break
@@ -151,7 +151,7 @@ class MintImportPort : MintReadPort {
             if let url = getLibPath(path, docpath: delegate.workspace.fileurl?.URLByDeletingLastPathComponent?.path) {
                 
                 let coordinator = NSFileCoordinator(filePresenter: delegate.workspace)
-                let error : NSErrorPointer = NSErrorPointer()
+                let error : NSErrorPointer = nil
                 var output = ""
                 
                 coordinator.coordinateReadingItemAtURL(url, options: .WithoutChanges, error: error) { (fileurl: NSURL) in

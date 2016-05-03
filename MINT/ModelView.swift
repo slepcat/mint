@@ -555,7 +555,7 @@ class GridPlane {
             var planeA : [GLfloat] = []
             var planeN : [GLfloat] = []//normal
             // -- minor grid
-            for var x = -plate / 2; x <= plate / 2; x += 1 {
+            for x in (-plate / 2).stride(through: plate / 2, by: 1) {
                 if (x % 10) != 0 {
                     planeLines += [-plate/2, x, 0.0]
                     planeLines += [plate/2, x, 0.0]
@@ -573,7 +573,7 @@ class GridPlane {
                 }
             }
             // -- major grid
-            for var x = -plate / 2; x <= plate / 2; x += 10 {
+            for x in (-plate / 2).stride(through: plate / 2, by: 10) {
                 if x != 0 {
                     planeLines += [-plate/2, x, 0.0]
                     planeLines += [plate/2, x, 0.0]

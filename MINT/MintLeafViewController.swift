@@ -144,7 +144,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                 
             // if only 'newuid' is '0', remove 'olduid' opd from list
             } else if newuid == 0 {
-                for var i = 0; opds.count > i; i++ {
+                for i in 0.stride(to: opds.count, by: 1) {
                     if opds[i].uid == olduid {
                         opds.removeAtIndex(i)
                     }
@@ -152,7 +152,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                 
             // if both of uids are not '0', overwrite 'olduid' opd by 'newuid'
             } else {
-                for var i = 0; opds.count > i; i++ {
+                for i in 0.stride(to: opds.count, by: 1) {
                     if opds[i].uid == olduid {
                         if let newopd = newopds.last {
                             opds[i].uid = newuid
@@ -211,11 +211,11 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
             
             while opds.count > i {
                 labels.append("")
-                i++
+                i += 1
             }
         }
         
-        for var i = 0; opds.count > i; i++ {
+        for i in 0.stride(to: opds.count, by: 1) {
             switch opds[i] {
             case let ltrl as Literal:
                 self.opds.append((uid: ltrl.uid, param: labels[i], value: ltrl.str("", level: 0), type: type.val))

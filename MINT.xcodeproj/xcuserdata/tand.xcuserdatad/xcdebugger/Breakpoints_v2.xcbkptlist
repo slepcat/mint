@@ -135,22 +135,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "mint-lisp/mint-lisp/Interpreter.swift"
-            timestampString = "481346446.810723"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "347"
-            endingLineNumber = "347"
-            landmarkName = "run_all()"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "mint-lisp/mint-lisp/mintlisp_evaluator.swift"
             timestampString = "477122239.326084"
             startingColumnNumber = "9223372036854775807"
@@ -167,29 +151,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "mint-lisp/mint-lisp/mintlisp_evaluator.swift"
-            timestampString = "481274384.170679"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "82"
-            endingLineNumber = "82"
-            landmarkName = "main()"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "mint-lisp/mint-lisp/Interpreter.swift"
-            timestampString = "481346446.810723"
+            timestampString = "483987655.688806"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "193"
-            endingLineNumber = "193"
-            landmarkName = "import_lib(_:preprefix:depth:)"
+            startingLineNumber = "140"
+            endingLineNumber = "140"
+            landmarkName = "preprocess(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

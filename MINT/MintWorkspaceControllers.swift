@@ -94,7 +94,7 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
         for link in linkviews {
             if link.argleafID == argleafID && link.retleafID == retleafID {
                 // we have a linkview arleady. Increment 'linkcounter'
-                link.linkcounter++
+                link.linkcounter += 1
                 return
             }
         }
@@ -147,7 +147,7 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
         newlink.retPoint = retpt
         newlink.argleafID = argleafID
         newlink.retleafID = retleafID
-        newlink.linkcounter++
+        newlink.linkcounter += 1
         
         if isRef {
             newlink.setRefColor()
@@ -171,10 +171,10 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
         // Remove link between designated leaf IDs.
         // Only removed if 'linkcounter' = 0
         
-        for var i = 0; linkviews.count > i; i++ {
+        for i in 0..<linkviews.count {
             if linkviews[i].argleafID == argleafID && linkviews[i].retleafID == retleafID {
                 
-                linkviews[i].linkcounter--
+                linkviews[i].linkcounter -= 1
                 
                 if linkviews[i].linkcounter <= 0 {
                     
@@ -193,7 +193,9 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
         // Remove link when the leaf is deleted.
         // search links from 'linkviews' and remove the link
         
-        for var i = 0; linkviews.count > i; i++ {
+        var i = 0
+        
+        while i < linkviews.count {
             if linkviews[i].argleafID == leafID || linkviews[i].retleafID == leafID {
                 if linkviews[i].argleafID == leafID {
                     removeLinkObserver(linkviews[i].argleafID ,link: linkviews[i])
@@ -204,8 +206,10 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
                 linkviews[i].removeFromSuperview()
                 linkviews.removeAtIndex(i)
                 
-                i-- // decrement counter because length of array is modified by 'removeAtIndex()'
+                i -= 1 // decrement counter because length of array is modified by 'removeAtIndex()'
             }
+            
+            i += 1
         }
     }
     
@@ -228,7 +232,7 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
     }
     
     func setNewName(leafID: UInt, newName: String) {
-        for var i = 0; viewStack.count > i; i++ {
+        for i in 0..<viewStack.count {
             if viewStack[i].uid == leafID {
                 viewStack[i].setName(newName)
                 break
@@ -237,7 +241,7 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
     }
     
     func removeLeaf(removeID: UInt) -> MintLeafViewController? {
-        for var i = 0; viewStack.count > i; i++ {
+        for i in 0..<viewStack.count {
             if viewStack[i].uid == removeID {
                 viewStack[i].removeView()
                 

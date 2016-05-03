@@ -77,8 +77,8 @@ class MintPosUnwrapper {
         
         let opds = delayed_list_of_values(head)
         
-        for var i = 0; opds.count > i; i++ {
-            if let pair = opds[i] as? Pair {
+        for op in opds {
+            if let pair = op as? Pair {
                 
                 if let parent = head.lookup_exp(pair.uid).conscell as? Pair {
                     parent.car = rec_unwrap_pos(pair, pos_acc: &pos_acc)
@@ -95,8 +95,8 @@ class MintPosUnwrapper {
         
         var result : [(uid: UInt, pos:NSPoint)] = []
         
-        for var depth = 0; rel_pos.count > depth; depth++ {
-            for var num = 0; rel_pos[depth].count > num; num++ {
+        for depth in 0.stride(to:rel_pos.count, by:1) {
+            for num in 0.stride(to:rel_pos[depth].count, by:1) {
                 
                 if let pos = get_pos(pos_acc, uid: rel_pos[depth][num]) {
                     

@@ -18,7 +18,8 @@ class Tag {
     private init(){}
     
     var newTag: Int {
-        return count++
+        count += 1
+        return count
     }
     
     class var get: Tag {
@@ -39,7 +40,8 @@ class LeafID {
     private init(){}
     
     var newID: Int {
-        return count++
+        count += 1
+        return count
     }
     
     class var get: LeafID {
@@ -52,16 +54,16 @@ class LeafID {
 
 // leaf born count generator.
 // record called leaf type & return count for each type
-
+/*
 class BirthCount {
     private var counts:[Int] = []
     private var types:[String] = []
     private init(){}
     
     func count(type: String) -> Int {
-        for var i = 0; types.count > i; i++ {
+        for var i = 0; types.count > i; i += 1 {
             if types[i] == type {
-                return counts[i]++
+                return counts[i] ++
             }
         }
         
@@ -79,3 +81,4 @@ class BirthCount {
         return Static.idFactory
     }
 }
+*/

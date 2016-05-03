@@ -19,6 +19,8 @@
 
 ##StdErrOut not work Bug-005
 * Result text is not printed to leaf.
+* Cause -> 'Selector' expression is fixed to Swift 2.x standard. Also, Macro Pre-Processor replace 'Pair' instance with new uid. StdErrPort failed to send err msg to correct leaf.
+* Fix - > 'Selector' expression fixed. (#selector()) Macro Pre-Processor replace 'Pair' with same uid.
 
 ##Import self cause infinite loop Bug-006 [Fixed]
 * Import self cause infinite loop and crash.

@@ -201,7 +201,7 @@ import Cocoa
     }
     
     func removeObserver(observer: MintLinkObserver) {
-        for var i = 0; linkviews.count > i; i++ {
+        for i in 0..<linkviews.count {
             if linkviews[i] === observer {
                 linkviews.removeAtIndex(i)
                 break

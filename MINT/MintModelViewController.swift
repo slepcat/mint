@@ -24,7 +24,7 @@ class MintModelViewController:NSWindowController, NSWindowDelegate {
     }
     
     func removeMesh(uid: UInt) -> GLmesh? {
-        for var i = 0; modelview.stack.count > i; i++ {
+        for i in 0..<modelview.stack.count {
             if modelview.stack[i].leafID == uid {
                 return modelview.stack.removeAtIndex(i)
             }

@@ -45,7 +45,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     
     // remove observer
     func removeObserver(observer: MintLeafObserver) {
-        for var i = 0; observers.count > i; i++ {
+        for i in 0.stride(to: observers.count, by: 1) {
             if observers[i] === observer {
                 observers.removeAtIndex(i)
                 break
@@ -195,7 +195,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     
     public func remove(uid: UInt) {
         
-        for var i = 0; trees.count > i; i++ {
+        for i in 0.stride(to: trees.count, by: 1) {
             let res = trees[i].lookup_exp(uid)
             if !res.target.isNull() {
                 
@@ -282,7 +282,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         }
         
         // remove from trees of interpreter
-        for var i = 0; trees.count > i; i++ {
+        for i in 0.stride(to: trees.count, by: 1) {
             if trees[i].uid == fromUid {
                 trees.removeAtIndex(i)
                 print("leaf (id: \(fromUid)) removed from interpreter trees", terminator: "\n")
@@ -570,7 +570,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
             }
             
             // if local define is not found, search top level
-            for var j = 0; trees.count > j; j++ {
+            for j in 0.stride(to: trees.count ,by: 1) {
                 // skip already searched tree
                 if i == j { continue }
                 
@@ -714,7 +714,7 @@ extension SExpr {
         if let _ = self as? Pair {
             
             var leveledIndent : String = ""
-            for var i = 0; level > i; i++ {
+            for _ in 0.stride(to: level, by: 1) {
                 leveledIndent += indent
             }
             
@@ -723,7 +723,7 @@ extension SExpr {
             var acc : String = ""
             var pos : String = "("
             
-            for var i = 0; positions.count > i; i++ {
+            for i in 0.stride(to: positions.count, by: 1) {
                 if self.uid == positions[i].uid {
                     pos += "_pos_ \(positions[i].pos.x) \(positions[i].pos.y)                "
                     positions.removeAtIndex(i)
