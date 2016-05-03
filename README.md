@@ -12,6 +12,12 @@ mintはリーフと呼ばれるブロックをつなげて形状を記述するC
 mintはGPL v3、mint-lispはapache-2.0となります。
 ##注意/Caution!
 mintはまだ開発中の要素が多く、実装されていない機能（そして多分バグ）が沢山あります。使用される場合は、ご承知の上での使用をお願いいたします。
+
+#Documents
+
+* [todo list](readme/todo.md)
+* [bug list](readme/bugs.md)
+
 #Getting Started
 ##hello world!
 簡単な立方体を描画してみる。
@@ -69,10 +75,3 @@ defineを使うことでリーフの戻り値を変数にバインドするこ�
 ※set!もあるが使用は非推奨。visual programming languageのため、計算順序が保証されない。begin等で制御する必要があり。
 
 ※値だけでなく手続きもバインドできます。名前空間は変数と同一(Lisp1)
-#todo/やることリスト
-- [ ] プリプロセッサの追加
-	- [ ] import
-	- [ ] マクロ
-- [ ] ライン描画機能
-- [ ] リーフの複数選択、Undo/Redo
-- [ ] 2D描画port
