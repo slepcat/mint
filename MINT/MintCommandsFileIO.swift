@@ -52,7 +52,7 @@ class SaveWorkspace:MintCommand {
             let panel = NSSavePanel()
             
             panel.nameFieldStringValue = "untitled.mint"
-            panel.beginWithCompletionHandler(){ (result:Int) in
+            panel.beginWithCompletionHandler(){ [unowned self] (result:Int) in
                 if result == NSFileHandlingPanelOKButton {
                     if let url = panel.URL {
                         self.workspace.fileurl = url
@@ -167,7 +167,7 @@ class LoadWorkspace:MintCommand {
         let panel = NSOpenPanel()
         panel.allowedFileTypes = ["mint"]
         
-        panel.beginWithCompletionHandler(){ (result:Int) in
+        panel.beginWithCompletionHandler(){ [unowned self] (result:Int) in
             if result == NSFileHandlingPanelOKButton {
                 
                 self.interpreter.trees = []
@@ -230,14 +230,6 @@ class LoadWorkspace:MintCommand {
         
         if let port = MintStdPort.get.errport as? MintSubject {
             port.registerObserver(leaf)
-        }
-        
-        // add glmesh
-        if head.car.str("", level: 0) == "display" {
-            let mesh = modelView.addMesh(head.car.uid)
-            if let port = MintStdPort.get.port as? MintSubject {
-                port.registerObserver(mesh)
-            }
         }
         
         // generate link

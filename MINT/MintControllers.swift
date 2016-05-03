@@ -34,7 +34,7 @@ class MintController:NSObject {
         redoStack.removeAll(keepCapacity: false)
         
         // Maximam undo is 10
-        if undoStack.count > 10 {
+        if undoStack.count > 0 {
             undoStack.removeAtIndex(0)
         }
     }

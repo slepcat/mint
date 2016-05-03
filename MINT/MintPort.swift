@@ -90,6 +90,7 @@ class Mint3DPort : MintPort, MintSubject {
         
         if let mesh = viewctrl?.addMesh(uid){
             registerObserver(mesh)
+            portidlist.append(uid)
         }
     }
     

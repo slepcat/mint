@@ -193,7 +193,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         return nil//failed to add exp
     }
     
-    public func remove(uid: UInt) -> SExpr {
+    public func remove(uid: UInt) {
         
         for var i = 0; trees.count > i; i++ {
             let res = trees[i].lookup_exp(uid)
@@ -226,10 +226,10 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
                     }
                 }
                 
-                return res.target
+                //return res.target
             }
         }
-        return MNull()
+        //return MNull()
     }
     
     public func add_arg(uid: UInt, rawstr: String) -> UInt {
