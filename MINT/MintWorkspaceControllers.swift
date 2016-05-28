@@ -1,5 +1,5 @@
 //
-//  MintWorkspaceControllers.swift
+//  MintWorkspaceController.swift
 //  MINT
 //
 //  Created by NemuNeko on 2015/03/29.
@@ -9,30 +9,63 @@
 import Foundation
 import Cocoa
 
+
 // Controller of workspace view
 // Responsible to interact user action and manage leaf views
-class MintWorkspaceController:NSObject {
+class MintWorkspaceController:NSObject, NSFilePresenter {
     @IBOutlet weak var workspace: WorkspaceView!
+    @IBOutlet weak var controller: MintController!
     weak var interpreter:MintInterpreter!
     var leafViewXib : NSNib!
     
     var viewStack : [MintLeafViewController] = []
     var linkviews : [LinkView] = []
     
+    var frame : CGRect {
+        get{ return workspace.frame }
+        set{ workspace.frame = newValue }
+    }
+    
+    // file management
+    
+    var presentedItemURL : NSURL? {
+        get {
+            return fileurl
+        }
+    }
+    
+    var presentedItemOperationQueue : NSOperationQueue {
+        get {
+            return opqueue
+        }
+    }
+    
+    var fileurl : NSURL? = nil
+    var opqueue : NSOperationQueue = NSOperationQueue()
+    var edited : Bool = false
+    
+    override func awakeFromNib() {
+        NSFileCoordinator.addFilePresenter(self)
+    }
+    
+    func presentedItemDidMoveToURL(newURL: NSURL) {
+        fileurl = newURL
+    }
+    
     // Instantiate a leaf when tool dragged to workspace from toolbar.
     // Responsible for create leaf's view and model.
-    func addLeaf(toolName:String, setName:String, pos:NSPoint, leafID:Int) {
+    func addLeaf(toolName:String, setName:String, pos:NSPoint, uid:UInt) -> MintLeafViewController {
         
         if leafViewXib == nil {
             leafViewXib = NSNib(nibNamed: "LeafView", bundle: nil)
             
             // debug
             if leafViewXib == nil {
-                println("Failed to load 'LeafViewNib' ")
+                print("Failed to load 'LeafViewNib' ")
             }
         }
         
-        viewStack += [MintLeafViewController(newID: leafID, pos: pos, xib: leafViewXib)]
+        viewStack += [MintLeafViewController(newID: uid, pos: pos, xib: leafViewXib)]
         
         if let view = viewStack.last?.leafview {
             workspace.addSubview(view)
@@ -40,24 +73,28 @@ class MintWorkspaceController:NSObject {
         
         if let viewctrl = viewStack.last {
             interpreter.registerObserver(viewctrl)
+            viewctrl.controller = controller
         }
         
         workspace.needsDisplay = true
+        
+        return viewStack.last!
     }
     
     func reshapeFrame(newframe: CGRect) {
-        //let newrect = workspace.convertRect(newframe, toView: workspace.superview)
-        let newframerect = CGRectUnion(newframe, workspace.frame)
+        //let newrect = workspace.convertRect(newframe, toView: workspace)
         
-        workspace.frame = newframerect
+        workspace.frame = mintUnionRect(workspace.frame, leaf:newframe)
+        
+        //print(workspace.frame)
     }
     
-    func addLinkBetween(argleafID: Int, retleafID: Int) {
+    func addLinkBetween(argleafID: UInt, retleafID: UInt, isRef: Bool) {
         
         for link in linkviews {
             if link.argleafID == argleafID && link.retleafID == retleafID {
                 // we have a linkview arleady. Increment 'linkcounter'
-                link.linkcounter++
+                link.linkcounter += 1
                 return
             }
         }
@@ -72,12 +109,12 @@ class MintWorkspaceController:NSObject {
         var is2ndhit : Bool = false
         
         for leafctrl in viewStack {
-            if leafctrl.leafID == argleafID {
+            if leafctrl.uid == argleafID {
                 
                 argLeaf = leafctrl
                 
                 let origin = leafctrl.leafview.frame.origin
-                argpt = NSPoint(x: origin.x + 84, y: origin.y + 19)
+                argpt = NSPoint(x: origin.x + 95, y: origin.y + 42)
                 
                 if is2ndhit {
                     break
@@ -86,12 +123,12 @@ class MintWorkspaceController:NSObject {
                 }
             }
             
-            if leafctrl.leafID == retleafID {
+            if leafctrl.uid == retleafID {
                 
                 retLeaf = leafctrl
                 
                 let origin = leafctrl.leafview.frame.origin
-                retpt = NSPoint(x: origin.x, y: origin.y + 19)
+                retpt = NSPoint(x: origin.x, y: origin.y + 42)
                 
                 if is2ndhit {
                     break
@@ -110,13 +147,17 @@ class MintWorkspaceController:NSObject {
         newlink.retPoint = retpt
         newlink.argleafID = argleafID
         newlink.retleafID = retleafID
-        newlink.linkcounter++
+        newlink.linkcounter += 1
+        
+        if isRef {
+            newlink.setRefColor()
+        }
         
         linkviews.append(newlink)
         
         workspace.addSubview(newlink)
         
-        //println("constraint: \(newlink.constraints.count)")
+        //print("constraint: \(newlink.constraints.count)")
         
         if let aleaf = argLeaf, let rleaf = retLeaf {
             aleaf.registerLinkObserverForView(newlink)
@@ -126,14 +167,14 @@ class MintWorkspaceController:NSObject {
         workspace.needsDisplay = true
     }
     
-    func removeLinkBetween(argleafID: Int, retleafID: Int) {
+    func removeLinkBetween(argleafID: UInt, retleafID: UInt) {
         // Remove link between designated leaf IDs.
         // Only removed if 'linkcounter' = 0
         
-        for var i = 0; linkviews.count > i; i++ {
+        for i in 0..<linkviews.count {
             if linkviews[i].argleafID == argleafID && linkviews[i].retleafID == retleafID {
                 
-                linkviews[i].linkcounter--
+                linkviews[i].linkcounter -= 1
                 
                 if linkviews[i].linkcounter <= 0 {
                     
@@ -148,11 +189,13 @@ class MintWorkspaceController:NSObject {
         }
     }
     
-    func removeLinkFrom(leafID: Int) {
+    func removeLinkFrom(leafID: UInt) {
         // Remove link when the leaf is deleted.
         // search links from 'linkviews' and remove the link
         
-        for var i = 0; linkviews.count > i; i++ {
+        var i = 0
+        
+        while i < linkviews.count {
             if linkviews[i].argleafID == leafID || linkviews[i].retleafID == leafID {
                 if linkviews[i].argleafID == leafID {
                     removeLinkObserver(linkviews[i].argleafID ,link: linkviews[i])
@@ -163,42 +206,132 @@ class MintWorkspaceController:NSObject {
                 linkviews[i].removeFromSuperview()
                 linkviews.removeAtIndex(i)
                 
-                i-- // decrement counter because length of array is modified by 'removeAtIndex()'
+                i -= 1 // decrement counter because length of array is modified by 'removeAtIndex()'
             }
+            
+            i += 1
         }
     }
     
-    func removeLinkObserver(leafID: Int, link: LinkView) {
+    func removeLinkObserver(leafID: UInt, link: LinkView) {
         for view in viewStack {
-            if view.leafID == leafID {
-                view.removeLinkObserverFromView(link)
+            if view.uid == leafID {
+                // view.removeLinkObserverFromView(link)
                 break
             }
         }
     }
     
-    func setNewName(leafID: Int, newName: String) {
-        for var i = 0; viewStack.count > i; i++ {
-            if viewStack[i].leafID == leafID {
-                viewStack[i].setUniqueName(newName)
+    func return_value(output: String, uid: UInt) {
+        for leaf in viewStack {
+            if leaf.uid == uid {
+                leaf.output.stringValue = output
                 break
             }
         }
     }
     
-    func removeLeaf(removeID: Int) {
-        for var i = 0; viewStack.count > i; i++ {
-            if viewStack[i].leafID == removeID {
+    func setNewName(leafID: UInt, newName: String) {
+        for i in 0..<viewStack.count {
+            if viewStack[i].uid == leafID {
+                viewStack[i].setName(newName)
+                break
+            }
+        }
+    }
+    
+    func removeLeaf(removeID: UInt) -> MintLeafViewController? {
+        for i in 0..<viewStack.count {
+            if viewStack[i].uid == removeID {
                 viewStack[i].removeView()
                 
                 removeLinkFrom(removeID)
                 
-                interpreter.removeObserver(viewStack[i])
+                //interpreter.removeObserver(viewStack[i])
                 
-                viewStack.removeAtIndex(i)
-                
-                break
+                return viewStack.removeAtIndex(i)
             }
         }
+        
+        return nil
     }
+    
+    
+    ///// workspace save and load /////
+    
+    @IBAction func save(sender: AnyObject?) {
+        
+        let command = SaveWorkspace(leafpositions: positions())
+        controller.sendCommand(command)
+    }
+    
+    @IBAction func load(sender: AnyObject?) {
+        
+        let command = LoadWorkspace()
+        controller.sendCommand(command)
+        
+    }
+    
+    @IBAction func newworkspace(sender: AnyObject?) {
+        
+        let command = NewWorkspace()
+        controller.sendCommand(command)
+    }
+    
+    func positions() -> [(uid: UInt, pos: NSPoint)] {
+        var acc : [(uid: UInt, pos: NSPoint)] = []
+        
+        for leaf in viewStack {
+            acc.append((uid: leaf.uid, pos: leaf.leafview!.frame.origin))
+        }
+        return acc
+    }
+    
+    func reset_leaves() {
+        
+        if let port = MintStdPort.get.errport as? MintSubject {
+            
+            for ctrl in viewStack {
+                removeLeaf(ctrl.uid)
+                removeLinkFrom(ctrl.uid)
+                port.removeObserver(ctrl)
+            }
+        }
+
+    }
+    
+    func windowShouldClose(sender: AnyObject) -> Bool {
+        
+        let command = AppQuit()
+        controller.sendCommand(command)
+        
+        if command.willQuit {
+            NSApp.terminate(self)
+            return true
+        } else {
+            return false
+        }
+    }
+    
+}
+
+
+func mintUnionRect(workspace: NSRect, leaf: NSRect) -> NSRect {
+    
+    var unionRect: NSRect = workspace
+    
+    let h_w = workspace.origin.y + workspace.size.height
+    let w_w = workspace.origin.x + workspace.size.width
+    let h_l = leaf.origin.y + leaf.size.height + workspace.origin.y
+    let w_l = leaf.origin.x + leaf.size.width + workspace.origin.x
+    
+    if h_l > h_w {
+        unionRect.size.height = h_l - workspace.origin.y
+    }
+    
+    if w_l > w_w {
+        unionRect.size.width = w_l - workspace.origin.x
+    }
+    
+    return unionRect
 }

@@ -8,6 +8,8 @@
 
 import Foundation
 
+/*
+
 // Mint exception class
 // Exception stack for Mint, manage invalid user operation.
 
@@ -46,3 +48,5 @@ class MintErr {
     }
     
 }
+
+*/

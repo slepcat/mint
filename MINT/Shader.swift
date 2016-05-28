@@ -10,7 +10,7 @@ import Foundation
 import Cocoa
 import OpenGL
 
-@objc(Shader) class Shader {
+class Shader {
     
     var program:GLuint = 0
     var positionSLot:GLint = 0
@@ -44,14 +44,14 @@ import OpenGL
         var compiled:GLint = 0
         glGetShaderiv(vxShader, UInt32(GL_COMPILE_STATUS), &compiled)
         if compiled == GL_FALSE {
-            println("failed to compile vxShader")
+            print("failed to compile vxShader")
             return nil
         }
         
         glCompileShader(fgShader)
         glGetShaderiv(fgShader, UInt32(GL_COMPILE_STATUS), &compiled)
         if compiled == GL_FALSE {
-            println("failed to compile fgShader")
+            print("failed to compile fgShader")
             return nil
         }
         
@@ -71,17 +71,17 @@ import OpenGL
         if linked == GL_FALSE {
             var buffSize:GLint = 0
             
-            println("failed to link Shaders")
+            print("failed to link Shaders")
             glGetProgramiv(self.program, UInt32(GL_INFO_LOG_LENGTH) , &buffSize)
             
             if buffSize > 0 {
-                var infoLog = UnsafeMutablePointer<CChar>.alloc(numericCast(buffSize))
+                let infoLog = UnsafeMutablePointer<CChar>.alloc(numericCast(buffSize))
                 var l:GLsizei = 0
                 
                 glGetProgramInfoLog(self.program, buffSize, &l, infoLog)
                 
                 if let info = String.fromCString(infoLog) {
-                    println(info)
+                    print(info)
                 }
                 
                 infoLog.destroy()
@@ -102,11 +102,15 @@ import OpenGL
         let shaderPath:String? = appBundle.pathForResource(shaderName, ofType: ext)
         
         if let path = shaderPath {
-            let shaderSource = String.init(contentsOfFile: path, encoding:NSUTF8StringEncoding, error: nil)
-            
-            if let source = shaderSource {
-                var shaderSourceC:UnsafePointer<CChar> = (source as NSString).UTF8String
+            do {
+                let shaderSource = try NSString(contentsOfFile: path, encoding:NSUTF8StringEncoding)
+                
+                let shaderSourceC:UnsafePointer<CChar> = shaderSource.UTF8String
                 return shaderSourceC
+                
+            } catch {
+                print("failed to read shader source")
+                return nil
             }
         }
         

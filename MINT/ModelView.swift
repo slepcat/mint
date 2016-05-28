@@ -63,31 +63,31 @@ struct ViewAngle {
             if  attribId >= 0 {
                 self.gl_vertex = numericCast(attribId)
             } else {
-                println("failed to get gl_Vertex pos")
+                Swift.print("failed to get gl_Vertex pos")
             }
             // Normal id
             attribId = glGetAttribLocation(shader.program, "vertexNormal")
             if  attribId >= 0 {
                 self.gl_normal = numericCast(attribId)
             } else {
-                println("failed to get gl_Normal")
+                Swift.print("failed to get gl_Normal")
             }
             // Color id
             attribId = glGetAttribLocation(shader.program, "vertexColor")
             if  attribId >= 0 {
                 self.gl_color = numericCast(attribId)
             } else {
-                println("failed to get vertexColor")
+                Swift.print("failed to get vertexColor")
             }
             // Alpha id
             attribId = glGetAttribLocation(shader.program, "vertexAlpha")
             if  attribId >= 0 {
                 self.gl_alpha = numericCast(attribId)
             } else {
-                println("failed to get vertexAlpha")
+                Swift.print("failed to get vertexAlpha")
             }
         } else {
-            println("failed to init shader")
+            Swift.print("failed to init shader")
         }
         
         glMatrixMode(UInt32(GL_PROJECTION))
@@ -103,11 +103,31 @@ struct ViewAngle {
         glEnable(GLenum(GL_DEPTH_TEST))
         glDepthFunc(GLenum(GL_LESS))
         
-        println("open gl view prepared")
+        Swift.print("open gl view prepared")
+    }
+    
+    override func reshape() {
+        let rect = self.bounds
+        let aspect = self.frame.size.width / self.frame.size.height
+        
+        glViewport(0, 0, GLsizei(rect.size.width), GLsizei(rect.size.height))
+        glMatrixMode(GLenum(GL_PROJECTION))
+        glLoadIdentity()
+        glFrustum(Double(-aspect / (2.0 * 1.79259098692)), Double(aspect / (2.0 * 1.79259098692)), -0.5 / 1.79259098692, 0.5 / 1.79259098692, 0.5, 1500)
+        glMatrixMode(GLenum(GL_MODELVIEW))
+        glLoadIdentity()
+        
+        glEnable(GLenum(GL_DEPTH_TEST))
     }
     
     override func drawRect(dirtyRect: NSRect) {
-        glClear(UInt32(GL_COLOR_BUFFER_BIT) | UInt32(GL_DEPTH_BUFFER_BIT))
+        glClear(GLbitfield(GL_COLOR_BUFFER_BIT) | GLbitfield(GL_DEPTH_BUFFER_BIT))
+        glEnable(UInt32(GL_DEPTH_TEST))
+        //glDepthFunc(GLenum(GL_LESS))
+        
+        if let shader = lightingShader {
+            glUseProgram(shader.program)
+        }
         
         //Set Model View Matrix
         glLoadIdentity()
@@ -128,31 +148,48 @@ struct ViewAngle {
         }
         
         glFlush()
+        
+        glDisable(GLenum(GL_DEPTH_TEST))
     }
     
     // draw mesh from stack
     func drawObjects() {
         
         for mesh in stack {
-            glEnableVertexAttribArray(gl_vertex)
-            glBindBuffer(GLenum(GL_ARRAY_BUFFER), mesh.vbufferid)
-            glVertexAttribPointer(self.gl_vertex, 3, GLenum(GL_DOUBLE), GLboolean(GL_FALSE), 0, nil)
-            
-            glEnableVertexAttribArray(gl_color)
-            glBindBuffer(GLenum(GL_ARRAY_BUFFER), mesh.cbufferid)
-            glVertexAttribPointer(self.gl_color, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
-            
-            glEnableVertexAttribArray(gl_normal)
-            glBindBuffer(GLenum(GL_ARRAY_BUFFER), mesh.nbufferid)
-            glVertexAttribPointer(self.gl_normal, 3, GLenum(GL_DOUBLE), GLboolean(GL_FALSE), 0, nil)
-            
-            // 'count' is number of vertices
-            glDrawArrays(GLenum(GL_TRIANGLES), 0, mesh.buffersize / 3)
+            if mesh.buffersize > 0 {
+                
+                //objc_sync_enter(mesh)
+                
+                glEnableVertexAttribArray(gl_vertex)
+                glBindBuffer(GLenum(GL_ARRAY_BUFFER), mesh.vbufferid)
+                glVertexAttribPointer(self.gl_vertex, 3, GLenum(GL_DOUBLE), GLboolean(GL_FALSE), 0, nil)
+                
+                glEnableVertexAttribArray(gl_color)
+                glBindBuffer(GLenum(GL_ARRAY_BUFFER), mesh.cbufferid)
+                glVertexAttribPointer(self.gl_color, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
+                
+                glEnableVertexAttribArray(gl_normal)
+                glBindBuffer(GLenum(GL_ARRAY_BUFFER), mesh.nbufferid)
+                glVertexAttribPointer(self.gl_normal, 3, GLenum(GL_DOUBLE), GLboolean(GL_FALSE), 0, nil)
+                
+                /*
+                glEnableVertexAttribArray(gl_alpha)
+                glBindBuffer(GLenum(GL_ARRAY_BUFFER), mesh.abufferid)
+                glVertexAttribPointer(self.gl_alpha, 1, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
+                */
+                
+                // 'count' is number of vertices
+                glDrawArrays(GLenum(GL_TRIANGLES), 0, mesh.buffersize / 3)
+                
+                //objc_sync_exit(mesh)
+            }
         }
         
         glDisableVertexAttribArray(gl_vertex)
         glDisableVertexAttribArray(gl_color)
         glDisableVertexAttribArray(gl_normal)
+        //glDisableVertexAttribArray(gl_alpha)
+
         
         glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
     }
@@ -210,7 +247,7 @@ struct ViewAngle {
             glEnable(GLenum(GL_BLEND))
             glBlendFunc(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA))
             
-            //println("try to draw gird")
+            //print("try to draw gird")
             // draw grid
             glEnableVertexAttribArray(gl_vertex)
             glBindBuffer(GLenum(GL_ARRAY_BUFFER), pl.plane_vbo[0])
@@ -255,12 +292,12 @@ struct ViewAngle {
         
         //let clickPt: NSPoint = theEvent.locationInWindow
         //lastPt = self.convertPoint(clickPt, fromView: nil)
-        //println("mouse down at X:\(lastPt.x), Y:\(lastPt.y)")
+        //print("mouse down at X:\(lastPt.x), Y:\(lastPt.y)")
     }
     
     override func mouseDragged(theEvent : NSEvent) {
         
-        if NSEventModifierFlags.AlternateKeyMask & theEvent.modifierFlags != nil {
+        if NSEventModifierFlags.AlternateKeyMask.isSupersetOf(theEvent.modifierFlags) {
             //rotate x and y
             //rotateFactor is for speed control. but system delta value work fine
             //and I decided not to adjust it by user preference
@@ -274,7 +311,7 @@ struct ViewAngle {
             viewAngle.x += Float(theEvent.deltaY)// * rotateFactor
         }
         
-        //println("viewAngle.X:\(viewAngle.x),Y:\(viewAngle.y), Z:\(viewAngle.z)")
+        //print("viewAngle.X:\(viewAngle.x),Y:\(viewAngle.y), Z:\(viewAngle.z)")
         
         self.needsDisplay = true
     }
@@ -283,7 +320,7 @@ struct ViewAngle {
         
         //let upPt:NSPoint = theEvent.locationInWindow
         //lastPt = self.convertPoint(upPt, fromView: nil)
-        //println("mouse up at X:\(lastPt.x), Y:\(lastPt.y)")
+        //print("mouse up at X:\(lastPt.x), Y:\(lastPt.y)")
     }
     
     //pan view when the mouse dragged with right button
@@ -319,11 +356,11 @@ struct ViewAngle {
             
             coeff = coeff * Float(factor)
             
-            //println("Zoom with coeff:\(coeff)")
+            //print("Zoom with coeff:\(coeff)")
             
             self.viewPt.z = self.zoomMin + coeff * (self.zoomMax - self.zoomMin)
             
-            //println("view point changed to: \(viewPt.z)")
+            //print("view point changed to: \(viewPt.z)")
             
             self.needsDisplay = true
         }
@@ -333,16 +370,17 @@ struct ViewAngle {
 
 class GLmesh:MintObserver {
     // ID of leaf which is counterpart of GLmesh instance
-    let leafID : Int
+    let leafID : UInt
     
     //open gl buffer ids
     var vbufferid : GLuint = 0
     var nbufferid : GLuint = 0
     var cbufferid : GLuint = 0
+    var abufferid : GLuint = 0
     //length of mesh array
     var buffersize : GLsizei = 0
     
-    init(leafID: Int) {
+    init(leafID: UInt) {
         self.leafID = leafID
     }
     
@@ -356,53 +394,73 @@ class GLmesh:MintObserver {
         if cbufferid != 0 {
             glDeleteBuffers(1, &cbufferid)
         }
+        if cbufferid != 0 {
+            glDeleteBuffers(1, &abufferid)
+        }
     }
     
     // update open gl vertices & attribute array
-    func update(subject: MintSubject, index: Int) {
-        if vbufferid == 0 { // In case of inital update
-            let result = subject.solveMesh(index)
-            var glmesh = [GLdouble](result.mesh)
-            var glnormal = [GLdouble](result.normals)
-            var glcolor = [GLfloat](result.colors)
-            
-            buffersize = GLsizei(glmesh.count)
-            
-            if buffersize != 0 {// Check 'result' have valid mesh
-                //mesh
-                glGenBuffers(1, &self.vbufferid)
-                glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vbufferid)
-                glBufferData(GLenum(GL_ARRAY_BUFFER), glmesh.count * sizeof(GLdouble), &glmesh, GLenum(GL_STATIC_DRAW))
-                //normal
-                glGenBuffers(1, &self.nbufferid)
-                glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.nbufferid)
-                glBufferData(GLenum(GL_ARRAY_BUFFER), glnormal.count * sizeof(GLdouble), &glnormal, GLenum(GL_STATIC_DRAW))
-                //color
-                glGenBuffers(1, &self.cbufferid)
-                glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.cbufferid)
-                glBufferData(GLenum(GL_ARRAY_BUFFER), glcolor.count * sizeof(GLfloat), &glcolor, GLenum(GL_STATIC_DRAW))
-                
-                glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+    func update(subject: MintSubject, uid: UInt) {
+        
+        if uid == leafID {
+            if vbufferid == 0 { // In case of inital update
+                if let meshio = subject as? Mint3DPort {
+                    var glmesh = meshio.mesh()
+                    var glnormal = meshio.normal()
+                    var glcolor = meshio.color()
+                    //var glalpha = meshio.alpha()
+                    
+                    buffersize = GLsizei(glmesh.count)
+                    
+                    if buffersize != 0 {// Check 'result' have valid mesh
+                        //mesh
+                        glGenBuffers(1, &self.vbufferid)
+                        glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vbufferid)
+                        glBufferData(GLenum(GL_ARRAY_BUFFER), glmesh.count * sizeof(GLdouble), &glmesh, GLenum(GL_STATIC_DRAW))
+                        //normal
+                        glGenBuffers(1, &self.nbufferid)
+                        glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.nbufferid)
+                        glBufferData(GLenum(GL_ARRAY_BUFFER), glnormal.count * sizeof(GLdouble), &glnormal, GLenum(GL_STATIC_DRAW))
+                        //color
+                        glGenBuffers(1, &self.cbufferid)
+                        glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.cbufferid)
+                        glBufferData(GLenum(GL_ARRAY_BUFFER), glcolor.count * sizeof(GLfloat), &glcolor, GLenum(GL_STATIC_DRAW))
+                        //alpha
+                        /*
+                        glGenBuffers(1, &self.abufferid)
+                        glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.cbufferid)
+                        glBufferData(GLenum(GL_ARRAY_BUFFER), glalpha.count * sizeof(GLfloat), &glalpha, GLenum(GL_STATIC_DRAW))
+                        */
+                        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+                    }
+                    
+                }
+            } else { // In case of update
+                if let meshio = subject as? Mint3DPort {
+                    var glmesh = meshio.mesh()
+                    var glnormal = meshio.normal()
+                    var glcolor = meshio.color()
+                    //var glalpha = meshio.alpha()
+                    
+                    buffersize = GLsizei(glmesh.count)
+                    
+                    //mesh
+                    glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vbufferid)
+                    glBufferData(GLenum(GL_ARRAY_BUFFER), glmesh.count * sizeof(GLdouble), &glmesh, GLenum(GL_STATIC_DRAW))
+                    //normal
+                    glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.nbufferid)
+                    glBufferData(GLenum(GL_ARRAY_BUFFER), glnormal.count * sizeof(GLdouble), &glnormal, GLenum(GL_STATIC_DRAW))
+                    //color
+                    glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.cbufferid)
+                    glBufferData(GLenum(GL_ARRAY_BUFFER), glcolor.count * sizeof(GLfloat), &glcolor, GLenum(GL_STATIC_DRAW))
+                    //alpha
+                    /*
+                    glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.abufferid)
+                    glBufferData(GLenum(GL_ARRAY_BUFFER), glalpha.count * sizeof(GLfloat), &glalpha, GLenum(GL_STATIC_DRAW))
+                    */
+                    glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+                }
             }
-        } else { // In case of update
-            let result = subject.solveMesh(index)
-            var glmesh = [GLdouble](result.mesh)
-            var glnormal = [GLdouble](result.normals)
-            var glcolor = [GLfloat](result.colors)
-            
-            buffersize = GLsizei(glmesh.count)
-            
-            //mesh
-            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.vbufferid)
-            glBufferData(GLenum(GL_ARRAY_BUFFER), glmesh.count * sizeof(GLdouble), &glmesh, GLenum(GL_STATIC_DRAW))
-            //normal
-            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.nbufferid)
-            glBufferData(GLenum(GL_ARRAY_BUFFER), glnormal.count * sizeof(GLdouble), &glnormal, GLenum(GL_STATIC_DRAW))
-            //color
-            glBindBuffer(GLenum(GL_ARRAY_BUFFER), self.cbufferid)
-            glBufferData(GLenum(GL_ARRAY_BUFFER), glcolor.count * sizeof(GLfloat), &glcolor, GLenum(GL_STATIC_DRAW))
-            
-            glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
         }
     }
 }
@@ -497,7 +555,7 @@ class GridPlane {
             var planeA : [GLfloat] = []
             var planeN : [GLfloat] = []//normal
             // -- minor grid
-            for var x = -plate / 2; x <= plate / 2; x += 1 {
+            for x in (-plate / 2).stride(through: plate / 2, by: 1) {
                 if (x % 10) != 0 {
                     planeLines += [-plate/2, x, 0.0]
                     planeLines += [plate/2, x, 0.0]
@@ -515,7 +573,7 @@ class GridPlane {
                 }
             }
             // -- major grid
-            for var x = -plate / 2; x <= plate / 2; x += 10 {
+            for x in (-plate / 2).stride(through: plate / 2, by: 10) {
                 if x != 0 {
                     planeLines += [-plate/2, x, 0.0]
                     planeLines += [plate/2, x, 0.0]

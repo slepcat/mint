@@ -9,8 +9,9 @@
 import Foundation
 import Cocoa
 
+
 // Controller of Mint
-// Responsible to sync 'LeafView', 'GLMesh', and 'Leaf' instances
+// Responsible to sync 'LeafView', 'GLMesh', and mint-lisp interperter
 // This mean 'MintController' manage interactions between 2 controllers and
 // a model: 'workspace', 'modelView', and 'interpreter'
 
@@ -21,33 +22,19 @@ class MintController:NSObject {
     
     var undoStack : [MintCommand] = []
     var redoStack : [MintCommand] = []
-    
+        
     func sendCommand(newCommand: MintCommand) {
+                
         newCommand.prepare(workspace, modelView: modelView, interpreter: interpreter)
         newCommand.execute()
         
-        while let err = MintErr.exc.catch {
-            switch err {
-            case .ArgNotExist(leafName: let name, leafID: let leafid, reguired: let arglabel):
-                println("Leaf \(name)(ID: \(leafid)) does not have argument: \(arglabel)")
-            case .TypeInvalid(leafName: let name, leafID: let leafid, argname: let label, required: let correct, invalid: let invalid):
-                println("Argument \"\(label)\" of leaf \(name)(ID: \(leafid)) must be \"\(correct)\" type, not \"\(invalid)\" type.")
-            case .ReferenceLoop(leafName: let name, leafID: let leafid, argname: let arg):
-                println("Loop of reference is detected at argument \"\(arg)\" of Leaf \(name)(ID: \(leafid)).")
-            case .SolverFailed(leafName: let name, leafID: let leafid):
-                println("Leaf \(name)(ID: \(leafid)) failed to solve arguments.")
-            case .LeafIDNotExist(leafID: let leafid):
-                println("Serious error detected. Leaf ID: \(leafid) not found.")
-            case .NameNotUnique(newName: let name, leafID: let leafid):
-                println("New name: \(name)(ID: \(leafid)) is not unique")
-            }
-        }
+        // todo: manage err msg
         
         undoStack.append(newCommand)
         redoStack.removeAll(keepCapacity: false)
         
         // Maximam undo is 10
-        if undoStack.count > 10 {
+        if undoStack.count > 0 {
             undoStack.removeAtIndex(0)
         }
     }
@@ -67,209 +54,46 @@ class MintController:NSObject {
             redoStack.removeLast()
         }
     }
-    
-    // testcode
-    func createTestLeaf() {
-        let command = AddLeaf(toolName: "Cube", setName: "3D Primitives", pos: NSPoint(x:100, y:400))
-        self.sendCommand(command)
-    }
-    
 }
 
-// Controller of Model View (openGL 3D View)
-// Responsible for providing GLMesh objects to global stack
-class MintModelViewController:NSObject {
-    @IBOutlet var modelview: MintModelView!
-    
-    var globalStack : MintGlobalStack!
-    
-    // add mesh to model view and register to global stack as
-    // observer object
-    func addMesh(leafID: Int) {
-        
-        if globalStack.hasLeaf(leafID) {
-            
-            var mesh = GLmesh(leafID: leafID)
-            
-            // add mesh to model view
-            modelview.stack.append(mesh)
-            // register mesh as observer
-            globalStack.registerObserver(mesh as MintObserver)
-            
-            // call solve() for stack leaves and update gl meshes of model view
-            globalStack.solve()
-            
-            modelview.needsDisplay = true
-        }
+extension MintController {
+    func mark_edited() {
+        workspace.edited = true
     }
     
-    // remove the GLmesh from stack
-    func removeMesh(leafID: Int) {
-        if globalStack.hasLeaf(leafID) {
-            
-            for var i = 0 ; modelview.stack.count > i; i++ {
-                if modelview.stack[i].leafID == leafID {
-                    //remove mesh from stack and unregister Observer
-                    globalStack.removeObserver(modelview.stack[i])
-                    modelview.stack.removeAtIndex(i)
-                    
-                    // call solve() for stack leaves and update gl meshes of model view
-                    globalStack.solve()
-                    modelview.needsDisplay = true
-                    break
-                }
-            }
-        }
+    func reshape_workspace(newframe: NSRect) {
+        workspace.reshapeFrame(newframe)
     }
     
-    // update mesh & redraw
-    func setNeedDisplay() {
-        globalStack.solve()
-        modelview.needsDisplay = true
-    }
-}
-
-enum MintToolSet : String {
-    case Prim3D = "3D Primitives"
-    case Prim2D = "2D Primitives"
-    case Operator = "Operator"
-    case Control = "Control"
-    case Transform = "Transfomer"
-}
-
-class MintToolbarController:NSObject {
-    @IBOutlet weak var toolbar : NSToolbar!
-    
-    var toolSets : [MintToolListController] = []
-    
-    override func awakeFromNib() {
-        if toolSets.count == 0 {
-            toolSets += [MintToolListController(toolSet: MintToolSet.Prim3D.rawValue)]
-            toolSets += [MintToolListController(toolSet: MintToolSet.Control.rawValue)]
-            toolSets += [MintToolListController(toolSet: MintToolSet.Operator.rawValue)]
-
-        }
+    func setNeedsDisplay() {
+        modelView.setNeedDisplay()
     }
     
-    @IBAction func buttonClicked(sender: AnyObject) {
-        if let view = sender as? NSView {
-            if (view.tag > 0) && (view.tag <= toolSets.count) {
-                toolSets[view.tag-1].showPopover(view)
-            }
-        }
-    }
-}
-
-// Provide Tool List [toolName:String], [toolImage:NSImage] for Popover
-// Using 'toolSet: String' in 'init()', load '.toolset' text file to determine contents of
-// NSPopover Interface
-class MintToolListController:NSObject, NSTableViewDataSource, NSTableViewDelegate {
-    @IBOutlet weak var toolList : NSTableView!
-    @IBOutlet weak var popover : NSPopover!
-    var xibObjects : NSArray?
-    
-    let toolSetName : String
-    var toolNames : [String] = []
-    var toolImages : [NSImage] = []
-    
-    init(toolSet: String) {
-        toolSetName = toolSet
-        super.init()
-        
-        // load xib file
-        let myXib = NSNib(nibNamed: "MintPopoverPalleteView", bundle: nil)
-        
-        if myXib?.instantiateWithOwner(self, topLevelObjects: &xibObjects) == nil {
-            println("Failed to load xib, popover views")
-        } else {
-            // set data source and delegate for NSTableView
-            toolList.setDataSource(self as NSTableViewDataSource)
-            toolList.setDelegate(self as NSTableViewDelegate)
-            
-            // set drag operation mask
-            toolList.setDraggingSourceOperationMask(NSDragOperation.Generic, forLocal: true)
-        }
-        
-        // load tool list & icons
-        let appBundle = NSBundle.mainBundle()
-        let toolSetPath = appBundle.pathForResource(toolSet, ofType: "toolset")
-        
-        // read tool list of designated tool set name from NSBundle.
-        if let path = toolSetPath {
-            let toolSetString = String(contentsOfFile: path, encoding:NSUTF8StringEncoding, error: nil)
-            
-            if let string = toolSetString {
-                // Divide multi line string to lines : '[String]'
-                let lines = string.componentsSeparatedByString("\n")
-                
-                // Check each line and add to toolNames except comment line : '#' prefix
-                // If the line have tool name, load icon from NSBundle
-                for line in lines {
-                    if !line.hasPrefix("#") && (count(line) > 0) {
-                        toolNames += [line]
-                        
-                        // load icon
-                        let toolIconPath = appBundle.pathForResource(line, ofType: "tiff")
-                        if let path = toolIconPath {
-                            let iconImage = NSImage(contentsOfFile: path)
-                            
-                            if let image = iconImage {
-                                toolImages += [image]
-                            }
-                        } else {
-                            // if there is no icon image for tool name, load default icon
-                            let toolIconPath = appBundle.pathForResource("Cube", ofType: "tiff")
-                            if let path = toolIconPath {
-                                let iconImage = NSImage(contentsOfFile: path)
-                                
-                                if let image = iconImage {
-                                    toolImages += [image]
-                                }
-                            }
-                        }
-                        // fin load image
-                        // fin load tool
-                    }
-                }
-            }
-        } else {
-            println("Unvalid toolset name")
-        }
+    func run_all() {
+        interpreter.run_all()
     }
     
-    func showPopover(view: NSView) {
-        popover.showRelativeToRect(view.frame, ofView: view, preferredEdge: 1)
+    func cancell() {
+        interpreter.cancell()
     }
     
-    func numberOfRowsInTableView(tableView: NSTableView) -> Int {
-        return toolNames.count
+    @IBAction func redraw(sender: AnyObject?) {
+        run_all()
     }
     
-    // Provide data for NSTableView
-    func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        let result: AnyObject? = tableView.makeViewWithIdentifier("toolView" , owner: self)
-        
-        if let toolView = result as? NSTableCellView {
-            toolView.textField?.stringValue = toolNames[row]
-            toolView.imageView?.image = toolImages[row]
-        }
-        
-        return result as? NSView
+    @IBAction func stop(sender: AnyObject?) {
+        cancell()
     }
     
-    // Provide leaf type (=tool name) to NSPasteboard for dragging operation
-    func tableView(tableView: NSTableView, writeRowsWithIndexes rowIndexes: NSIndexSet, toPasteboard pboard: NSPasteboard) -> Bool {
-        pboard.clearContents()
-        pboard.declareTypes(["leaf", "type"], owner: self)
-        if pboard.setString(toolNames[rowIndexes.firstIndex], forType:"leaf" ) {
-            
-            if pboard.setString(toolSetName, forType: "type") {
-                return true
+    @IBAction func toggleAutoupdate(sender: AnyObject?) {
+        if let menuitem = sender as? NSMenuItem {
+            if interpreter.autoupdate {
+                interpreter.autoupdate = false
+                menuitem.state = NSOffState
             } else {
-                return false
+                interpreter.autoupdate = true
+                menuitem.state = NSOnState
             }
-        } else {
-            return false
         }
     }
 }

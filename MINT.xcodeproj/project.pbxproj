@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A643B9491AD1EED200990E42 /* MintLeafConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A643B9481AD1EED200990E42 /* MintLeafConstants.swift */; };
+		A60DA1301BBA698A002F6EA3 /* MintModelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A60DA12F1BBA698A002F6EA3 /* MintModelViewController.swift */; };
 		A643B94B1AD1F69B00990E42 /* Control.toolset in Resources */ = {isa = PBXBuildFile; fileRef = A643B94A1AD1F69B00990E42 /* Control.toolset */; };
 		A64660A31A234F0000648FD9 /* bridge.m in Sources */ = {isa = PBXBuildFile; fileRef = A64660A21A234F0000648FD9 /* bridge.m */; };
 		A64660A81A27771400648FD9 /* OpenJsCADBlackShader.fs in Resources */ = {isa = PBXBuildFile; fileRef = A64660A41A27771400648FD9 /* OpenJsCADBlackShader.fs */; };
@@ -15,39 +15,27 @@
 		A64660B01A2B3A7D00648FD9 /* Shader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64660AF1A2B3A7D00648FD9 /* Shader.swift */; };
 		A64660B31A2CC77600648FD9 /* OpenJsCADLightingShader.fs in Resources */ = {isa = PBXBuildFile; fileRef = A64660B11A2CC77600648FD9 /* OpenJsCADLightingShader.fs */; };
 		A64660B41A2CC77600648FD9 /* OpenJsCADLightingShader.vs in Resources */ = {isa = PBXBuildFile; fileRef = A64660B21A2CC77600648FD9 /* OpenJsCADLightingShader.vs */; };
+		A64779E51BB2A30400A36E66 /* MintLeafPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64779E41BB2A30400A36E66 /* MintLeafPanelController.swift */; };
 		A6490AEE1B1081BE001B5A5C /* arg.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A6490AEC1B1081BE001B5A5C /* arg.tiff */; };
 		A6490AEF1B1081BE001B5A5C /* ret.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A6490AED1B1081BE001B5A5C /* ret.tiff */; };
-		A64CE24C1BA4B432004F20E8 /* Interpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE23E1BA4B432004F20E8 /* Interpreter.swift */; };
-		A64CE24D1BA4B432004F20E8 /* Interpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE23E1BA4B432004F20E8 /* Interpreter.swift */; };
-		A64CE24E1BA4B432004F20E8 /* mint_CSG.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE23F1BA4B432004F20E8 /* mint_CSG.swift */; };
-		A64CE24F1BA4B432004F20E8 /* mint_CSG.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE23F1BA4B432004F20E8 /* mint_CSG.swift */; };
-		A64CE2501BA4B432004F20E8 /* mint_foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE2401BA4B432004F20E8 /* mint_foundation.swift */; };
-		A64CE2511BA4B432004F20E8 /* mint_foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE2401BA4B432004F20E8 /* mint_foundation.swift */; };
-		A64CE2521BA4B432004F20E8 /* mint_matrix4x4.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE2411BA4B432004F20E8 /* mint_matrix4x4.swift */; };
-		A64CE2531BA4B432004F20E8 /* mint_matrix4x4.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE2411BA4B432004F20E8 /* mint_matrix4x4.swift */; };
-		A64CE2541BA4B432004F20E8 /* mintlisp_3d_IO.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE2421BA4B432004F20E8 /* mintlisp_3d_IO.swift */; };
-		A64CE2551BA4B432004F20E8 /* mintlisp_3d_IO.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE2421BA4B432004F20E8 /* mintlisp_3d_IO.swift */; };
-		A64CE2561BA4B432004F20E8 /* mintlisp_3d_objprocs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE2431BA4B432004F20E8 /* mintlisp_3d_objprocs.swift */; };
-		A64CE2571BA4B432004F20E8 /* mintlisp_3d_objprocs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE2431BA4B432004F20E8 /* mintlisp_3d_objprocs.swift */; };
-		A64CE2581BA4B432004F20E8 /* mintlisp_3d_primitives.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE2441BA4B432004F20E8 /* mintlisp_3d_primitives.swift */; };
-		A64CE2591BA4B432004F20E8 /* mintlisp_3d_primitives.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE2441BA4B432004F20E8 /* mintlisp_3d_primitives.swift */; };
-		A64CE25A1BA4B432004F20E8 /* mintlisp_env.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE2451BA4B432004F20E8 /* mintlisp_env.swift */; };
-		A64CE25B1BA4B432004F20E8 /* mintlisp_env.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE2451BA4B432004F20E8 /* mintlisp_env.swift */; };
-		A64CE25C1BA4B432004F20E8 /* mintlisp_evaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE2461BA4B432004F20E8 /* mintlisp_evaluator.swift */; };
-		A64CE25D1BA4B432004F20E8 /* mintlisp_evaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE2461BA4B432004F20E8 /* mintlisp_evaluator.swift */; };
-		A64CE25E1BA4B432004F20E8 /* mintlisp_lispobj.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE2471BA4B432004F20E8 /* mintlisp_lispobj.swift */; };
-		A64CE25F1BA4B432004F20E8 /* mintlisp_lispobj.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE2471BA4B432004F20E8 /* mintlisp_lispobj.swift */; };
-		A64CE2601BA4B432004F20E8 /* mintlisp_listops.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE2481BA4B432004F20E8 /* mintlisp_listops.swift */; };
-		A64CE2611BA4B432004F20E8 /* mintlisp_listops.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE2481BA4B432004F20E8 /* mintlisp_listops.swift */; };
-		A64CE2621BA4B432004F20E8 /* mintlisp_parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE2491BA4B432004F20E8 /* mintlisp_parser.swift */; };
-		A64CE2631BA4B432004F20E8 /* mintlisp_parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE2491BA4B432004F20E8 /* mintlisp_parser.swift */; };
-		A64CE2641BA4B432004F20E8 /* mintlisp_primitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE24A1BA4B432004F20E8 /* mintlisp_primitive.swift */; };
-		A64CE2651BA4B432004F20E8 /* mintlisp_primitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE24A1BA4B432004F20E8 /* mintlisp_primitive.swift */; };
-		A64CE2661BA4B432004F20E8 /* mintlisp_util.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE24B1BA4B432004F20E8 /* mintlisp_util.swift */; };
-		A64CE2671BA4B432004F20E8 /* mintlisp_util.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64CE24B1BA4B432004F20E8 /* mintlisp_util.swift */; };
 		A64DDC651AC0254000E9F9B7 /* Cube.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A64DDC641AC0254000E9F9B7 /* Cube.tiff */; };
 		A64DDC6A1AC309EE00E9F9B7 /* 3D Primitives.toolset in Resources */ = {isa = PBXBuildFile; fileRef = A64DDC691AC309EE00E9F9B7 /* 3D Primitives.toolset */; };
+		A651F7091BCA41F200193B5B /* MintPort.swift in Sources */ = {isa = PBXBuildFile; fileRef = A651F7081BCA41F200193B5B /* MintPort.swift */; };
 		A654BE571AF4742500C1CA16 /* spectestsample.swift in Sources */ = {isa = PBXBuildFile; fileRef = A654BE561AF4742500C1CA16 /* spectestsample.swift */; };
+		A65D00841C231660009F4013 /* Interpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A65D00741C231660009F4013 /* Interpreter.swift */; };
+		A65D00871C231660009F4013 /* mint_CSG.swift in Sources */ = {isa = PBXBuildFile; fileRef = A65D00771C231660009F4013 /* mint_CSG.swift */; };
+		A65D00881C231660009F4013 /* mint_foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A65D00781C231660009F4013 /* mint_foundation.swift */; };
+		A65D00891C231660009F4013 /* mint_matrix4x4.swift in Sources */ = {isa = PBXBuildFile; fileRef = A65D00791C231660009F4013 /* mint_matrix4x4.swift */; };
+		A65D008B1C231660009F4013 /* mintlisp_3d_objprocs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A65D007B1C231660009F4013 /* mintlisp_3d_objprocs.swift */; };
+		A65D008C1C231660009F4013 /* mintlisp_3d_primitives.swift in Sources */ = {isa = PBXBuildFile; fileRef = A65D007C1C231660009F4013 /* mintlisp_3d_primitives.swift */; };
+		A65D008D1C231660009F4013 /* mintlisp_env.swift in Sources */ = {isa = PBXBuildFile; fileRef = A65D007D1C231660009F4013 /* mintlisp_env.swift */; };
+		A65D008E1C231660009F4013 /* mintlisp_evaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A65D007E1C231660009F4013 /* mintlisp_evaluator.swift */; };
+		A65D008F1C231660009F4013 /* mintlisp_lispobj.swift in Sources */ = {isa = PBXBuildFile; fileRef = A65D007F1C231660009F4013 /* mintlisp_lispobj.swift */; };
+		A65D00901C231660009F4013 /* mintlisp_listops.swift in Sources */ = {isa = PBXBuildFile; fileRef = A65D00801C231660009F4013 /* mintlisp_listops.swift */; };
+		A65D00911C231660009F4013 /* mintlisp_parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A65D00811C231660009F4013 /* mintlisp_parser.swift */; };
+		A65D00921C231660009F4013 /* mintlisp_primitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = A65D00821C231660009F4013 /* mintlisp_primitive.swift */; };
+		A65D00931C231660009F4013 /* mintlisp_util.swift in Sources */ = {isa = PBXBuildFile; fileRef = A65D00831C231660009F4013 /* mintlisp_util.swift */; };
+		A65D00991C25425E009F4013 /* mintlisp_3d_operator_prims.swift in Sources */ = {isa = PBXBuildFile; fileRef = A65D00981C25425E009F4013 /* mintlisp_3d_operator_prims.swift */; };
 		A6616AE31AE3B8100048EA2D /* LeafView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6616AE21AE3B8100048EA2D /* LeafView.swift */; };
 		A6616AE51AE3B8560048EA2D /* ArgumentCellViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6616AE41AE3B8560048EA2D /* ArgumentCellViews.swift */; };
 		A6616AE71AE3BBE90048EA2D /* MintLeafViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6616AE61AE3BBE90048EA2D /* MintLeafViewController.swift */; };
@@ -60,13 +48,9 @@
 		A686080519EEC1E1005E858A /* MINTTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A686080419EEC1E1005E858A /* MINTTests.swift */; };
 		A686080F19EEC202005E858A /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A686080E19EEC202005E858A /* OpenGL.framework */; };
 		A686081119EEC93B005E858A /* ModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A686081019EEC93B005E858A /* ModelView.swift */; };
-		A688D9291AEC527300E14D3C /* MintLeafOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = A688D9281AEC527300E14D3C /* MintLeafOperators.swift */; };
 		A688D92B1AED534300E14D3C /* Operator.toolset in Resources */ = {isa = PBXBuildFile; fileRef = A688D92A1AED534300E14D3C /* Operator.toolset */; };
 		A688DC4F1AF470D400E14D3C /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A688DC4C1AF4704200E14D3C /* Nimble.framework */; };
 		A688DC501AF470D400E14D3C /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A688DC351AF4703300E14D3C /* Quick.framework */; };
-		A6A0DEEF1AACAC3600B8D194 /* MintException.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A0DEEE1AACAC3600B8D194 /* MintException.swift */; };
-		A6A6D1311AF4761E007D9717 /* MintLeaf.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E1F5E11AABDDD700CE9EA3 /* MintLeaf.swift */; };
-		A6A6D1451AF47708007D9717 /* MintException.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A0DEEE1AACAC3600B8D194 /* MintException.swift */; };
 		A6A6D1621AF7B8A8007D9717 /* MintCSGUnitTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A6D1611AF7B8A8007D9717 /* MintCSGUnitTest.swift */; };
 		A6A6D1641AF7D9A9007D9717 /* MintFoundationUnitTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A6D1631AF7D9A9007D9717 /* MintFoundationUnitTest.swift */; };
 		A6AACFE51A9999EF00BE0724 /* MintSingletons.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6AACFE41A9999EF00BE0724 /* MintSingletons.swift */; };
@@ -75,10 +59,10 @@
 		A6B8B4471AB5C58300235759 /* Mint.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B8B4461AB5C58300235759 /* Mint.swift */; };
 		A6B8B4491AB7207300235759 /* WorkspaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B8B4481AB7207300235759 /* WorkspaceView.swift */; };
 		A6B8B44B1AB9D5E400235759 /* MintCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B8B44A1AB9D5E400235759 /* MintCommands.swift */; };
-		A6CA06741AC3711E00AB2135 /* MintPopoverPalleteView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A6CA06731AC3711E00AB2135 /* MintPopoverPalleteView.xib */; };
 		A6CA06761AC5B8DA00AB2135 /* LeafView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A6CA06751AC5B8DA00AB2135 /* LeafView.xib */; };
-		A6E1F5E21AABDDD700CE9EA3 /* MintLeaf.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E1F5E11AABDDD700CE9EA3 /* MintLeaf.swift */; };
-		A6E1F5E41AAC9EA000CE9EA3 /* MintLeafPrimitives.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E1F5E31AAC9EA000CE9EA3 /* MintLeafPrimitives.swift */; };
+		A6D34FE21C354772004D633A /* MintCommandUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6D34FE11C354772004D633A /* MintCommandUtil.swift */; };
+		A6D34FE41C3547AC004D633A /* MintCommandsFileIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6D34FE31C3547AC004D633A /* MintCommandsFileIO.swift */; };
+		A6E2864F1C4D40B4005A08A3 /* MintLispUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E2864E1C4D40B4005A08A3 /* MintLispUtility.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -162,7 +146,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		A643B9481AD1EED200990E42 /* MintLeafConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintLeafConstants.swift; sourceTree = "<group>"; };
+		A60DA12F1BBA698A002F6EA3 /* MintModelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintModelViewController.swift; sourceTree = "<group>"; };
 		A643B94A1AD1F69B00990E42 /* Control.toolset */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Control.toolset; sourceTree = SOURCE_ROOT; };
 		A64660A11A234F0000648FD9 /* MINT-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MINT-Bridging-Header.h"; sourceTree = "<group>"; };
 		A64660A21A234F0000648FD9 /* bridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bridge.m; sourceTree = "<group>"; };
@@ -171,31 +155,33 @@
 		A64660AF1A2B3A7D00648FD9 /* Shader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shader.swift; sourceTree = "<group>"; };
 		A64660B11A2CC77600648FD9 /* OpenJsCADLightingShader.fs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = OpenJsCADLightingShader.fs; path = MINT/OpenJsCADLightingShader.fs; sourceTree = "<group>"; };
 		A64660B21A2CC77600648FD9 /* OpenJsCADLightingShader.vs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = OpenJsCADLightingShader.vs; path = MINT/OpenJsCADLightingShader.vs; sourceTree = "<group>"; };
+		A64779E41BB2A30400A36E66 /* MintLeafPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintLeafPanelController.swift; sourceTree = "<group>"; };
 		A6490AEC1B1081BE001B5A5C /* arg.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = arg.tiff; path = Graphics/arg.tiff; sourceTree = SOURCE_ROOT; };
 		A6490AED1B1081BE001B5A5C /* ret.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ret.tiff; path = Graphics/ret.tiff; sourceTree = SOURCE_ROOT; };
-		A64CE23E1BA4B432004F20E8 /* Interpreter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Interpreter.swift; path = "../../mint-lisp/mint-lisp/Interpreter.swift"; sourceTree = "<group>"; };
-		A64CE23F1BA4B432004F20E8 /* mint_CSG.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mint_CSG.swift; path = "../../mint-lisp/mint-lisp/mint_CSG.swift"; sourceTree = "<group>"; };
-		A64CE2401BA4B432004F20E8 /* mint_foundation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mint_foundation.swift; path = "../../mint-lisp/mint-lisp/mint_foundation.swift"; sourceTree = "<group>"; };
-		A64CE2411BA4B432004F20E8 /* mint_matrix4x4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mint_matrix4x4.swift; path = "../../mint-lisp/mint-lisp/mint_matrix4x4.swift"; sourceTree = "<group>"; };
-		A64CE2421BA4B432004F20E8 /* mintlisp_3d_IO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_3d_IO.swift; path = "../../mint-lisp/mint-lisp/mintlisp_3d_IO.swift"; sourceTree = "<group>"; };
-		A64CE2431BA4B432004F20E8 /* mintlisp_3d_objprocs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_3d_objprocs.swift; path = "../../mint-lisp/mint-lisp/mintlisp_3d_objprocs.swift"; sourceTree = "<group>"; };
-		A64CE2441BA4B432004F20E8 /* mintlisp_3d_primitives.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_3d_primitives.swift; path = "../../mint-lisp/mint-lisp/mintlisp_3d_primitives.swift"; sourceTree = "<group>"; };
-		A64CE2451BA4B432004F20E8 /* mintlisp_env.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_env.swift; path = "../../mint-lisp/mint-lisp/mintlisp_env.swift"; sourceTree = "<group>"; };
-		A64CE2461BA4B432004F20E8 /* mintlisp_evaluator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_evaluator.swift; path = "../../mint-lisp/mint-lisp/mintlisp_evaluator.swift"; sourceTree = "<group>"; };
-		A64CE2471BA4B432004F20E8 /* mintlisp_lispobj.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_lispobj.swift; path = "../../mint-lisp/mint-lisp/mintlisp_lispobj.swift"; sourceTree = "<group>"; };
-		A64CE2481BA4B432004F20E8 /* mintlisp_listops.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_listops.swift; path = "../../mint-lisp/mint-lisp/mintlisp_listops.swift"; sourceTree = "<group>"; };
-		A64CE2491BA4B432004F20E8 /* mintlisp_parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_parser.swift; path = "../../mint-lisp/mint-lisp/mintlisp_parser.swift"; sourceTree = "<group>"; };
-		A64CE24A1BA4B432004F20E8 /* mintlisp_primitive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_primitive.swift; path = "../../mint-lisp/mint-lisp/mintlisp_primitive.swift"; sourceTree = "<group>"; };
-		A64CE24B1BA4B432004F20E8 /* mintlisp_util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_util.swift; path = "../../mint-lisp/mint-lisp/mintlisp_util.swift"; sourceTree = "<group>"; };
 		A64DDC641AC0254000E9F9B7 /* Cube.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Cube.tiff; path = Graphics/Cube.tiff; sourceTree = SOURCE_ROOT; };
 		A64DDC691AC309EE00E9F9B7 /* 3D Primitives.toolset */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "3D Primitives.toolset"; sourceTree = SOURCE_ROOT; };
+		A651F7081BCA41F200193B5B /* MintPort.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintPort.swift; sourceTree = "<group>"; };
 		A654BE561AF4742500C1CA16 /* spectestsample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = spectestsample.swift; sourceTree = "<group>"; };
+		A65D00741C231660009F4013 /* Interpreter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Interpreter.swift; path = "mint-lisp/mint-lisp/Interpreter.swift"; sourceTree = SOURCE_ROOT; };
+		A65D00771C231660009F4013 /* mint_CSG.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mint_CSG.swift; path = "mint-lisp/mint-lisp/mint_CSG.swift"; sourceTree = SOURCE_ROOT; };
+		A65D00781C231660009F4013 /* mint_foundation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mint_foundation.swift; path = "mint-lisp/mint-lisp/mint_foundation.swift"; sourceTree = SOURCE_ROOT; };
+		A65D00791C231660009F4013 /* mint_matrix4x4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mint_matrix4x4.swift; path = "mint-lisp/mint-lisp/mint_matrix4x4.swift"; sourceTree = SOURCE_ROOT; };
+		A65D007B1C231660009F4013 /* mintlisp_3d_objprocs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_3d_objprocs.swift; path = "mint-lisp/mint-lisp/mintlisp_3d_objprocs.swift"; sourceTree = SOURCE_ROOT; };
+		A65D007C1C231660009F4013 /* mintlisp_3d_primitives.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_3d_primitives.swift; path = "mint-lisp/mint-lisp/mintlisp_3d_primitives.swift"; sourceTree = SOURCE_ROOT; };
+		A65D007D1C231660009F4013 /* mintlisp_env.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_env.swift; path = "mint-lisp/mint-lisp/mintlisp_env.swift"; sourceTree = SOURCE_ROOT; };
+		A65D007E1C231660009F4013 /* mintlisp_evaluator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_evaluator.swift; path = "mint-lisp/mint-lisp/mintlisp_evaluator.swift"; sourceTree = SOURCE_ROOT; };
+		A65D007F1C231660009F4013 /* mintlisp_lispobj.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_lispobj.swift; path = "mint-lisp/mint-lisp/mintlisp_lispobj.swift"; sourceTree = SOURCE_ROOT; };
+		A65D00801C231660009F4013 /* mintlisp_listops.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_listops.swift; path = "mint-lisp/mint-lisp/mintlisp_listops.swift"; sourceTree = SOURCE_ROOT; };
+		A65D00811C231660009F4013 /* mintlisp_parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_parser.swift; path = "mint-lisp/mint-lisp/mintlisp_parser.swift"; sourceTree = SOURCE_ROOT; };
+		A65D00821C231660009F4013 /* mintlisp_primitive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_primitive.swift; path = "mint-lisp/mint-lisp/mintlisp_primitive.swift"; sourceTree = SOURCE_ROOT; };
+		A65D00831C231660009F4013 /* mintlisp_util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_util.swift; path = "mint-lisp/mint-lisp/mintlisp_util.swift"; sourceTree = SOURCE_ROOT; };
+		A65D00981C25425E009F4013 /* mintlisp_3d_operator_prims.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mintlisp_3d_operator_prims.swift; path = "mint-lisp/mint-lisp/mintlisp_3d_operator_prims.swift"; sourceTree = SOURCE_ROOT; };
 		A6616AE21AE3B8100048EA2D /* LeafView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeafView.swift; sourceTree = "<group>"; };
 		A6616AE41AE3B8560048EA2D /* ArgumentCellViews.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArgumentCellViews.swift; sourceTree = "<group>"; };
 		A6616AE61AE3BBE90048EA2D /* MintLeafViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintLeafViewController.swift; sourceTree = "<group>"; };
 		A66425881B0832BD00A6D0F0 /* MintMatrix4x4UnitTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintMatrix4x4UnitTest.swift; sourceTree = "<group>"; };
 		A685F8D71AC7C95A005123D5 /* MintWorkspaceControllers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintWorkspaceControllers.swift; sourceTree = "<group>"; };
-		A68607EC19EEC1E1005E858A /* mint.temp_caseinsensitive_rename.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mint.temp_caseinsensitive_rename.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A68607EC19EEC1E1005E858A /* mint.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mint.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A68607F019EEC1E1005E858A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A68607F119EEC1E1005E858A /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		A68607F319EEC1E1005E858A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -207,11 +193,9 @@
 		A686080E19EEC202005E858A /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		A686081019EEC93B005E858A /* ModelView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelView.swift; sourceTree = "<group>"; };
 		A686081219F01791005E858A /* mint.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = mint.playground; sourceTree = "<group>"; };
-		A688D9281AEC527300E14D3C /* MintLeafOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintLeafOperators.swift; sourceTree = "<group>"; };
 		A688D92A1AED534300E14D3C /* Operator.toolset */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Operator.toolset; sourceTree = SOURCE_ROOT; };
 		A688DC2B1AF4703300E14D3C /* Quick.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Quick.xcodeproj; path = Vendor/Quick/Quick.xcodeproj; sourceTree = "<group>"; };
 		A688DC401AF4704200E14D3C /* Nimble.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Nimble.xcodeproj; path = Vendor/Nimbie/Nimble.xcodeproj; sourceTree = "<group>"; };
-		A6A0DEEE1AACAC3600B8D194 /* MintException.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintException.swift; sourceTree = "<group>"; };
 		A6A6D1611AF7B8A8007D9717 /* MintCSGUnitTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintCSGUnitTest.swift; sourceTree = "<group>"; };
 		A6A6D1631AF7D9A9007D9717 /* MintFoundationUnitTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintFoundationUnitTest.swift; sourceTree = "<group>"; };
 		A6AACFE41A9999EF00BE0724 /* MintSingletons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintSingletons.swift; sourceTree = "<group>"; };
@@ -220,10 +204,10 @@
 		A6B8B4461AB5C58300235759 /* Mint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mint.swift; sourceTree = "<group>"; };
 		A6B8B4481AB7207300235759 /* WorkspaceView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceView.swift; sourceTree = "<group>"; };
 		A6B8B44A1AB9D5E400235759 /* MintCommands.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintCommands.swift; sourceTree = "<group>"; };
-		A6CA06731AC3711E00AB2135 /* MintPopoverPalleteView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MintPopoverPalleteView.xib; sourceTree = "<group>"; };
 		A6CA06751AC5B8DA00AB2135 /* LeafView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LeafView.xib; sourceTree = "<group>"; };
-		A6E1F5E11AABDDD700CE9EA3 /* MintLeaf.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintLeaf.swift; sourceTree = "<group>"; };
-		A6E1F5E31AAC9EA000CE9EA3 /* MintLeafPrimitives.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintLeafPrimitives.swift; sourceTree = "<group>"; };
+		A6D34FE11C354772004D633A /* MintCommandUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintCommandUtil.swift; sourceTree = "<group>"; };
+		A6D34FE31C3547AC004D633A /* MintCommandsFileIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintCommandsFileIO.swift; sourceTree = "<group>"; };
+		A6E2864E1C4D40B4005A08A3 /* MintLispUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintLispUtility.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -261,20 +245,20 @@
 		A64CE23D1BA4B40F004F20E8 /* mint-lisp */ = {
 			isa = PBXGroup;
 			children = (
-				A64CE23E1BA4B432004F20E8 /* Interpreter.swift */,
-				A64CE23F1BA4B432004F20E8 /* mint_CSG.swift */,
-				A64CE2401BA4B432004F20E8 /* mint_foundation.swift */,
-				A64CE2411BA4B432004F20E8 /* mint_matrix4x4.swift */,
-				A64CE2421BA4B432004F20E8 /* mintlisp_3d_IO.swift */,
-				A64CE2431BA4B432004F20E8 /* mintlisp_3d_objprocs.swift */,
-				A64CE2441BA4B432004F20E8 /* mintlisp_3d_primitives.swift */,
-				A64CE2451BA4B432004F20E8 /* mintlisp_env.swift */,
-				A64CE2461BA4B432004F20E8 /* mintlisp_evaluator.swift */,
-				A64CE2471BA4B432004F20E8 /* mintlisp_lispobj.swift */,
-				A64CE2481BA4B432004F20E8 /* mintlisp_listops.swift */,
-				A64CE2491BA4B432004F20E8 /* mintlisp_parser.swift */,
-				A64CE24A1BA4B432004F20E8 /* mintlisp_primitive.swift */,
-				A64CE24B1BA4B432004F20E8 /* mintlisp_util.swift */,
+				A65D00741C231660009F4013 /* Interpreter.swift */,
+				A65D00771C231660009F4013 /* mint_CSG.swift */,
+				A65D00781C231660009F4013 /* mint_foundation.swift */,
+				A65D00791C231660009F4013 /* mint_matrix4x4.swift */,
+				A65D007B1C231660009F4013 /* mintlisp_3d_objprocs.swift */,
+				A65D007C1C231660009F4013 /* mintlisp_3d_primitives.swift */,
+				A65D00981C25425E009F4013 /* mintlisp_3d_operator_prims.swift */,
+				A65D007D1C231660009F4013 /* mintlisp_env.swift */,
+				A65D007E1C231660009F4013 /* mintlisp_evaluator.swift */,
+				A65D007F1C231660009F4013 /* mintlisp_lispobj.swift */,
+				A65D00801C231660009F4013 /* mintlisp_listops.swift */,
+				A65D00811C231660009F4013 /* mintlisp_parser.swift */,
+				A65D00821C231660009F4013 /* mintlisp_primitive.swift */,
+				A65D00831C231660009F4013 /* mintlisp_util.swift */,
 			);
 			name = "mint-lisp";
 			sourceTree = "<group>";
@@ -294,9 +278,13 @@
 			isa = PBXGroup;
 			children = (
 				A6B8B4441AB54F2E00235759 /* MintControllers.swift */,
+				A60DA12F1BBA698A002F6EA3 /* MintModelViewController.swift */,
 				A685F8D71AC7C95A005123D5 /* MintWorkspaceControllers.swift */,
+				A64779E41BB2A30400A36E66 /* MintLeafPanelController.swift */,
 				A6616AE61AE3BBE90048EA2D /* MintLeafViewController.swift */,
 				A6B8B44A1AB9D5E400235759 /* MintCommands.swift */,
+				A6D34FE31C3547AC004D633A /* MintCommandsFileIO.swift */,
+				A6D34FE11C354772004D633A /* MintCommandUtil.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -306,12 +294,8 @@
 			children = (
 				A64CE23D1BA4B40F004F20E8 /* mint-lisp */,
 				A6AACFE41A9999EF00BE0724 /* MintSingletons.swift */,
-				A6E1F5E31AAC9EA000CE9EA3 /* MintLeafPrimitives.swift */,
-				A688D9281AEC527300E14D3C /* MintLeafOperators.swift */,
-				A643B9481AD1EED200990E42 /* MintLeafConstants.swift */,
-				A6E1F5E11AABDDD700CE9EA3 /* MintLeaf.swift */,
 				A6B8B4461AB5C58300235759 /* Mint.swift */,
-				A6A0DEEE1AACAC3600B8D194 /* MintException.swift */,
+				A651F7081BCA41F200193B5B /* MintPort.swift */,
 			);
 			name = "Mint Language Model";
 			sourceTree = "<group>";
@@ -346,7 +330,7 @@
 		A68607ED19EEC1E1005E858A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A68607EC19EEC1E1005E858A /* mint.temp_caseinsensitive_rename.app */,
+				A68607EC19EEC1E1005E858A /* mint.app */,
 				A68607FE19EEC1E1005E858A /* mint.temp_caseinsensitive_renameTests.xctest */,
 			);
 			name = Products;
@@ -357,14 +341,14 @@
 			children = (
 				A68607F319EEC1E1005E858A /* AppDelegate.swift */,
 				A6AACFE61A99DBC500BE0724 /* MintProtocols.swift */,
+				A6E2864E1C4D40B4005A08A3 /* MintLispUtility.swift */,
 				A686081219F01791005E858A /* mint.playground */,
-				A685F8D61AC7C4E9005123D5 /* Views */,
 				A685F8D51AC7C4C5005123D5 /* Mint Language Model */,
 				A685F8D41AC7C4AC005123D5 /* Controllers */,
+				A685F8D61AC7C4E9005123D5 /* Views */,
 				A64660A21A234F0000648FD9 /* bridge.m */,
 				A68607F519EEC1E1005E858A /* Images.xcassets */,
 				A68607F719EEC1E1005E858A /* MainMenu.xib */,
-				A6CA06731AC3711E00AB2135 /* MintPopoverPalleteView.xib */,
 				A6CA06751AC5B8DA00AB2135 /* LeafView.xib */,
 				A68607EF19EEC1E1005E858A /* Supporting Files */,
 				A64660A11A234F0000648FD9 /* MINT-Bridging-Header.h */,
@@ -454,7 +438,7 @@
 			);
 			name = mint.temp_caseinsensitive_rename;
 			productName = MINT;
-			productReference = A68607EC19EEC1E1005E858A /* mint.temp_caseinsensitive_rename.app */;
+			productReference = A68607EC19EEC1E1005E858A /* mint.app */;
 			productType = "com.apple.product-type.application";
 		};
 		A68607FD19EEC1E1005E858A /* mint.temp_caseinsensitive_renameTests */ = {
@@ -481,7 +465,8 @@
 		A68607E419EEC1E0005E858A /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Taizo A.";
 				TargetAttributes = {
 					A68607EB19EEC1E1005E858A = {
@@ -613,7 +598,6 @@
 				A68607F619EEC1E1005E858A /* Images.xcassets in Resources */,
 				A64DDC651AC0254000E9F9B7 /* Cube.tiff in Resources */,
 				A68607F919EEC1E1005E858A /* MainMenu.xib in Resources */,
-				A6CA06741AC3711E00AB2135 /* MintPopoverPalleteView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -631,40 +615,41 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A64CE2541BA4B432004F20E8 /* mintlisp_3d_IO.swift in Sources */,
-				A64CE24C1BA4B432004F20E8 /* Interpreter.swift in Sources */,
-				A64CE25E1BA4B432004F20E8 /* mintlisp_lispobj.swift in Sources */,
-				A64CE2621BA4B432004F20E8 /* mintlisp_parser.swift in Sources */,
-				A64CE2521BA4B432004F20E8 /* mint_matrix4x4.swift in Sources */,
+				A65D00991C25425E009F4013 /* mintlisp_3d_operator_prims.swift in Sources */,
+				A651F7091BCA41F200193B5B /* MintPort.swift in Sources */,
+				A6E2864F1C4D40B4005A08A3 /* MintLispUtility.swift in Sources */,
+				A64779E51BB2A30400A36E66 /* MintLeafPanelController.swift in Sources */,
 				A6616AE31AE3B8100048EA2D /* LeafView.swift in Sources */,
-				A643B9491AD1EED200990E42 /* MintLeafConstants.swift in Sources */,
-				A64CE2561BA4B432004F20E8 /* mintlisp_3d_objprocs.swift in Sources */,
 				A6B8B4471AB5C58300235759 /* Mint.swift in Sources */,
+				A65D00841C231660009F4013 /* Interpreter.swift in Sources */,
 				A6AACFE51A9999EF00BE0724 /* MintSingletons.swift in Sources */,
-				A6A0DEEF1AACAC3600B8D194 /* MintException.swift in Sources */,
 				A64660A31A234F0000648FD9 /* bridge.m in Sources */,
 				A6B8B4451AB54F2E00235759 /* MintControllers.swift in Sources */,
-				A64CE25A1BA4B432004F20E8 /* mintlisp_env.swift in Sources */,
-				A64CE2581BA4B432004F20E8 /* mintlisp_3d_primitives.swift in Sources */,
-				A64CE2661BA4B432004F20E8 /* mintlisp_util.swift in Sources */,
+				A65D008B1C231660009F4013 /* mintlisp_3d_objprocs.swift in Sources */,
+				A60DA1301BBA698A002F6EA3 /* MintModelViewController.swift in Sources */,
+				A6D34FE41C3547AC004D633A /* MintCommandsFileIO.swift in Sources */,
 				A686081119EEC93B005E858A /* ModelView.swift in Sources */,
-				A688D9291AEC527300E14D3C /* MintLeafOperators.swift in Sources */,
-				A6E1F5E41AAC9EA000CE9EA3 /* MintLeafPrimitives.swift in Sources */,
-				A64CE24E1BA4B432004F20E8 /* mint_CSG.swift in Sources */,
 				A6616AE51AE3B8560048EA2D /* ArgumentCellViews.swift in Sources */,
+				A65D008C1C231660009F4013 /* mintlisp_3d_primitives.swift in Sources */,
 				A685F8D81AC7C95A005123D5 /* MintWorkspaceControllers.swift in Sources */,
-				A64CE2601BA4B432004F20E8 /* mintlisp_listops.swift in Sources */,
-				A64CE25C1BA4B432004F20E8 /* mintlisp_evaluator.swift in Sources */,
+				A65D00901C231660009F4013 /* mintlisp_listops.swift in Sources */,
 				A6AACFE71A99DBC500BE0724 /* MintProtocols.swift in Sources */,
 				A68607F419EEC1E1005E858A /* AppDelegate.swift in Sources */,
-				A64CE2641BA4B432004F20E8 /* mintlisp_primitive.swift in Sources */,
+				A65D00891C231660009F4013 /* mint_matrix4x4.swift in Sources */,
+				A65D008F1C231660009F4013 /* mintlisp_lispobj.swift in Sources */,
+				A65D00921C231660009F4013 /* mintlisp_primitive.swift in Sources */,
+				A65D008D1C231660009F4013 /* mintlisp_env.swift in Sources */,
 				A68607F219EEC1E1005E858A /* main.swift in Sources */,
+				A65D008E1C231660009F4013 /* mintlisp_evaluator.swift in Sources */,
 				A6B8B44B1AB9D5E400235759 /* MintCommands.swift in Sources */,
 				A64660B01A2B3A7D00648FD9 /* Shader.swift in Sources */,
-				A64CE2501BA4B432004F20E8 /* mint_foundation.swift in Sources */,
 				A6B8B4491AB7207300235759 /* WorkspaceView.swift in Sources */,
+				A6D34FE21C354772004D633A /* MintCommandUtil.swift in Sources */,
 				A6616AE71AE3BBE90048EA2D /* MintLeafViewController.swift in Sources */,
-				A6E1F5E21AABDDD700CE9EA3 /* MintLeaf.swift in Sources */,
+				A65D00881C231660009F4013 /* mint_foundation.swift in Sources */,
+				A65D00911C231660009F4013 /* mintlisp_parser.swift in Sources */,
+				A65D00931C231660009F4013 /* mintlisp_util.swift in Sources */,
+				A65D00871C231660009F4013 /* mint_CSG.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -672,27 +657,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A64CE2551BA4B432004F20E8 /* mintlisp_3d_IO.swift in Sources */,
-				A64CE2671BA4B432004F20E8 /* mintlisp_util.swift in Sources */,
 				A66425891B0832BD00A6D0F0 /* MintMatrix4x4UnitTest.swift in Sources */,
-				A6A6D1451AF47708007D9717 /* MintException.swift in Sources */,
-				A64CE24F1BA4B432004F20E8 /* mint_CSG.swift in Sources */,
-				A64CE24D1BA4B432004F20E8 /* Interpreter.swift in Sources */,
-				A6A6D1311AF4761E007D9717 /* MintLeaf.swift in Sources */,
 				A654BE571AF4742500C1CA16 /* spectestsample.swift in Sources */,
-				A64CE2511BA4B432004F20E8 /* mint_foundation.swift in Sources */,
 				A686080519EEC1E1005E858A /* MINTTests.swift in Sources */,
-				A64CE2571BA4B432004F20E8 /* mintlisp_3d_objprocs.swift in Sources */,
-				A64CE25D1BA4B432004F20E8 /* mintlisp_evaluator.swift in Sources */,
 				A6A6D1641AF7D9A9007D9717 /* MintFoundationUnitTest.swift in Sources */,
-				A64CE2651BA4B432004F20E8 /* mintlisp_primitive.swift in Sources */,
-				A64CE2611BA4B432004F20E8 /* mintlisp_listops.swift in Sources */,
-				A64CE25F1BA4B432004F20E8 /* mintlisp_lispobj.swift in Sources */,
 				A6A6D1621AF7B8A8007D9717 /* MintCSGUnitTest.swift in Sources */,
-				A64CE2531BA4B432004F20E8 /* mint_matrix4x4.swift in Sources */,
-				A64CE2591BA4B432004F20E8 /* mintlisp_3d_primitives.swift in Sources */,
-				A64CE2631BA4B432004F20E8 /* mintlisp_parser.swift in Sources */,
-				A64CE25B1BA4B432004F20E8 /* mintlisp_env.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -738,6 +707,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -808,7 +778,8 @@
 				);
 				INFOPLIST_FILE = MINT/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_NAME = mint.temp_caseinsensitive_rename;
+				PRODUCT_BUNDLE_IDENTIFIER = "b2a.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = mint;
 				SWIFT_OBJC_BRIDGING_HEADER = "MINT/MINT-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -827,7 +798,8 @@
 				);
 				INFOPLIST_FILE = MINT/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_NAME = mint.temp_caseinsensitive_rename;
+				PRODUCT_BUNDLE_IDENTIFIER = "b2a.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = mint;
 				SWIFT_OBJC_BRIDGING_HEADER = "MINT/MINT-Bridging-Header.h";
 			};
 			name = Release;
@@ -847,6 +819,7 @@
 				);
 				INFOPLIST_FILE = MINTTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "b2a.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = mint.temp_caseinsensitive_renameTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 			};
@@ -863,6 +836,7 @@
 				);
 				INFOPLIST_FILE = MINTTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "b2a.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = mint.temp_caseinsensitive_renameTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 			};

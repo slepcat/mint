@@ -11,27 +11,23 @@ import Foundation
 // Observer Pattern protocol for 'ModelView' and 'MintInterpreter'
 // Tell change of 'Leaf' model to 'ModelView' to update 3D model view.
 protocol MintObserver:class { // observer must be class type
-    func update(subject: MintSubject, index: Int)//tell observer which leaves are updated
+    func update(subject: MintSubject, uid: UInt)//tell observer which leaves are updated
 }
 
 protocol MintSubject:class {
-    //return mesh & attributes of leave determined by the index.
-    func solveMesh(index: Int) -> (mesh: [Double], normals: [Double], colors: [Float])
-
     // Observer register & remove
     func registerObserver(observer: MintObserver)
     func removeObserver(observer: MintObserver)
 }
 
-// Observer Pattern ptrotocol for 'LeafView' and 'MintController'
+// Observer Pattern protocol for 'LeafView' and 'MintController'
 // Sync arguments values between 'LeafView' and 'leaf'
 protocol MintLeafObserver:class {
-    var leafID : Int {get set}
+    var uid : UInt {get set}
     
-    func initArgs(argLabels: [String], argTypes:[String], args: [Any?])
-    func initReturnValueType(type: String)
-    func setUniqueName(name: String)
-    func update(argLabel: String, arg: Any?)
+    func init_opds(args: [SExpr], labels:[String])
+    func setName(name: String)
+    func update(leafid: UInt, newopds: [SExpr], newuid: UInt, olduid: UInt)
 }
 
 protocol MintLeafSubject:class{
@@ -41,7 +37,7 @@ protocol MintLeafSubject:class{
 
 // Observer Pattern protocol for 'LinkView' to update link path
 protocol MintLinkObserver:class {
-    func update(leafID: Int, pos: NSPoint)
+    func update(leafID: UInt, pos: NSPoint)
 }
 
 protocol MintLinkSubject: class {
@@ -50,6 +46,9 @@ protocol MintLinkSubject: class {
 }
 
 protocol MintCommand {
+    weak var workspace: MintWorkspaceController! {get set}
+    weak var modelView: MintModelViewController! {get set}
+    weak var interpreter: MintInterpreter! {get set}
     func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter)
     func execute()
     func undo()

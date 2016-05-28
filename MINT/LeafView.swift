@@ -9,11 +9,11 @@
 import Foundation
 import Cocoa
 
-
-// View of lneaf instance
+// View of leaf instance
 @objc(LeafView) class LeafView : NSView, NSTextFieldDelegate, MintLinkSubject {
     @IBOutlet weak var controller : MintLeafViewController!
     @IBOutlet weak var nameTag : NSTextField!
+    //@IBOutlet weak var errStdOut : NSTextField!
     
     var linkviews : [MintLinkObserver] = []
     
@@ -32,7 +32,7 @@ import Cocoa
     /*
     override var frame : NSRect {
         set (newvalue){
-            println("leaf: \(controller.leafName), x: \(newvalue.origin.x), y: \(newvalue.origin.y)")
+            Swift.print("leaf: \(controller.leafName), x: \(newvalue.origin.x), y: \(newvalue.origin.y)")
             super.frame = newvalue
         }
         
@@ -59,7 +59,7 @@ import Cocoa
         
         nameTag.delegate = self
         
-        boundPath = NSBezierPath(roundedRect: NSRect(x: 26, y: 3, width: 32, height: 32), xRadius: 5.0, yRadius: 5.0)
+        boundPath = NSBezierPath(roundedRect: NSRect(x: 31, y: 26, width: 32, height: 32), xRadius: 5.0, yRadius: 5.0)
         boundPath?.lineWidth = 3.0
     }
     
@@ -98,30 +98,41 @@ import Cocoa
             pos.x += theEvent.deltaX
             pos.y -= theEvent.deltaY
             
+            if pos.x < 0 {
+                pos.x = 0
+            }
+            
+            if pos.y < 0 {
+                pos.y = 0
+            }
+            
             setFrameOrigin(pos)
             
             for link in linkviews {
-                link.update(controller.leafID, pos: frame.origin)
+                link.update(controller.uid, pos: frame.origin)
             }
             
             autoscroll(theEvent)
             
             setNeedsDisplayInRect(frame)
+            
+            //controller.leaf_moved()
         }
     }
     
     override func mouseUp(theEvent: NSEvent) {
         dragging = false
         
-        //println("before reshape x: \(frame.origin.x), y: \(frame.origin.y), width: \(frame.size.width), height:\(frame.size.height)")
+        //print("before reshape x: \(frame.origin.x), y: \(frame.origin.y), width: \(frame.size.width), height:\(frame.size.height)")
 
         controller.reshapeWorkspace(frame)
         
-        //println("after reshape x: \(frame.origin.x), y: \(frame.origin.y), width: \(frame.size.width), height:\(frame.size.height)")
+        //print("after reshape x: \(frame.origin.x), y: \(frame.origin.y), width: \(frame.size.width), height:\(frame.size.height)")
         
         for link in linkviews {
-            link.update(controller.leafID, pos: frame.origin)
+            link.update(controller.uid, pos: frame.origin)
         }
+        
     }
     
     func isPointInItem(pos: NSPoint) -> Bool {
@@ -138,7 +149,7 @@ import Cocoa
         let keystroke = theEvent.charactersIgnoringModifiers
         
         if let key = keystroke {
-            if count(key.utf16) == 1 {
+            if key.characters.count == 1 {
                 let s = key.unicodeScalars
                 let v = s[s.startIndex].value
                 
@@ -173,10 +184,10 @@ import Cocoa
     // name edit event handling
     func control(control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
         
-        println("leaf name edited at \(self.nameTag.stringValue)")
+        Swift.print("leaf name edited at \(self.nameTag.stringValue)")
         
         if let name = self.nameTag?.stringValue {
-            controller.nameChanged(name)
+            controller.setName(name)
         }
         
         return true
@@ -190,7 +201,7 @@ import Cocoa
     }
     
     func removeObserver(observer: MintLinkObserver) {
-        for var i = 0; linkviews.count > i; i++ {
+        for i in 0..<linkviews.count {
             if linkviews[i] === observer {
                 linkviews.removeAtIndex(i)
                 break
@@ -200,15 +211,15 @@ import Cocoa
 }
 
 // Return value button represent return value of leaf in LeafView
-// Accept drag & drop from 'MintArgumentCellView'
-// Source of drag & drop to 'MintArgumentCellView'
-class MintReturnButton : NSButton, NSDraggingDestination, NSDraggingSource, NSPasteboardItemDataProvider {
+// Accept drag & drop from 'MintOperandCellView'
+// Source of drag & drop to 'MintOperandCellView'
+class MintReturnButton : NSButton, NSDraggingSource, NSPasteboardItemDataProvider {
     @IBOutlet weak var controller : MintLeafViewController!
     
     // drag from argument
     /// set acceptable drag items
     override func awakeFromNib() {
-        self.registerForDraggedTypes(["argument"])
+        self.registerForDraggedTypes(["argumentID"])
     }
     
     /// Tell valid drag operation type. need to match with op. type of drag source.
@@ -224,26 +235,27 @@ class MintReturnButton : NSButton, NSDraggingDestination, NSDraggingSource, NSPa
     /// accept drop & tell 'controller' to generate new link
     override func performDragOperation(sender: NSDraggingInfo) -> Bool {
         
-        let pboad = sender.draggingPasteboard()
-        if let arg = pboad {
-            switch sender.draggingSourceOperationMask() {
-            case NSDragOperation.Link:
-                if let type = arg.stringForType("type") {
-                    if type == "argumentLink" {
-                        if let arglabel = arg.stringForType("argument") {
-                            if let leafIDstr = arg.stringForType("sourceLeafID") {
-                                let leafID = NSString(string: leafIDstr).intValue
-                                
-                                controller.setLinkFrom(Int(leafID), withArg: arglabel)
-                                
-                                return true
-                            }
+        let arg = sender.draggingPasteboard()
+        switch sender.draggingSourceOperationMask() {
+        case NSDragOperation.Link:
+            if let type = arg.stringForType("type") {
+                if type == "argumentLink" {
+                    if let argIDstr = arg.stringForType("argumentID"), let leafIDstr = arg.stringForType("argLeafID") {
+                        let leafID = NSString(string: leafIDstr).integerValue
+                        let argID = NSString(string: argIDstr).integerValue
+                        
+                        if controller.leafName == "define" {
+                            //controller.setRefFrom
+                        } else {
+                            controller.setLinkFrom(UInt(leafID), withArg: UInt(argID))
                         }
+                        
+                        return true
                     }
                 }
-            default: //anything else will be failed
-                return false
             }
+        default: //anything else will be failed
+            return false
         }
         return false
     }
@@ -252,7 +264,12 @@ class MintReturnButton : NSButton, NSDraggingDestination, NSDraggingSource, NSPa
     /// override mousedown()
     override func mouseDown(theEvent: NSEvent) {
         let pbItem : NSPasteboardItem = NSPasteboardItem()
-        pbItem.setDataProvider(self, forTypes: ["com.mint.mint.returnLeafID"])
+        
+        if controller.leafName == "define" {
+            pbItem.setDataProvider(self, forTypes: ["com.mint.mint.referenceLeafID"])
+        } else {
+            pbItem.setDataProvider(self, forTypes: ["com.mint.mint.returnLeafID"])
+        }
         
         let dragItem = NSDraggingItem(pasteboardWriter:pbItem)
         
@@ -264,16 +281,25 @@ class MintReturnButton : NSButton, NSDraggingDestination, NSDraggingSource, NSPa
     }
     
     // provide pasteboard self 'leafID' and value type 'returnLink'
-    func pasteboard(pasteboard: NSPasteboard!, item: NSPasteboardItem!, provideDataForType type: String!) {
-        pasteboard.clearContents()
-        pasteboard.declareTypes(["com.mint.mint.returnLeafID"], owner: self)
-        
-        switch type {
-        case "com.mint.mint.returnLeafID":
-            pasteboard.setString("\(controller.leafID)", forType: "com.mint.mint.returnLeafID")
-            item.setString("\(controller.leafID)", forType: "com.mint.mint.returnLeafID")
-        default:
-            break
+    func pasteboard(pasteboard: NSPasteboard?, item: NSPasteboardItem, provideDataForType type: String) {
+        if let pb = pasteboard {
+            pb.clearContents()
+            if controller.leafName == "define" {
+                pb.declareTypes(["com.mint.mint.referenceLeafID"], owner: self)
+            } else {
+                pb.declareTypes(["com.mint.mint.returnLeafID"], owner: self)
+            }
+            
+            switch type {
+            case "com.mint.mint.referenceLeafID":
+                pb.setString("\(controller.uid)", forType: "com.mint.mint.referenceLeafID")
+                item.setString("\(controller.uid)", forType: "com.mint.mint.referenceLeafID")
+            case "com.mint.mint.returnLeafID":
+                pb.setString("\(controller.uid)", forType: "com.mint.mint.returnLeafID")
+                item.setString("\(controller.uid)", forType: "com.mint.mint.returnLeafID")
+            default:
+                break
+            }
         }
     }
     
@@ -288,13 +314,13 @@ class MintReturnButton : NSButton, NSDraggingDestination, NSDraggingSource, NSPa
     }
 }
 
-class MintArgumentButton : NSButton, NSDraggingDestination {
+class MintArgumentButton : NSButton {
     @IBOutlet weak var controller : MintLeafViewController!
     
     // drag from return value
     /// set acceptable drag items
     override func awakeFromNib() {
-        self.registerForDraggedTypes(["com.mint.mint.returnLeafID"])
+        self.registerForDraggedTypes(["com.mint.mint.returnLeafID", "com.mint.mint.referenceLeafID"])
     }
     
     // 'MintArgumentButton just show argument list. Drop will be catched by 'MintArgumentCell'
@@ -304,7 +330,7 @@ class MintArgumentButton : NSButton, NSDraggingDestination {
         case NSDragOperation.Link:
             if controller.isLinkReqAcceptable() {
                 
-                controller.showArgPopover(self)
+                controller.showOpdsPopover(self)
                 return NSDragOperation.Link
             }
         default:
@@ -321,8 +347,8 @@ class MintArgumentButton : NSButton, NSDraggingDestination {
 
 class LinkView : NSView, MintLinkObserver {
     
-    var argleafID : Int = -1
-    var retleafID : Int = -1
+    var argleafID : UInt = 0
+    var retleafID : UInt = 0
     
     var linkcounter : Int = 0
     
@@ -331,13 +357,13 @@ class LinkView : NSView, MintLinkObserver {
     
     var needCalc : Bool = true
     var path : NSBezierPath = NSBezierPath()
-    var color : NSColor = NSColor(calibratedRed: 0, green: 0.5, blue: 0.6, alpha: 0.6)
+    var color : NSColor = NSColor(calibratedRed: 0, green: 0.5, blue: 0.6, alpha: 0.5)
     
     // debugging: unexpected repositioning of leafview
     /*
     override var frame : NSRect {
         set (newvalue){
-            println("link between:\(argleafID) and: \(retleafID) x: \(newvalue.origin.x), y: \(newvalue.origin.y)")
+            print("link between:\(argleafID) and: \(retleafID) x: \(newvalue.origin.x), y: \(newvalue.origin.y)")
             super.frame = newvalue
         }
         
@@ -356,6 +382,10 @@ class LinkView : NSView, MintLinkObserver {
         color.setStroke()
         path.lineWidth = 3.0
         path.stroke()
+    }
+    
+    override func hitTest(aPoint: NSPoint) -> NSView? {
+        return nil
     }
     
     func calcLinkPath() {
@@ -388,13 +418,13 @@ class LinkView : NSView, MintLinkObserver {
         needCalc = false
     }
     
-    func update(leafID: Int, pos: NSPoint) {
+    func update(leafID: UInt, pos: NSPoint) {
         setNeedsDisplayInRect(frame)
         
         if leafID == argleafID {
-            argPoint = NSPoint(x: pos.x + 84, y: pos.y + 19)
+            argPoint = NSPoint(x: pos.x + 95, y: pos.y + 42)
         } else if leafID == retleafID {
-            retPoint = NSPoint(x: pos.x, y: pos.y + 19)
+            retPoint = NSPoint(x: pos.x, y: pos.y + 42)
         }
         
         let origin = NSPoint(x: min(argPoint.x, retPoint.x) - 1.5, y:min(argPoint.y, retPoint.y) - 1.5)
@@ -402,12 +432,19 @@ class LinkView : NSView, MintLinkObserver {
         
         self.frame = NSRect(origin: origin, size: size)
         
-        //println("pos, x: \(pos.x), y: \(pos.y)")
-        //println("x: \(frame.origin.x), y: \(frame.origin.y), width: \(frame.size.width), height:\(frame.size.height)")
+        //print("pos, x: \(pos.x), y: \(pos.y)")
+        //print("x: \(frame.origin.x), y: \(frame.origin.y), width: \(frame.size.width), height:\(frame.size.height)")
         
         needCalc = true
         
         setNeedsDisplayInRect(frame)
     }
+    
+    func setRefColor() {
+        color = NSColor(calibratedRed: 0.7, green: 0, blue: 0.6, alpha: 0.5)
+    }
+    
+    func setLinkColor() {
+        color = NSColor(calibratedRed: 0, green: 0.5, blue: 0.6, alpha: 0.5)
+    }
 }
-
