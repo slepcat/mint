@@ -10,3 +10,6 @@
 [submodule "mint-lisp"]
 	path = mint-lisp
 	url = https://github.com/slepcat/mint-lisp.git
+[submodule "Vendor/SwiftGLMath/Math"]
+	path = Vendor/SwiftGLMath/Math
+	url = https://github.com/SwiftGL/Math.git

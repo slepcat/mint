@@ -31,7 +31,7 @@ class SaveWorkspace:MintCommand {
         func write(url: NSURL, output: String) {
             
             let coordinator = NSFileCoordinator(filePresenter: workspace)
-            let error : NSErrorPointer = NSErrorPointer()
+            let error : NSErrorPointer = nil
             
             coordinator.coordinateWritingItemAtURL(url, options: .ForMerging, error: error) { (fileurl: NSURL) in
                 do {
@@ -124,7 +124,7 @@ class LoadWorkspace:MintCommand {
         func load(url: NSURL) -> String {
             
             let coordinator = NSFileCoordinator(filePresenter: workspace)
-            let error : NSErrorPointer = NSErrorPointer()
+            let error : NSErrorPointer = nil
             var output = ""
             
             coordinator.coordinateReadingItemAtURL(url, options: .WithoutChanges, error: error) { (fileurl: NSURL) in
@@ -384,7 +384,7 @@ class ExportSTL : MintCommand {
         func export(url: NSURL, output: String) {
             
             let coordinator = NSFileCoordinator(filePresenter: workspace)
-            let error : NSErrorPointer = NSErrorPointer()
+            let error : NSErrorPointer = nil
             
             coordinator.coordinateWritingItemAtURL(url, options: .ForMerging, error: error) { (fileurl: NSURL) in
                 do {
