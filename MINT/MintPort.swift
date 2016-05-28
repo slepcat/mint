@@ -36,7 +36,7 @@ class Mint3DPort : MintPort, MintSubject {
         viewctrl?.setNeedDisplay()
     }
     
-    func mesh() -> [Double] {
+    func mesh() -> [Float] {
         if let mesh = data as? IOMesh {
             return mesh.mesh
         }
@@ -44,7 +44,7 @@ class Mint3DPort : MintPort, MintSubject {
         return []
     }
     
-    func normal() -> [Double] {
+    func normal() -> [Float] {
         if let mesh = data as? IOMesh {
             return mesh.normal
         }
@@ -66,6 +66,14 @@ class Mint3DPort : MintPort, MintSubject {
         }
         
         return []
+    }
+    
+    func drawtype() -> UInt {
+        if let mesh = data as? IOMesh {
+            return mesh.drawtype
+        }
+        
+        return 0
     }
     
     func registerObserver(observer: MintObserver) {

@@ -465,7 +465,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="500" height="400"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <openGLView depthSize="24bit" rendererType="accelerated" useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zek-9d-GHB" customClass="MintModelView">
+                    <openGLView colorSize="5bit_RGB_8bit_Alpha" depthSize="24bit" useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zek-9d-GHB" customClass="MintModelView">
                         <rect key="frame" x="0.0" y="0.0" width="500" height="400"/>
                     </openGLView>
                 </subviews>

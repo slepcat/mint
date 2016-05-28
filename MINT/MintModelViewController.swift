@@ -18,7 +18,7 @@ class MintModelViewController:NSWindowController, NSWindowDelegate {
     //weak var port : Mint3DPort!
     
     func addMesh(uid: UInt) -> GLmesh {
-        let newmesh = GLmesh(leafID: uid)
+        let newmesh = GLmesh(leafID: uid, vattrib: modelview.gl_vertex, nattrib: modelview.gl_normal, cattrib: modelview.gl_color, aattrib: modelview.gl_alpha)
         modelview.stack.append(newmesh)
         return newmesh
     }
@@ -26,7 +26,11 @@ class MintModelViewController:NSWindowController, NSWindowDelegate {
     func removeMesh(uid: UInt) -> GLmesh? {
         for i in 0..<modelview.stack.count {
             if modelview.stack[i].leafID == uid {
-                return modelview.stack.removeAtIndex(i)
+                let rmd = modelview.stack.removeAtIndex(i)
+                
+                if let mesh = rmd as? GLmesh {
+                    return mesh
+                }
             }
         }
         

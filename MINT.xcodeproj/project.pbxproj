@@ -63,6 +63,7 @@
 		A6D34FE21C354772004D633A /* MintCommandUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6D34FE11C354772004D633A /* MintCommandUtil.swift */; };
 		A6D34FE41C3547AC004D633A /* MintCommandsFileIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6D34FE31C3547AC004D633A /* MintCommandsFileIO.swift */; };
 		A6E2864F1C4D40B4005A08A3 /* MintLispUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E2864E1C4D40B4005A08A3 /* MintLispUtility.swift */; };
+		A6ED452A1CF9E16300348645 /* SGLMath.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6ED45291CF9E12C00348645 /* SGLMath.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -143,6 +144,13 @@
 			remoteGlobalIDString = 1F925EB7195C0D6300ED456B;
 			remoteInfo = "Nimble-OSXTests";
 		};
+		A6ED45281CF9E12C00348645 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A6ED45241CF9E12B00348645 /* SGLMath.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A6ED44EB1CF9DF6C00348645;
+			remoteInfo = SGLMath;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -208,6 +216,7 @@
 		A6D34FE11C354772004D633A /* MintCommandUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintCommandUtil.swift; sourceTree = "<group>"; };
 		A6D34FE31C3547AC004D633A /* MintCommandsFileIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintCommandsFileIO.swift; sourceTree = "<group>"; };
 		A6E2864E1C4D40B4005A08A3 /* MintLispUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintLispUtility.swift; sourceTree = "<group>"; };
+		A6ED45241CF9E12B00348645 /* SGLMath.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SGLMath.xcodeproj; path = Vendor/SwiftGLMath/SGLMath/SGLMath.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -215,6 +224,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A6ED452A1CF9E16300348645 /* SGLMath.framework in Frameworks */,
 				A686080F19EEC202005E858A /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -315,6 +325,7 @@
 		A68607E319EEC1E0005E858A = {
 			isa = PBXGroup;
 			children = (
+				A6ED45241CF9E12B00348645 /* SGLMath.xcodeproj */,
 				A64660AC1A27773100648FD9 /* Shader */,
 				A64DDC681AC309BD00E9F9B7 /* ToolSets */,
 				A68818F81ABC7CE5004CAF5D /* Tool Icons */,
@@ -421,6 +432,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		A6ED45251CF9E12B00348645 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A6ED45291CF9E12C00348645 /* SGLMath.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -497,6 +516,10 @@
 				{
 					ProductGroup = A688DC2C1AF4703300E14D3C /* Products */;
 					ProjectRef = A688DC2B1AF4703300E14D3C /* Quick.xcodeproj */;
+				},
+				{
+					ProductGroup = A6ED45251CF9E12B00348645 /* Products */;
+					ProjectRef = A6ED45241CF9E12B00348645 /* SGLMath.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -576,6 +599,13 @@
 			fileType = wrapper.cfbundle;
 			path = NimbleTests.xctest;
 			remoteRef = A688DC4D1AF4704200E14D3C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A6ED45291CF9E12C00348645 /* SGLMath.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SGLMath.framework;
+			remoteRef = A6ED45281CF9E12C00348645 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
