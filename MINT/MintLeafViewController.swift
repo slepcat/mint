@@ -204,13 +204,15 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     }
     
     /// init observer's proc and opd value
-    func init_opds(opds: [SExpr], var labels: [String]) {
+    func init_opds(opds: [SExpr], labels: [String]) {
         
-        if opds.count > labels.count {
-            var i = labels.count
+        var labels2 = labels
+        
+        if opds.count > labels2.count {
+            var i = labels2.count
             
             while opds.count > i {
-                labels.append("")
+                labels2.append("")
                 i += 1
             }
         }
@@ -218,20 +220,20 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         for i in 0.stride(to: opds.count, by: 1) {
             switch opds[i] {
             case let ltrl as Literal:
-                self.opds.append((uid: ltrl.uid, param: labels[i], value: ltrl.str("", level: 0), type: type.val))
+                self.opds.append((uid: ltrl.uid, param: labels2[i], value: ltrl.str("", level: 0), type: type.val))
             case let pair as Pair:
-                self.opds.append((uid: pair.uid, param: labels[i], value: "link to: \(pair.car.str("", level: 0))", type: type.link))
+                self.opds.append((uid: pair.uid, param: labels2[i], value: "link to: \(pair.car.str("", level: 0))", type: type.link))
             case let def as MDefine:
-                self.opds.append((uid: def.uid, param: labels[i], value: def.str("", level: 0), type: type.def))
+                self.opds.append((uid: def.uid, param: labels2[i], value: def.str("", level: 0), type: type.def))
             case let io as Display:
-                self.opds.append((uid: io.uid, param: labels[i], value: io.str("", level: 0), type: type.def))
+                self.opds.append((uid: io.uid, param: labels2[i], value: io.str("", level: 0), type: type.def))
             case let form as Form:
-                self.opds.append((uid: form.uid, param: labels[i], value: form.str("", level: 0), type: type.proc))
+                self.opds.append((uid: form.uid, param: labels2[i], value: form.str("", level: 0), type: type.proc))
             default:
                 if i == 0 {
-                    self.opds.append((uid: opds[i].uid, param: labels[i], value: opds[i].str("", level: 0), type: type.proc))
+                    self.opds.append((uid: opds[i].uid, param: labels2[i], value: opds[i].str("", level: 0), type: type.proc))
                 } else {
-                    self.opds.append((uid: opds[i].uid, param: labels[i], value: opds[i].str("", level: 0), type: type.ref))
+                    self.opds.append((uid: opds[i].uid, param: labels2[i], value: opds[i].str("", level: 0), type: type.ref))
                 }
             }
         }

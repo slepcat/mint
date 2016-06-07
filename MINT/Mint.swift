@@ -371,8 +371,8 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     
     ///// output /////
     
-    public func str_with_pos(var positions: [(uid: UInt, pos: NSPoint)]) -> String {
-        
+    public func str_with_pos(_positions: [(uid: UInt, pos: NSPoint)]) -> String {
+        var positions = _positions
         var acc : String = ""
         
         for expr in trees {
@@ -761,10 +761,13 @@ extension SExpr {
         }
     }
     
-    private func tail_str_pos_list_of_exprs(_opds :SExpr, var acc: [String], inout positions: [(uid: UInt, pos: NSPoint)], indent:String, level: Int) -> [String] {
+    private func tail_str_pos_list_of_exprs(_opds :SExpr, acc: [String], inout positions: [(uid: UInt, pos: NSPoint)], indent:String, level: Int) -> [String] {
+        
+        var acc2 = acc
+        
         if let pair = _opds as? Pair {
-            acc.append(pair.car.str_with_pos(&positions, indent: indent, level: level))
-            return tail_str_pos_list_of_exprs(pair.cdr, acc: acc, positions: &positions, indent: indent, level: level)
+            acc2.append(pair.car.str_with_pos(&positions, indent: indent, level: level))
+            return tail_str_pos_list_of_exprs(pair.cdr, acc: acc2, positions: &positions, indent: indent, level: level)
         } else {
             return acc
         }

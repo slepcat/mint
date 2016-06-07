@@ -36,9 +36,10 @@ class MintPosUnwrapper {
         positions = repair_position(tree!, pos_acc: pos)
     }
     
-    private func rec_unwrap_pos(var head: Pair, inout pos_acc: [(uid: UInt, pos: NSPoint?)]) -> Pair {
+    private func rec_unwrap_pos(_head: Pair, inout pos_acc: [(uid: UInt, pos: NSPoint?)]) -> Pair {
         var pos_x : Double? = nil
         var pos_y : Double? = nil
+        var head = _head
         
         // check if the s-expression is wrapped by "_pos_" expression
         // if yes, unwrap and get position

@@ -1,26 +1,26 @@
 {
-  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "B3E0D8CBAD064E9C0961CE2A947A2F8EC7167E89",
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "6C8DCE693B0F687B73E6A0A8112171AB7AFC8CAD",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
 
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "343B4A17FCD3D5C4463317786AF4B1C728327C01" : 0,
     "BCC3C8FEA198A2E5FCA1E97517DFBC46E8EF33C7" : 0,
     "95438028B10BBB846574013D29F154A00556A9D1" : 0,
     "D0725CAC6FF2D66F2C83C2C48DC12106D42DAA64" : 0,
-    "B3E0D8CBAD064E9C0961CE2A947A2F8EC7167E89" : 0,
-    "343B4A17FCD3D5C4463317786AF4B1C728327C01" : 0
+    "6C8DCE693B0F687B73E6A0A8112171AB7AFC8CAD" : 0
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "6C093584-3F39-43C0-9AF7-47240DE40B0B",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
-    "BCC3C8FEA198A2E5FCA1E97517DFBC46E8EF33C7" : "mint-lisp\/",
+    "343B4A17FCD3D5C4463317786AF4B1C728327C01" : "MINT\/Vendor\/SwiftGLMath\/Math\/",
+    "BCC3C8FEA198A2E5FCA1E97517DFBC46E8EF33C7" : "MINT\/mint-lisp\/",
     "95438028B10BBB846574013D29F154A00556A9D1" : "MINT\/Vendor\/Nimbie\/",
     "D0725CAC6FF2D66F2C83C2C48DC12106D42DAA64" : "MINT\/Vendor\/Quick\/",
-    "B3E0D8CBAD064E9C0961CE2A947A2F8EC7167E89" : "MINT\/",
-    "343B4A17FCD3D5C4463317786AF4B1C728327C01" : "MINT\/Vendor\/SwiftGLMath\/Math\/"
+    "6C8DCE693B0F687B73E6A0A8112171AB7AFC8CAD" : "MINT\/"
   },
-  "DVTSourceControlWorkspaceBlueprintNameKey" : "mint",
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "MINT",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
-  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "mint.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "MINT.xcodeproj",
   "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/SwiftGL\/Math.git",
@@ -28,17 +28,17 @@
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "343B4A17FCD3D5C4463317786AF4B1C728327C01"
     },
     {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/slepcat\/mint.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "6C8DCE693B0F687B73E6A0A8112171AB7AFC8CAD"
+    },
+    {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Quick\/Nimble.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "95438028B10BBB846574013D29F154A00556A9D1"
     },
     {
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/slepcat\/mint.git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "B3E0D8CBAD064E9C0961CE2A947A2F8EC7167E89"
-    },
-    {
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/slepcat\/mint-lisp.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "\/Users\/tand\/Documents\/Developer\/mint-lisp\/",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "BCC3C8FEA198A2E5FCA1E97517DFBC46E8EF33C7"
     },
