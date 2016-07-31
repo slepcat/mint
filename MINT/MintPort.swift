@@ -11,21 +11,76 @@ import Cocoa
 
 class Mint3DPort : MintPort, MintSubject {
     
+    struct Mesh {
+        var vexes: [Float] = []
+        var normals: [Float] = []
+        var colors: [Float] = []
+        var alphas: [Float] = []
+    }
+    
+    struct Lines {
+        var vexes: [Float] = []
+        var normals: [Float] = []
+        var colors: [Float] = []
+        var alphas: [Float] = []
+    }
+    
     var portid : UInt = 0
     var portidlist : [UInt] = []
     var obs : [MintObserver] = []
-    var data : MintIO? = nil
+    var mesh : Mesh? = nil
+    var lines : Lines? = nil
     var viewctrl : MintModelViewController? = nil
     
-    override func write(data: MintIO, uid: UInt){
+    override func write(data: SExpr, uid: UInt){
         
         portid = uid
         
-        if let _ = data as? IOMesh {
+        var acc: [Double] = []
+        var acc_normal: [Double] = []
+        var acc_color: [Float] = []
+        var acc_alpha: [Float] = []
+        
+        let args = delayed_list_of_values(data)
+        
+        for arg in args {
+            let elms = delayed_list_of_values(arg)
             
-            self.data = data
-
+            for elm in elms {
+                if let p = elm as? MPolygon {
+                    let vertices = p.value.vertices
+                    
+                    if vertices.count == 3 {
+                        for vertex in vertices {
+                            acc += [vertex.pos.x, vertex.pos.y, vertex.pos.z]
+                            acc_normal += [vertex.normal.x, vertex.normal.y, vertex.normal.z]
+                            acc_color += vertex.color
+                            acc_alpha += [vertex.alpha]
+                        }
+                    } else if vertices.count > 3 {
+                        // if polygon is not triangle, split it to triangle polygons
+                        
+                        //if polygon.checkIfConvex() {
+                        
+                        let triangles = p.value.triangulationConvex()
+                        
+                        for tri in triangles {
+                            for vertex in tri.vertices {
+                                acc += [vertex.pos.x, vertex.pos.y, vertex.pos.z]
+                                acc_normal += [vertex.normal.x, vertex.normal.y, vertex.normal.z]
+                                acc_color += vertex.color
+                                acc_alpha += [vertex.alpha]
+                            }
+                        }
+                    }
+                    
+                } /*else if let l = elm as? MLine {
+                   // implement line
+                }*/
+            }
         }
+        
+        mesh = Mesh(vexes: d2farray(acc), normals: d2farray(acc_normal), colors: acc_color, alphas: acc_alpha)
     }
     
     override func update() {
@@ -36,44 +91,69 @@ class Mint3DPort : MintPort, MintSubject {
         viewctrl?.setNeedDisplay()
     }
     
-    func mesh() -> [Float] {
-        if let mesh = data as? IOMesh {
-            return mesh.mesh
+    func mesh_vex() -> [Float] {
+        if let m = mesh {
+            return m.vexes
         }
         
         return []
     }
     
-    func normal() -> [Float] {
-        if let mesh = data as? IOMesh {
-            return mesh.normal
+    func mesh_normal() -> [Float] {
+        if let m = mesh {
+            return m.normals
         }
         
         return []
     }
     
-    func color() -> [Float] {
-        if let mesh = data as? IOMesh {
-            return mesh.color
+    func mesh_color() -> [Float] {
+        if let m = mesh {
+            return m.colors
         }
         
         return []
     }
     
-    func alpha() -> [Float] {
-        if let mesh = data as? IOMesh {
-            return mesh.alpha
+    func mesh_alpha() -> [Float] {
+        if let m = mesh {
+            return m.alphas
         }
         
         return []
     }
     
-    func drawtype() -> UInt {
-        if let mesh = data as? IOMesh {
-            return mesh.drawtype
+    
+    func line_vex() -> [Float] {
+        if let m = mesh {
+            return m.vexes
         }
         
-        return 0
+        return []
+    }
+    
+    func line_normal() -> [Float] {
+        if let m = mesh {
+            return m.normals
+        }
+        
+        return []
+    }
+    
+    func line_color() -> [Float] {
+        if let m = mesh {
+            return m.colors
+        }
+        
+        return []
+    }
+    
+    func line_alpha() -> [Float] {
+        if let m = mesh {
+            return m.alphas
+        }
+        
+        return []
     }
     
     func registerObserver(observer: MintObserver) {
@@ -123,11 +203,11 @@ class MintErrPort : MintPort, MintSubject {
     var obs : [MintObserver] = []
     var err : String = ""
     
-    override func write(data: MintIO, uid: UInt){
-        if let errobj = data as? IOErr {
+    override func write(data: SExpr, uid: UInt){
+        if let errmsg = data as? MStr {
             
-            err = errobj.err
-            portid = errobj.uid_err
+            err = errmsg.value
+            portid = uid
         }
     }
     
@@ -153,7 +233,7 @@ class MintErrPort : MintPort, MintSubject {
 
 class MintImportPort : MintReadPort {
     
-    override func read(path: String, uid: UInt) -> MintIO {
+    override func read(path: String, uid: UInt) -> SExpr {
         if let delegate = NSApplication.sharedApplication().delegate as? AppDelegate {
             
             if let url = getLibPath(path, docpath: delegate.workspace.fileurl?.URLByDeletingLastPathComponent?.path) {
@@ -186,11 +266,11 @@ class MintImportPort : MintReadPort {
                     }
                 }
                 
-                return SExprIO(exps: acc)
+                return list_from_array(acc)
             }
         }
         
-        return SExprIO(exps: [])
+        return MNull()
     }
     
     private func getLibPath(path: String, docpath: String?) -> NSURL? {

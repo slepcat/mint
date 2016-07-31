@@ -639,11 +639,11 @@ class GLmesh:GLvertices, MintObserver {
         
         if uid == leafID {
             if let meshio = subject as? Mint3DPort {
-                let glmesh = meshio.mesh()
-                let glnormal = meshio.normal()
-                let glcolor = meshio.color()
-                let glalpha = meshio.alpha()
-                let gldraw = meshio.drawtype()
+                let glmesh = meshio.mesh_vex()
+                let glnormal = meshio.mesh_normal()
+                let glcolor = meshio.mesh_color()
+                let glalpha = meshio.mesh_alpha()
+                //let gldraw = meshio.drawtype()
                 
                 buffersize = GLsizei(glmesh.count)
                 
