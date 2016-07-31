@@ -30,4 +30,4 @@ mint todo
 * Primitive call to python interpreter(?)
 * Remove recursive call from Boolean operation. (Smaller memory consumption and suspend size of thread call stack)
 * Line Drawing
-* Delegate Display implementation to Port.
+* Delegate Display implementation to Port. -> Done
