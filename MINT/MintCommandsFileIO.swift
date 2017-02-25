@@ -20,7 +20,7 @@ class SaveWorkspace:MintCommand {
         pos = leafpositions
     }
     
-    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
+    func prepare(_ workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
         self.workspace = workspace
         self.modelView = modelView
         self.interpreter = interpreter
@@ -28,14 +28,14 @@ class SaveWorkspace:MintCommand {
     
     func execute() {
         
-        func write(url: NSURL, output: String) {
+        func write(_ url: URL, output: String) {
             
             let coordinator = NSFileCoordinator(filePresenter: workspace)
             let error : NSErrorPointer = nil
             
-            coordinator.coordinateWritingItemAtURL(url, options: .ForMerging, error: error) { (fileurl: NSURL) in
+            coordinator.coordinate(writingItemAt: url, options: .forMerging, error: error) { (fileurl: URL) in
                 do {
-                    try output.writeToURL(url, atomically: true, encoding: NSUTF8StringEncoding)
+                    try output.write(to: url, atomically: true, encoding: String.Encoding.utf8)
                 } catch {
                     print("fail to save", terminator:"\n")
                     return
@@ -52,9 +52,9 @@ class SaveWorkspace:MintCommand {
             let panel = NSSavePanel()
             
             panel.nameFieldStringValue = "untitled.mint"
-            panel.beginWithCompletionHandler(){ [unowned self] (result:Int) in
+            panel.begin(){ [unowned self] (result:Int) in
                 if result == NSFileHandlingPanelOKButton {
-                    if let url = panel.URL {
+                    if let url = panel.url {
                         self.workspace.fileurl = url
                         write(url, output: output)
                         self.workspace.edited = false
@@ -113,7 +113,7 @@ class LoadWorkspace:MintCommand {
     
     var temptree : SExpr = MNull.errNull
     
-    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
+    func prepare(_ workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
         self.workspace = workspace
         self.modelView = modelView
         self.interpreter = interpreter
@@ -121,16 +121,16 @@ class LoadWorkspace:MintCommand {
     
     func execute() {
         
-        func load(url: NSURL) -> String {
+        func load(_ url: URL) -> String {
             
             let coordinator = NSFileCoordinator(filePresenter: workspace)
             let error : NSErrorPointer = nil
             var output = ""
             
-            coordinator.coordinateReadingItemAtURL(url, options: .WithoutChanges, error: error) { (fileurl: NSURL) in
+            coordinator.coordinate(readingItemAt: url, options: .withoutChanges, error: error) { (fileurl: URL) in
                 
                 do {
-                    output = try NSString(contentsOfURL: url, encoding: NSUTF8StringEncoding) as String
+                    output = try NSString(contentsOf: url, encoding: String.Encoding.utf8.rawValue) as String
                 } catch {
                     print("fail to open", terminator:"\n")
                     return
@@ -146,10 +146,10 @@ class LoadWorkspace:MintCommand {
             let alert = NSAlert()
             alert.informativeText = "Do you want to save the current document?"
             alert.messageText = "Your change will be lost, if you don't save them"
-            alert.alertStyle = .WarningAlertStyle
-            alert.addButtonWithTitle("Save")
-            alert.addButtonWithTitle("Cancel")
-            alert.addButtonWithTitle("Don't Save")
+            alert.alertStyle = NSWarningAlertStyle
+            alert.addButton(withTitle: "Save")
+            alert.addButton(withTitle: "Cancel")
+            alert.addButton(withTitle: "Don't Save")
             
             let ret = alert.runModal()
             
@@ -167,7 +167,7 @@ class LoadWorkspace:MintCommand {
         let panel = NSOpenPanel()
         panel.allowedFileTypes = ["mint"]
         
-        panel.beginWithCompletionHandler(){ [unowned self] (result:Int) in
+        panel.begin(){ [unowned self] (result:Int) in
             if result == NSFileHandlingPanelOKButton {
                 
                 self.interpreter.trees = []
@@ -176,10 +176,10 @@ class LoadWorkspace:MintCommand {
                 self.modelView.resetMesh()
                 self.modelView.setNeedDisplay()
                 
-                if let url = panel.URL {
+                if let url = panel.url {
                     
                     let input : String = load(url)
-                    let localtrees = self.interpreter.readfile(input)
+                    let localtrees = self.interpreter.readfile(fileContent: input)
                     
                     for tree in localtrees {
                         
@@ -222,7 +222,7 @@ class LoadWorkspace:MintCommand {
         }
     }
     
-    private func rec_generate_leaf(head: Pair, parentid: UInt, pos: LeafPositions) {
+    private func rec_generate_leaf(_ head: Pair, parentid: UInt, pos: LeafPositions) {
         
         // generate leaf
         
@@ -262,7 +262,8 @@ class NewWorkspace:MintCommand {
     
     var temptree : SExpr = MNull.errNull
     
-    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
+    func prepare(_
+        workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
         self.workspace = workspace
         self.modelView = modelView
         self.interpreter = interpreter
@@ -275,10 +276,10 @@ class NewWorkspace:MintCommand {
             let alert = NSAlert()
             alert.informativeText = "Do you want to save the current document?"
             alert.messageText = "Your change will be lost, if you don't save them"
-            alert.alertStyle = .WarningAlertStyle
-            alert.addButtonWithTitle("Save")
-            alert.addButtonWithTitle("Cancel")
-            alert.addButtonWithTitle("Don't Save")
+            alert.alertStyle = NSWarningAlertStyle
+            alert.addButton(withTitle: "Save")
+            alert.addButton(withTitle: "Cancel")
+            alert.addButton(withTitle: "Don't Save")
             
             let ret = alert.runModal()
             
@@ -319,7 +320,7 @@ class AppQuit:MintCommand {
     var willQuit = false
     
     
-    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
+    func prepare(_ workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
         self.workspace = workspace
         self.modelView = modelView
         self.interpreter = interpreter
@@ -332,10 +333,10 @@ class AppQuit:MintCommand {
             let alert = NSAlert()
             alert.informativeText = "Do you want to save the current document?"
             alert.messageText = "Your change will be lost, if you don't save them"
-            alert.alertStyle = .WarningAlertStyle
-            alert.addButtonWithTitle("Save")
-            alert.addButtonWithTitle("Cancel")
-            alert.addButtonWithTitle("Don't Save")
+            alert.alertStyle = NSWarningAlertStyle
+            alert.addButton(withTitle: "Save")
+            alert.addButton(withTitle: "Cancel")
+            alert.addButton(withTitle: "Don't Save")
             
             let ret = alert.runModal()
             
@@ -373,7 +374,7 @@ class ExportSTL : MintCommand {
         self.uid = uid
     }
     
-    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
+    func prepare(_ workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
         self.workspace = workspace
         self.modelView = modelView
         self.interpreter = interpreter
@@ -381,15 +382,16 @@ class ExportSTL : MintCommand {
     
     func execute() {
         
-        func export(url: NSURL, output: String) {
+        func export(_ url: URL, output: String) {
             
             let coordinator = NSFileCoordinator(filePresenter: workspace)
             let error : NSErrorPointer = nil
             
-            coordinator.coordinateWritingItemAtURL(url, options: .ForMerging, error: error) { (fileurl: NSURL) in
+            coordinator.coordinate(writingItemAt: url, options: .forMerging, error: error) { (fileurl: URL) in
                 do {
-                    try output.writeToURL(url, atomically: true, encoding: NSUTF8StringEncoding)
+                    try output.write(to: url, atomically: true, encoding: String.Encoding.utf8)
                 } catch {
+                    
                     print("fail to save", terminator:"\n")
                     return
                 }
@@ -407,16 +409,16 @@ class ExportSTL : MintCommand {
         let panel = NSSavePanel()
         
         panel.nameFieldStringValue = "untitled.stl"
-        panel.beginWithCompletionHandler(){ (result:Int) in
+        panel.begin(){ (result:Int) in
             if result == NSFileHandlingPanelOKButton {
-                if let url = panel.URL {
+                if let url = panel.url {
                     export(url, output: stlascii)
                 }
             }
         }
     }
     
-    func polygons_from_exp(exp: SExpr) -> [Polygon] {
+    func polygons_from_exp(_ exp: SExpr) -> [Polygon] {
         let exps = delayed_list_of_values(exp)
         var mesh : [Polygon] = []
         

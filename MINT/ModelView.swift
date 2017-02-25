@@ -9,7 +9,6 @@
 import Foundation
 import Cocoa
 import OpenGL
-import SGLMath
 
 struct ViewPoint {
     var x:GLfloat
@@ -77,23 +76,23 @@ struct ViewAngle {
         }
     }
     
+    /*
     func mat2array(matrix: mat4) -> [GLfloat] {
         
         var acc : [GLfloat] = []
         
-        for i in 0.stride(to: 4, by: 1) {
-            for j in 0.stride(to: 4, by: 1) {
+        for i in stride(from:0, to: 4, by: 1) {
+            for j in stride(from:0, to: 4, by: 1) {
                 acc.append(matrix[i][j])
             }
         }
         
         return acc
     }
+    */
+ 
+
     
-    func identity() -> [GLfloat] { return [1,0,0,0,
-                                           0,1,0,0,
-                                           0,0,1,0,
-                                           0,0,0,1] }
     
     override func prepareOpenGL() {
         
@@ -165,7 +164,7 @@ struct ViewAngle {
         }
         
         let aspect = GLfloat(self.frame.size.width / self.frame.size.height)
-        perspective = SGLMath.perspective(45, aspect, 0.5, 2500)
+        perspective = mint_perspective(45, aspect, 0.5, 2500)
         
         glClearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3])
         
@@ -191,10 +190,10 @@ struct ViewAngle {
         let rect = self.bounds
         let aspect = GLfloat(self.frame.size.width / self.frame.size.height)
         glViewport(0, 0, GLsizei(rect.size.width), GLsizei(rect.size.height))
-        perspective = SGLMath.perspective(45, aspect, 0.5, 2500)
+        perspective = mint_perspective(45, aspect, 0.5, 2500)
     }
     
-    override func drawRect(dirtyRect: NSRect) {
+    override func draw(_ dirtyRect: NSRect) {
         glClear(GLbitfield(GL_COLOR_BUFFER_BIT) | GLbitfield(GL_DEPTH_BUFFER_BIT))
         glEnable(UInt32(GL_DEPTH_TEST))
         glEnable(GLenum(GL_BLEND))
@@ -214,17 +213,27 @@ struct ViewAngle {
         let ay : GLfloat = viewAngle.y * GLfloat(M_PI) / 180
         let az : GLfloat = viewAngle.z * GLfloat(M_PI) / 180
         
-        let rotatex = SGLMath.rotateSlow(mat4(1.0), ax, vec3(1,0,0))
-        let rotatey = SGLMath.rotateSlow(mat4(1.0), ay, vec3(0,1,0))
-        let rotatez = SGLMath.rotateSlow(mat4(1.0), az, vec3(0,0,1))
+        //Swift.print("perspective: \(perspective)")
+        
+        let rotatex = rotateSlow(mat4(), ax, vec3(1,0,0))
+        //Swift.print("rotatex: \(rotatex)")
+        let rotatey = rotateSlow(mat4(), ay, vec3(0,1,0))
+        //Swift.print("rotatey: \(rotatey)")
+        let rotatez = rotateSlow(mat4(), az, vec3(0,0,1))
+        //Swift.print("rotatez: \(rotatez)")
         
         let rotatem = rotatex * rotatey * rotatez
-        let transm = SGLMath.translate(mat4(1.0), vec3(viewPt.x, viewPt.y, -viewPt.z))
+        //Swift.print("rotatem: \(rotatem)")
+        let transm = mint_translate(mat4(), vec3(viewPt.x, viewPt.y, -viewPt.z))
         
         let view = transm * rotatem
-        var viewm = mat2array(view)
-        var mvp = mat2array(perspective * view)
-        var modelm = identity()
+        var viewm = view.arrayf()
+        var mvp = (perspective * view).arrayf()
+        var modelm = mat4().arrayf()
+        
+        //Swift.print("matrix output")
+        //Swift.print(view)
+        //Swift.print(perspective * view)
         
         glUniformMatrix4fv(gl_MVP, 1, GLboolean(GL_FALSE), &mvp)
         glUniformMatrix4fv(gl_V, 1, GLboolean(GL_FALSE), &viewm)
@@ -234,9 +243,9 @@ struct ViewAngle {
         /* debug print
          
          if let shader = lightingShader {
-         var mat = [GLfloat](count: 16, repeatedValue: 0)
+         var mat = [GLfloat](repeating: 0, count: 16)
          
-         glGetUniformfv(shader.program , gl_V, &mat[0])
+         glGetUniformfv(shader.program , gl_MVP, &mat[0])
          Swift.print(mat)
          }
          */
@@ -295,16 +304,16 @@ struct ViewAngle {
     
     //rotate view when the mouse dragged with left button
     
-    override func mouseDown(theEvent: NSEvent) {
+    override func mouseDown(with theEvent: NSEvent) {
         
         //let clickPt: NSPoint = theEvent.locationInWindow
         //lastPt = self.convertPoint(clickPt, fromView: nil)
         //print("mouse down at X:\(lastPt.x), Y:\(lastPt.y)")
     }
     
-    override func mouseDragged(theEvent : NSEvent) {
+    override func mouseDragged(with theEvent : NSEvent) {
         
-        if NSEventModifierFlags.AlternateKeyMask.isSupersetOf(theEvent.modifierFlags) {
+        if !NSAlternateKeyMask.isSuperset(of: theEvent.modifierFlags) {
             //rotate z and y
             //rotateFactor is for speed control. but system delta value work fine
             //and I decided not to adjust it by user preference
@@ -346,7 +355,7 @@ struct ViewAngle {
         self.needsDisplay = true
     }
     
-    override func mouseUp(theEvent: NSEvent) {
+    override func mouseUp(with theEvent: NSEvent) {
         
         //let upPt:NSPoint = theEvent.locationInWindow
         //lastPt = self.convertPoint(upPt, fromView: nil)
@@ -355,21 +364,21 @@ struct ViewAngle {
     
     //pan view when the mouse dragged with right button
     
-    override func rightMouseDown(theEvent: NSEvent) {
+    override func rightMouseDown(with theEvent: NSEvent) {
         
     }
     
-    override func rightMouseDragged(theEvent : NSEvent) {
+    override func rightMouseDragged(with theEvent : NSEvent) {
         
     }
     
-    override func rightMouseUp(theEvent: NSEvent) {
+    override func rightMouseUp(with theEvent: NSEvent) {
         
     }
     
     //zoom in/out when mouse wheel scrolled
     
-    override func scrollWheel(theEvent: NSEvent) {
+    override func scrollWheel(with theEvent: NSEvent) {
         // this code came from openJsCAD:onmousewheel func
         
         let wheelDelta = theEvent.deltaY
@@ -458,10 +467,10 @@ class GLvertices {
         glBindVertexArray(vao_id)
         
         // set up buffers
-        prepare_buffer(vex, id: &vbufferid, attrib_id: gl_vertex, attrib_size: 3) // Vertices buffer
-        prepare_buffer(normal, id: &nbufferid, attrib_id: gl_normal, attrib_size: 3) // Normals buffer
-        prepare_buffer(color, id: &cbufferid, attrib_id: gl_color, attrib_size: 3) // Color buffer
-        prepare_buffer(alpha, id: &abufferid, attrib_id: gl_alpha, attrib_size: 1) // Alpha buffer
+        prepare_buffer(vex: vex, id: &vbufferid, attrib_id: gl_vertex, attrib_size: 3) // Vertices buffer
+        prepare_buffer(vex: normal, id: &nbufferid, attrib_id: gl_normal, attrib_size: 3) // Normals buffer
+        prepare_buffer(vex: color, id: &cbufferid, attrib_id: gl_color, attrib_size: 3) // Color buffer
+        prepare_buffer(vex: alpha, id: &abufferid, attrib_id: gl_alpha, attrib_size: 1) // Alpha buffer
         
         buffersize = GLsizei(vex.count)
         
@@ -469,8 +478,7 @@ class GLvertices {
         glBindVertexArray(0)
     }
     
-    func prepare_buffer(vex: [GLfloat], inout id: GLuint, attrib_id: GLuint, attrib_size: GLint) {
-        
+    func prepare_buffer(vex: [GLfloat], id: inout GLuint, attrib_id: GLuint, attrib_size: GLint) {
         if vex.count > 0 {
             var vex_m = vex
             
@@ -479,7 +487,7 @@ class GLvertices {
             }
             
             glBindBuffer(GLenum(GL_ARRAY_BUFFER), id)
-            glBufferData(GLenum(GL_ARRAY_BUFFER), vex_m.count * sizeof(GLfloat), &vex_m, GLenum(GL_STATIC_DRAW))
+            glBufferData(GLenum(GL_ARRAY_BUFFER), vex_m.count * MemoryLayout<GLfloat>.size, &vex_m, GLenum(GL_STATIC_DRAW))
             
             glVertexAttribPointer(attrib_id, attrib_size, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 0, nil)
             glEnableVertexAttribArray(attrib_id)
@@ -561,22 +569,23 @@ class Axes : GLvertices {
         
         drawtype = GLenum(GL_LINES)
         
-        prepare_vao(axesLines, normal: axesN, color: axesRGB, alpha: axesA)
+        prepare_vao(vex: axesLines, normal: axesN, color: axesRGB, alpha: axesA)
     }
 }
 
 class GridPlane : GLvertices {
     
     func setup() {
-        let plate:GLfloat = 200
+        let plate: GLfloat = 200
         
         var planeLines : [GLfloat] = []
         var planeRGB : [GLfloat] = []
         var planeA : [GLfloat] = []
         var planeN : [GLfloat] = []//normal
         // -- minor grid
-        for x in (-plate / 2).stride(through: plate / 2, by: 1) {
-            if (x % 10) != 0 {
+        for x in stride(from: (-plate / 2), through: plate / 2, by: 1) {
+            if (x.truncatingRemainder(dividingBy: 10)) != 0 {
+                
                 planeLines += [-plate/2, x, 0.0]
                 planeLines += [plate/2, x, 0.0]
                 planeLines += [x, -plate/2, 0.0]
@@ -594,7 +603,7 @@ class GridPlane : GLvertices {
         }
         
         // -- major grid
-        for x in (-plate / 2).stride(through: plate / 2, by: 10) {
+        for x in stride(from: (-plate / 2), through: plate / 2, by: 10) {
             if x != 0 {
                 planeLines += [-plate/2, x, 0.0]
                 planeLines += [plate/2, x, 0.0]
@@ -614,7 +623,7 @@ class GridPlane : GLvertices {
         
         drawtype = GLenum(GL_LINES)
         // prepare buffer for grid
-        prepare_vao(planeLines, normal: planeN, color: planeRGB, alpha: planeA)
+        prepare_vao(vex: planeLines, normal: planeN, color: planeRGB, alpha: planeA)
     }
 }
 
@@ -627,7 +636,7 @@ class TestTriangle : GLvertices {
         let alpha : [GLfloat] = [1, 1, 1]
         
         drawtype = GLenum(GL_TRIANGLES)
-        prepare_vao(vex, normal: normal, color: color, alpha: alpha)
+        prepare_vao(vex: vex, normal: normal, color: color, alpha: alpha)
     }
 }
 
@@ -635,7 +644,7 @@ class TestTriangle : GLvertices {
 class GLmesh:GLvertices, MintObserver {
     
     // update open gl vertices & attribute array
-    func update(subject: MintSubject, uid: UInt) {
+    func update(_ subject: MintSubject, uid: UInt) {
         
         if uid == leafID {
             if let meshio = subject as? Mint3DPort {
@@ -649,7 +658,7 @@ class GLmesh:GLvertices, MintObserver {
                 
                 drawtype = GLenum(GL_TRIANGLES)
                 
-                prepare_vao(glmesh, normal: glnormal, color: glcolor, alpha: glalpha)
+                prepare_vao(vex: glmesh, normal: glnormal, color: glcolor, alpha: glalpha)
             }
         }
     }

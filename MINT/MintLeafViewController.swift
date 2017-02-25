@@ -36,7 +36,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     var leafName : String = ""
     
     // Xib Top level objects detain
-    var xibObjects : NSArray?
+    var xibObjects : NSArray = NSArray()
     
     //Arguments List
     var opds : [(uid: UInt, param: String, value: String, type: type)] = []
@@ -45,24 +45,23 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     /// setup leafview with xib file
     init(newID: UInt, pos: NSPoint, xib: NSNib?) {
         uid = newID
-        
         super.init()
         
-        if xib?.instantiateWithOwner(self, topLevelObjects: &xibObjects) == nil {
+        if xib?.instantiate(withOwner: self, topLevelObjects: &xibObjects) == nil {
             print("Failed to load xib, leaf view")
         } else {
             // set data source and delegate for NSTableView
-            operandList.setDataSource(self as NSTableViewDataSource)
-            operandList.setDelegate(self as NSTableViewDelegate)
+            operandList.dataSource = self as NSTableViewDataSource
+            operandList.delegate = self as NSTableViewDelegate
             
             // set drag operation mask
-            operandList.setDraggingSourceOperationMask(NSDragOperation.Link, forLocal: true)
+            operandList.setDraggingSourceOperationMask(NSDragOperation.link, forLocal: true)
             
         }
         
         leafview.frame.origin = pos
         
-        /*
+        /*_
         if let delegate = NSApplication.sharedApplication().delegate as? AppDelegate {
             controller = delegate.controller
         }
@@ -78,14 +77,14 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     
     
     // Show popover
-    @IBAction func showOpdsPopover(sender: AnyObject) {
+    @IBAction func showOpdsPopover(_ sender: AnyObject) {
         
         if let view = sender as? NSView {
-            opdsPopover.showRelativeToRect(view.bounds, ofView: view, preferredEdge: NSRectEdge.MaxY)
+            opdsPopover.show(relativeTo: view.bounds, of: view, preferredEdge: NSRectEdge.maxY)
         }
     }
     
-    @IBAction func export_stl(sender: AnyObject?) {
+    @IBAction func export_stl(_ sender: AnyObject?) {
         
         let command = ExportSTL(uid: uid)
         controller.sendCommand(command)
@@ -93,7 +92,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     
     // observer protocol implementation
     /// update as observer
-    func update(leafid: UInt, newopds: [SExpr], newuid: UInt, olduid: UInt) {
+    func update(_ leafid: UInt, newopds: [SExpr], newuid: UInt, olduid: UInt) {
         
         if leafid == uid {
             
@@ -144,15 +143,15 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                 
             // if only 'newuid' is '0', remove 'olduid' opd from list
             } else if newuid == 0 {
-                for i in 0.stride(to: opds.count, by: 1) {
+                for i in stride(from: 0, to: opds.count, by: 1) {
                     if opds[i].uid == olduid {
-                        opds.removeAtIndex(i)
+                        opds.remove(at: i)
                     }
                 }
                 
             // if both of uids are not '0', overwrite 'olduid' opd by 'newuid'
             } else {
-                for i in 0.stride(to: opds.count, by: 1) {
+                for i in stride(from: 0, to: opds.count, by: 1) {
                     if opds[i].uid == olduid {
                         if let newopd = newopds.last {
                             opds[i].uid = newuid
@@ -195,7 +194,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     }
     
     /// err output
-    func update(subject: MintSubject, uid: UInt) {
+    func update(_ subject: MintSubject, uid: UInt) {
         if self.uid == uid {
             if let errout = subject as? MintErrPort {
                 output.stringValue = errout.err
@@ -204,7 +203,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     }
     
     /// init observer's proc and opd value
-    func init_opds(opds: [SExpr], labels: [String]) {
+    func init_opds(_ opds: [SExpr], labels: [String]) {
         
         var labels2 = labels
         
@@ -217,7 +216,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
             }
         }
         
-        for i in 0.stride(to: opds.count, by: 1) {
+        for i in stride(from: 0, to: opds.count, by: 1) {
             switch opds[i] {
             case let ltrl as Literal:
                 self.opds.append((uid: ltrl.uid, param: labels2[i], value: ltrl.str("", level: 0), type: type.val))
@@ -240,7 +239,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     }
     
     /// init observer's name
-    func setName(name: String) {
+    func setName(_ name: String) {
         leafName = name
         leafview.nameTag.stringValue = name
     }
@@ -256,7 +255,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     ///////// Mint Command ////////////
     
     /// tell 'controller' when a operand is modified
-    func operand(uid: UInt ,valueDidEndEditing value: String, atRow: Int) {
+    func operand(_ uid: UInt ,valueDidEndEditing value: String, atRow: Int) {
         
         // if uid is '0', new opd added.
         if uid == 0 {
@@ -273,8 +272,8 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
         // back to focus to tableview and select next row.
         operandList.window?.makeFirstResponder(operandList)
         
-        if atRow < numberOfRowsInTableView(operandList) {
-            operandList.selectRowIndexes(NSIndexSet(index: (atRow + 1)), byExtendingSelection: false)
+        if atRow < numberOfRows(in: operandList) {
+            operandList.selectRowIndexes(IndexSet(integer: atRow + 1), byExtendingSelection: false)
         }
     }
     
@@ -289,7 +288,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     /// when dragged "argument" dropped in return button, generate link command for controller
     /// called by MintReturnButton
     
-    func setLinkFrom(leafID: UInt , withArg: UInt) {
+    func setLinkFrom(_ leafID: UInt , withArg: UInt) {
         
         if withArg != 0 {
             print("overwrite the argument (id: \(withArg)) of leaf (id: \(leafID)) and make link from leafID: \(uid)")
@@ -300,7 +299,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     
     // when dragged "return" dropped in arguments button, generate link command for controller
     // called by 'MintOperandCellView' and it's subclasses
-    func acceptLinkFrom(leafID: UInt, toArg: UInt) {
+    func acceptLinkFrom(_ leafID: UInt, toArg: UInt) {
         
         if toArg != 0 {
             print("overwrite the argument (id: \(toArg)) of leaf (id: \(uid)) and make link from leafID: \(leafID)")
@@ -319,7 +318,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     
     /// when dragged "argument" dropped in return button of "define" special form, generate ref command for controller
     /// called by MintReturnButton
-    func setRefFrom(leafID: UInt, withArg: UInt) {
+    func setRefFrom(_ leafID: UInt, withArg: UInt) {
         if withArg != 0 {
             let command = SetReference(retLeafID: self.uid, argID: withArg, argleafID: leafID)
             controller.sendCommand(command)
@@ -328,7 +327,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     
     /// when dragged "return" of "define" dropped in arguments button, generate ref command for controller
     /// called by 'MintOperandCellView' and it's subclasses
-    func acceptRefFrom(leafID: UInt, toArg: UInt) {
+    func acceptRefFrom(_ leafID: UInt, toArg: UInt) {
         
         if toArg != 0 {
             let command = SetReference(retLeafID: leafID, argID: toArg, argleafID: self.uid)
@@ -347,7 +346,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     
     /// remove argument or link when 'remove' button clicked
     /// called by 'MintOperandCellView' and it's subclasses
-    func remove(uid: UInt) {
+    func remove(_ uid: UInt) {
         for opd in opds {
             if opd.uid == uid {
                 switch opd.type {
@@ -371,7 +370,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     }
     
     /// rehape workspace to fit leaves
-    func reshapeWorkspace(newframe: CGRect) {
+    func reshapeWorkspace(_ newframe: CGRect) {
         controller.reshape_workspace(newframe)
     }
 
@@ -380,12 +379,12 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     
     // Provide arguments list. NSTableView delegate & data source implementation
     /// Provide number of list
-    func numberOfRowsInTableView(tableView: NSTableView) -> Int {
+    func numberOfRows(in tableView: NSTableView) -> Int {
         return opds.count + 1 // for adding new argument, plus 1 row.
     }
     
     /// Provide data for NSTableView
-    func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         
         let identifier : String
         
@@ -400,7 +399,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
             identifier = ""
         }
         
-        let result: AnyObject? = tableView.makeViewWithIdentifier(identifier , owner: self)
+        let result: AnyObject? = tableView.make(withIdentifier: identifier , owner: self)
         
         switch identifier {
         case "paramCell":
@@ -414,7 +413,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                     paramView.textField?.stringValue = "add value"
                 }
                 
-                paramView.textField?.editable = false
+                paramView.textField?.isEditable = false
                 paramView.controller = self
             }
         case "valueCell":
@@ -424,20 +423,20 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                     valueView.textField?.stringValue = opds[row].value
                     switch opds[row].type {
                     case .val:
-                        valueView.textField?.editable = true
+                        valueView.textField?.isEditable = true
                     case .proc:
-                        valueView.textField?.editable = true
+                        valueView.textField?.isEditable = true
                     case .link:
-                        valueView.textField?.editable = false
+                        valueView.textField?.isEditable = false
                     case .ref:
-                        valueView.textField?.editable = true
+                        valueView.textField?.isEditable = true
                     case .def:
-                        valueView.textField?.editable = false
+                        valueView.textField?.isEditable = false
                     }
                 } else {
                     valueView.uid = 0
                     valueView.textField?.stringValue = ""
-                    valueView.textField?.editable = true
+                    valueView.textField?.isEditable = true
                 }
                 
                 valueView.controller = self
@@ -446,9 +445,9 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
             if let rmView = result as? MintRmOpdCellView { //replace MintRefCellView
                 if opds.count > row {
                     rmView.uid = opds[row].uid
-                    rmView.rmbutton.enabled = true
+                    rmView.rmbutton.isEnabled = true
                 } else {
-                    rmView.rmbutton.enabled = false
+                    rmView.rmbutton.isEnabled = false
                 }
                 
                 rmView.controller = self
@@ -465,15 +464,14 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     
     // Dragging source for tableview
     /// Provide type of return value to NSPasteboard for dragging operation
-    func tableView(tableView: NSTableView, writeRowsWithIndexes rowIndexes: NSIndexSet, toPasteboard pboard: NSPasteboard) -> Bool {
+    func tableView(_ tableView: NSTableView, writeRowsWith rowIndexes: IndexSet, to pboard: NSPasteboard) -> Bool {
         pboard.clearContents()
         pboard.declareTypes(["type", "argLeafID", "argumentID"], owner: self)
         
         if pboard.setString("argumentLink", forType:"type" ) {
             
             if pboard.setString("\(uid)", forType: "argLeafID") {
-                let row = rowIndexes.firstIndex
-                if row != NSNotFound {
+                if let row = rowIndexes.first {
                     if opds.count > row {
                         if pboard.setString("\(opds[row].uid)", forType: "argumentID") {
                             return true
@@ -486,20 +484,20 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     }
     
     // accept drop from return button
-    func tableView(tableView: NSTableView, acceptDrop info: NSDraggingInfo, row: Int, dropOperation: NSTableViewDropOperation) -> Bool {
+    func tableView(_ tableView: NSTableView, acceptDrop info: NSDraggingInfo, row: Int, dropOperation: NSTableViewDropOperation) -> Bool {
         let pboad = info.draggingPasteboard()
-        let pbitems = pboad.readObjectsForClasses([NSPasteboardItem.self], options: nil)
+        let pbitems = pboad.readObjects(forClasses: [NSPasteboardItem.self], options: nil)
         
         if let item = pbitems?.last as? NSPasteboardItem {
             // pasteboardItemDataProvider is called when below line excuted.
             // but not reflect to return value. API bug??
             // After excution of the line, returnLeafID become available.
-            Swift.print(item.stringForType("com.mint.mint.returnLeafID"), terminator: "\n")
+            Swift.print(item.string(forType: "com.mint.mint.returnLeafID") ?? "nil", terminator: "\n")
         }
         
         switch info.draggingSourceOperationMask() {
-        case NSDragOperation.Link:
-            if let leafIDstr = pboad.stringForType("com.mint.mint.returnLeafID") {
+        case NSDragOperation.link:
+            if let leafIDstr = pboad.string(forType: "com.mint.mint.returnLeafID") {
                 
                 if opds.count > row {
                     let leafID = NSString(string: leafIDstr).intValue
@@ -507,7 +505,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                     return true
                 }
                 
-            } else if let leafIDstr = pboad.stringForType("com.mint.mint.referenceLeafID") {
+            } else if let leafIDstr = pboad.string(forType: "com.mint.mint.referenceLeafID") {
                 
                 if opds.count > row {
                     let leafID = NSString(string: leafIDstr).intValue
@@ -537,12 +535,12 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
     
     // 'LinkView' observer pattern implementation
     /// register 'Observer' for view
-    func registerLinkObserverForView(obs: MintLinkObserver) {
+    func registerLinkObserverForView(_ obs: MintLinkObserver) {
         leafview.registerObserver(obs)
     }
     
     /// remove 'Observer' from view
-    func removeLinkObserverFromView(obs: MintLinkObserver) {
+    func removeLinkObserverFromView(_ obs: MintLinkObserver) {
         leafview.removeObserver(obs)
     }
 }

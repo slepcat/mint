@@ -55,7 +55,7 @@ import Cocoa
         }
         
         // to deter auto repositining when workspace view resized
-        autoresizingMask = NSAutoresizingMaskOptions.ViewNotSizable
+        autoresizingMask = NSAutoresizingMaskOptions.viewNotSizable
         
         nameTag.delegate = self
         
@@ -63,7 +63,7 @@ import Cocoa
         boundPath?.lineWidth = 3.0
     }
     
-    override func drawRect(dirtyRect: NSRect) {
+    override func draw(_ dirtyRect: NSRect) {
         if let background = boundPath {
             color.set()
             
@@ -81,8 +81,8 @@ import Cocoa
         }
     }
     
-    override func mouseDown(theEvent: NSEvent) {
-        let pt : NSPoint = convertPoint(theEvent.locationInWindow, fromView: nil)
+    override func mouseDown(with theEvent: NSEvent) {
+        let pt : NSPoint = convert(theEvent.locationInWindow, from: nil)
         let hit : Bool = isPointInItem(pt)
         
         if hit {
@@ -90,9 +90,9 @@ import Cocoa
         }
     }
     
-    override func mouseDragged(theEvent: NSEvent) {
+    override func mouseDragged(with theEvent: NSEvent) {
         if dragging {
-            setNeedsDisplayInRect(frame)
+            setNeedsDisplay(frame)
             
             var pos : NSPoint = frame.origin
             pos.x += theEvent.deltaX
@@ -112,15 +112,15 @@ import Cocoa
                 link.update(controller.uid, pos: frame.origin)
             }
             
-            autoscroll(theEvent)
+            autoscroll(with: theEvent)
             
-            setNeedsDisplayInRect(frame)
+            setNeedsDisplay(frame)
             
             //controller.leaf_moved()
         }
     }
     
-    override func mouseUp(theEvent: NSEvent) {
+    override func mouseUp(with theEvent: NSEvent) {
         dragging = false
         
         //print("before reshape x: \(frame.origin.x), y: \(frame.origin.y), width: \(frame.size.width), height:\(frame.size.height)")
@@ -135,16 +135,16 @@ import Cocoa
         
     }
     
-    func isPointInItem(pos: NSPoint) -> Bool {
+    func isPointInItem(_ pos: NSPoint) -> Bool {
         if let path = boundPath {
-            return path.containsPoint(pos)
+            return path.contains(pos)
         } else {
             return false
         }
     }
     
     // trigger remove by delete keydown
-    override func keyDown(theEvent: NSEvent) {
+    override func keyDown(with theEvent: NSEvent) {
         
         let keystroke = theEvent.charactersIgnoringModifiers
         
@@ -160,7 +160,7 @@ import Cocoa
             }
         }
         
-        super.keyDown(theEvent)
+        super.keyDown(with: theEvent)
     }
     
     // focus ring management
@@ -182,7 +182,7 @@ import Cocoa
     }
     
     // name edit event handling
-    func control(control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
+    func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
         
         Swift.print("leaf name edited at \(self.nameTag.stringValue)")
         
@@ -196,16 +196,17 @@ import Cocoa
     // link observer pattern implementation
     /// register observer
     
-    func registerObserver(observer: MintLinkObserver) {
+    func registerObserver(_ observer: MintLinkObserver) {
         linkviews.append(observer)
     }
     
-    func removeObserver(observer: MintLinkObserver) {
+    func removeObserver(_ observer: MintLinkObserver) {
         for i in 0..<linkviews.count {
             if linkviews[i] === observer {
-                linkviews.removeAtIndex(i)
+                linkviews.remove(at: i)
                 break
             }
+            
         }
     }
 }
@@ -219,28 +220,28 @@ class MintReturnButton : NSButton, NSDraggingSource, NSPasteboardItemDataProvide
     // drag from argument
     /// set acceptable drag items
     override func awakeFromNib() {
-        self.registerForDraggedTypes(["argumentID"])
+        self.register(forDraggedTypes: ["argumentID"])
     }
     
     /// Tell valid drag operation type. need to match with op. type of drag source.
-    override func draggingEntered(sender: NSDraggingInfo) -> NSDragOperation {
+    override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
         switch sender.draggingSourceOperationMask() {
-        case NSDragOperation.Link:
-            return NSDragOperation.Link
+        case NSDragOperation.link:
+            return NSDragOperation.link
         default: //anything else
-            return NSDragOperation.None
+            return []
         }
     }
     
     /// accept drop & tell 'controller' to generate new link
-    override func performDragOperation(sender: NSDraggingInfo) -> Bool {
+    override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
         
         let arg = sender.draggingPasteboard()
         switch sender.draggingSourceOperationMask() {
-        case NSDragOperation.Link:
-            if let type = arg.stringForType("type") {
+        case NSDragOperation.link:
+            if let type = arg.string(forType: "type") {
                 if type == "argumentLink" {
-                    if let argIDstr = arg.stringForType("argumentID"), let leafIDstr = arg.stringForType("argLeafID") {
+                    if let argIDstr = arg.string(forType: "argumentID"), let leafIDstr = arg.string(forType: "argLeafID") {
                         let leafID = NSString(string: leafIDstr).integerValue
                         let argID = NSString(string: argIDstr).integerValue
                         
@@ -262,7 +263,7 @@ class MintReturnButton : NSButton, NSDraggingSource, NSPasteboardItemDataProvide
     
     //  source drag operation to argument
     /// override mousedown()
-    override func mouseDown(theEvent: NSEvent) {
+    override func mouseDown(with theEvent: NSEvent) {
         let pbItem : NSPasteboardItem = NSPasteboardItem()
         
         if controller.leafName == "define" {
@@ -275,13 +276,14 @@ class MintReturnButton : NSButton, NSDraggingSource, NSPasteboardItemDataProvide
         
         let draggingRect = self.bounds
         dragItem.setDraggingFrame(draggingRect, contents: self.image!)
-        let draggingSession = self.beginDraggingSessionWithItems([dragItem], event:theEvent, source:self)
+        let draggingSession = self.beginDraggingSession(with: [dragItem], event:theEvent, source:self)
         draggingSession.animatesToStartingPositionsOnCancelOrFail = true
-        draggingSession.draggingFormation = NSDraggingFormation.None
+        draggingSession.draggingFormation = NSDraggingFormation.none
     }
     
     // provide pasteboard self 'leafID' and value type 'returnLink'
-    func pasteboard(pasteboard: NSPasteboard?, item: NSPasteboardItem, provideDataForType type: String) {
+    func pasteboard(_
+        pasteboard: NSPasteboard?, item: NSPasteboardItem, provideDataForType type: String) {
         if let pb = pasteboard {
             pb.clearContents()
             if controller.leafName == "define" {
@@ -304,12 +306,12 @@ class MintReturnButton : NSButton, NSDraggingSource, NSPasteboardItemDataProvide
     }
     
     /// drag operation type
-    func draggingSession(session: NSDraggingSession, sourceOperationMaskForDraggingContext context: NSDraggingContext) -> NSDragOperation {
+    func draggingSession(_ session: NSDraggingSession, sourceOperationMaskFor context: NSDraggingContext) -> NSDragOperation {
         switch context {
-        case .WithinApplication:
-            return NSDragOperation.Link
+        case .withinApplication:
+            return NSDragOperation.link
         default:
-            return NSDragOperation.None
+            return []
         }
     }
 }
@@ -320,26 +322,26 @@ class MintArgumentButton : NSButton {
     // drag from return value
     /// set acceptable drag items
     override func awakeFromNib() {
-        self.registerForDraggedTypes(["com.mint.mint.returnLeafID", "com.mint.mint.referenceLeafID"])
+        self.register(forDraggedTypes: ["com.mint.mint.returnLeafID", "com.mint.mint.referenceLeafID"])
     }
     
     // 'MintArgumentButton just show argument list. Drop will be catched by 'MintArgumentCell'
-    override func draggingEntered(sender: NSDraggingInfo) -> NSDragOperation {
+    override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
         
         switch sender.draggingSourceOperationMask() {
-        case NSDragOperation.Link:
+        case NSDragOperation.link:
             if controller.isLinkReqAcceptable() {
                 
                 controller.showOpdsPopover(self)
-                return NSDragOperation.Link
+                return NSDragOperation.link
             }
         default:
             break
         }
-        return NSDragOperation.None
+        return []
     }
     
-    override func performDragOperation(sender: NSDraggingInfo) -> Bool {
+    override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
         return false
     }
 }
@@ -373,7 +375,7 @@ class LinkView : NSView, MintLinkObserver {
     }
     */
     
-    override func drawRect(dirtyRect: NSRect) {
+    override func draw(_ dirtyRect: NSRect) {
         
         if needCalc {
             calcLinkPath()
@@ -384,7 +386,7 @@ class LinkView : NSView, MintLinkObserver {
         path.stroke()
     }
     
-    override func hitTest(aPoint: NSPoint) -> NSView? {
+    override func hitTest(_ point: NSPoint) -> NSView? {
         return nil
     }
     
@@ -392,10 +394,10 @@ class LinkView : NSView, MintLinkObserver {
         
         path = NSBezierPath()
         
-        let argPtLocal = self.convertPoint(argPoint, fromView:self.superview)
-        let retPtLocal = self.convertPoint(retPoint, fromView:self.superview)
+        let argPtLocal = self.convert(argPoint, from:self.superview)
+        let retPtLocal = self.convert(retPoint, from:self.superview)
         
-        path.moveToPoint(argPtLocal)
+        path.move(to: argPtLocal)
         
         let ctpt1 : NSPoint
         let ctpt2 : NSPoint
@@ -413,13 +415,13 @@ class LinkView : NSView, MintLinkObserver {
             }
         }
         
-        path.curveToPoint(retPtLocal, controlPoint1: ctpt1, controlPoint2: ctpt2)
+        path.curve(to: retPtLocal, controlPoint1: ctpt1, controlPoint2: ctpt2)
         
         needCalc = false
     }
     
-    func update(leafID: UInt, pos: NSPoint) {
-        setNeedsDisplayInRect(frame)
+    func update(_ leafID: UInt, pos: NSPoint) {
+        setNeedsDisplay(frame)
         
         if leafID == argleafID {
             argPoint = NSPoint(x: pos.x + 95, y: pos.y + 42)
@@ -437,7 +439,7 @@ class LinkView : NSView, MintLinkObserver {
         
         needCalc = true
         
-        setNeedsDisplayInRect(frame)
+        setNeedsDisplay(frame)
     }
     
     func setRefColor() {

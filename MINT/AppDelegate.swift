@@ -8,6 +8,8 @@
 
 import Cocoa
 
+@NSApplicationMain
+
 class AppDelegate: NSObject, NSApplicationDelegate {
                             
     @IBOutlet weak var window: NSWindow!
@@ -18,7 +20,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MINT Controller
 
-    func applicationDidFinishLaunching(aNotification: NSNotification) {
+    func applicationDidFinishLaunching(_ notification: Notification) {
         // Insert code here to initialize your application
         
         // prepare MintInterpreter
@@ -36,18 +38,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         leafpanel.updateContents(interpreter.defined_exps())
     }
     
-    func applicationShouldTerminate(sender: NSApplication) -> NSApplicationTerminateReply {
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplicationTerminateReply {
         let command = AppQuit()
         controller.sendCommand(command)
         
         if command.willQuit {
-            return .TerminateNow
+            return .terminateNow
         } else {
-            return .TerminateCancel
+            return .terminateCancel
         }
     }
     
-    func applicationWillTerminate(aNotification: NSNotification) {
+    func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
         
     }

@@ -11,13 +11,13 @@ import Foundation
 // Observer Pattern protocol for 'ModelView' and 'MintInterpreter'
 // Tell change of 'Leaf' model to 'ModelView' to update 3D model view.
 protocol MintObserver:class { // observer must be class type
-    func update(subject: MintSubject, uid: UInt)//tell observer which leaves are updated
+    func update(_ subject: MintSubject, uid: UInt)//tell observer which leaves are updated
 }
 
 protocol MintSubject:class {
     // Observer register & remove
-    func registerObserver(observer: MintObserver)
-    func removeObserver(observer: MintObserver)
+    func registerObserver(_ observer: MintObserver)
+    func removeObserver(_ observer: MintObserver)
 }
 
 // Observer Pattern protocol for 'LeafView' and 'MintController'
@@ -25,31 +25,31 @@ protocol MintSubject:class {
 protocol MintLeafObserver:class {
     var uid : UInt {get set}
     
-    func init_opds(args: [SExpr], labels:[String])
-    func setName(name: String)
-    func update(leafid: UInt, newopds: [SExpr], newuid: UInt, olduid: UInt)
+    func init_opds(_ args: [SExpr], labels:[String])
+    func setName(_ name: String)
+    func update(_ leafid: UInt, newopds: [SExpr], newuid: UInt, olduid: UInt)
 }
 
 protocol MintLeafSubject:class{
-    func registerObserver(observer: MintLeafObserver)
-    func removeObserver(observer: MintLeafObserver)
+    func registerObserver(_ observer: MintLeafObserver)
+    func removeObserver(_ observer: MintLeafObserver)
 }
 
 // Observer Pattern protocol for 'LinkView' to update link path
 protocol MintLinkObserver:class {
-    func update(leafID: UInt, pos: NSPoint)
+    func update(_ leafID: UInt, pos: NSPoint)
 }
 
 protocol MintLinkSubject: class {
-    func registerObserver(observer: MintLinkObserver)
-    func removeObserver(observer: MintLinkObserver)
+    func registerObserver(_ observer: MintLinkObserver)
+    func removeObserver(_ observer: MintLinkObserver)
 }
 
 protocol MintCommand {
     weak var workspace: MintWorkspaceController! {get set}
     weak var modelView: MintModelViewController! {get set}
     weak var interpreter: MintInterpreter! {get set}
-    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter)
+    func prepare(_ workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter)
     func execute()
     func undo()
     func redo()

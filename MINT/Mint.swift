@@ -16,15 +16,15 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     
     override init() {
         
-        MintStdPort.get.setPort(Mint3DPort())
+        MintStdPort.get.setPort(newPort: Mint3DPort())
         MintStdPort.get.setErrPort(MintErrPort())
-        MintStdPort.get.setReadPort(MintImportPort())
+        MintStdPort.get.setReadPort(newPort: MintImportPort())
         
         super.init()
     }
     
     // register observer (mint leaf view) protocol
-    func registerObserver(observer: MintLeafObserver) {
+    func registerObserver(_ observer: MintLeafObserver) {
         observers.append(observer)
         let obs = lookup(observer.uid)
         
@@ -44,24 +44,24 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     }
     
     // remove observer
-    func removeObserver(observer: MintLeafObserver) {
-        for i in 0.stride(to: observers.count, by: 1) {
+    func removeObserver(_ observer: MintLeafObserver) {
+        for i in stride(from: 0, to: observers.count, by: 1) {
             if observers[i] === observer {
-                observers.removeAtIndex(i)
+                observers.remove(at: i)
                 break
             }
         }
     }
     
     // update observer
-    func update(leafid: UInt, newopds:[SExpr], newuid: UInt, olduid: UInt) {
+    func update(_ leafid: UInt, newopds:[SExpr], newuid: UInt, olduid: UInt) {
         for obs in observers {
             obs.update(leafid, newopds: newopds, newuid: newuid, olduid: olduid)
         }
     }
     
     // lookup uid of s-expression which include designated uid object.
-    public func lookup_leaf_of(uid: UInt) -> UInt? {
+    public func lookup_leaf_of(_ uid: UInt) -> UInt? {
         for tree in trees {
             if tree.uid == uid {
                 return uid
@@ -76,7 +76,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         return nil
     }
     
-    public func rec_lookup_leaf(uid: UInt, expr: Pair) -> UInt? {
+    public func rec_lookup_leaf(_ uid: UInt, expr: Pair) -> UInt? {
         var unchecked : [Pair] = []
         let chain = gen_pairchain_of_leaf(expr)
         
@@ -111,7 +111,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         return nil
     }
     
-    private func gen_pairchain_of_leaf(exp:SExpr) -> [Pair] {
+    private func gen_pairchain_of_leaf(_ exp:SExpr) -> [Pair] {
         var acc : [Pair] = []
         var head = exp
         
@@ -128,7 +128,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     
     ///// run around /////
     
-    public func run_around(uid : UInt) {
+    public func run_around(_ uid : UInt) {
         if autoupdate {
             eval(uid)
         }
@@ -136,10 +136,11 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     
     ///// Manipulating S-Expression /////
     
-    public func newSExpr(rawstr: String) -> UInt? {
+    
+    public func newSExpr(_ rawstr: String) -> UInt? {
         
         // internal function to generate s-expression from a proc
-        func genSExp(proc: Form) -> Pair {
+        func genSExp(_ proc: Form) -> Pair {
             
             let head = Pair(car: proc)
             var ct = head
@@ -193,16 +194,16 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         return nil//failed to add exp
     }
     
-    public func remove(uid: UInt) {
+    public func remove(_ uid: UInt) {
         
-        for i in 0.stride(to: trees.count, by: 1) {
+        for i in stride(from:0, to: trees.count, by: 1) {
             let res = trees[i].lookup_exp(uid)
             if !res.target.isNull() {
                 
                 let opds = delayed_list_of_values(res.target)
                 
                 if res.conscell.isNull() {
-                    trees.removeAtIndex(i)
+                    trees.remove(at: i)
                     
                 } else if let pair = res.conscell as? Pair {
                     
@@ -232,7 +233,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         //return MNull()
     }
     
-    public func add_arg(uid: UInt, rawstr: String) -> UInt {
+    public func add_arg(_ uid: UInt, rawstr: String) -> UInt {
         let res = lookup(uid)
         if let pair = res.target as? Pair {
             var head = pair
@@ -255,7 +256,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         return 0
     }
     
-    public func overwrite_arg(uid: UInt, leafid: UInt, rawstr: String) -> UInt {
+    public func overwrite_arg(_ uid: UInt, leafid: UInt, rawstr: String) -> UInt {
         let res = lookup(uid)
         if let pair = res.conscell as? Pair {
             pair.car = read(rawstr + "\n")
@@ -270,7 +271,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         return 0
     }
     
-    public func link_toArg(ofleafid:UInt, uid: UInt, fromUid: UInt) {
+    public func link_toArg(_ ofleafid:UInt, uid: UInt, fromUid: UInt) {
         let res = lookup(uid)
         let rewrite = lookup(fromUid)
         
@@ -282,10 +283,11 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         }
         
         // remove from trees of interpreter
-        for i in 0.stride(to: trees.count, by: 1) {
+        for i in stride(from: 0, to: trees.count, by: 1) {
             if trees[i].uid == fromUid {
-                trees.removeAtIndex(i)
+                trees.remove(at: i)
                 print("leaf (id: \(fromUid)) removed from interpreter trees", terminator: "\n")
+                break
             }
         }
         
@@ -305,7 +307,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         print_exps()
     }
     
-    public func unlink_arg(uid: UInt, ofleafid: UInt) {
+    public func unlink_arg(_ uid: UInt, ofleafid: UInt) {
         let res = lookup(uid)
         
         //if !res.target.isNull() {
@@ -324,7 +326,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         }
     }
     
-    public func remove_arg(uid:UInt, ofleafid: UInt) {
+    public func remove_arg(_ uid:UInt, ofleafid: UInt) {
         let removedArg = lookup(uid)
         let parent = lookup(removedArg.conscell.uid)
         
@@ -337,7 +339,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         }
     }
     
-    public func set_ref(toArg:UInt, ofleafid:UInt, symbolUid: UInt) -> UInt?{
+    public func set_ref(_ toArg:UInt, ofleafid:UInt, symbolUid: UInt) -> UInt?{
         let def = lookup(symbolUid)
         
         if let pair = def.target as? Pair {
@@ -355,7 +357,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         return nil
     }
     
-    public func move_arg(uid: UInt, toNextOfUid: UInt) {
+    public func move_arg(_ uid: UInt, toNextOfUid: UInt) {
         let nextTo = lookup(toNextOfUid)
         let moveArg = lookup(uid)
         
@@ -371,7 +373,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     
     ///// output /////
     
-    public func str_with_pos(_positions: [(uid: UInt, pos: NSPoint)]) -> String {
+    public func str_with_pos(_ _positions: [(uid: UInt, pos: NSPoint)]) -> String {
         var positions = _positions
         var acc : String = ""
         
@@ -384,8 +386,8 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     
     ///// read Env /////
     
-    public func isSymbol_as_global(exp:MSymbol) -> Bool {
-        if let _ = global.hash_table.indexForKey(exp.key) {
+    public func isSymbol_as_global(_ exp:MSymbol) -> Bool {
+        if let _ = global.hash_table.index(forKey: exp.key) {
             return true
         } else if !autoupdate {
             // if autoupdate is off, global table may not have the key yet
@@ -396,7 +398,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         }
     }
     
-    public func isSymbol_as_proc(exp: MSymbol) -> Bool {
+    public func isSymbol_as_proc(_ exp: MSymbol) -> Bool {
         if let _ = global.hash_table[exp.key] as? Procedure {
             return true
         } else {
@@ -442,7 +444,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     }*/
     
     /// check if designated symbol is declaration of define variable or define itself
-    public func isDeclaration_of_var(exp: SExpr) -> Bool {
+    public func isDeclaration_of_var(_ exp: SExpr) -> Bool {
         if let i = lookup_treeindex_of(exp.uid) {
             let path = rec_root2leaf_path(exp.uid, exps: trees[i]) // <- macro expansion : todo
             
@@ -485,7 +487,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     
     
     // check if designated uid is define or lambda
-    public func isDefine(exp: SExpr) -> Bool {
+    public func isDefine(_ exp: SExpr) -> Bool {
         
         // todo: macro expansion
         
@@ -501,7 +503,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     
     /// check if designated exp is display
     
-    public func isDisplay(exp: SExpr) -> Bool {
+    public func isDisplay(_ exp: SExpr) -> Bool {
         
         // todo : macro expansion
         
@@ -513,7 +515,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     }
     
     /// search interpreter trees to get node who define designated symbol
-    public func who_define(exp:MSymbol) -> UInt? {
+    public func who_define(_ exp:MSymbol) -> UInt? {
         
         if isSymbol_as_proc(exp) {
             return nil
@@ -570,7 +572,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
             }
             
             // if local define is not found, search top level
-            for j in 0.stride(to: trees.count ,by: 1) {
+            for j in stride(from: 0, to: trees.count ,by: 1) {
                 // skip already searched tree
                 if i == j { continue }
                 
@@ -578,7 +580,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
                 let resid = rec_search_symbol(exp.key, tree: trees[j])
                 if resid > 0 {
                     // search from root to bottom
-                    let path2 = rec_root2leaf_path(resid, exps: trees[j]).reverse() //<- macro expantion point : todo
+                    let path2 = rec_root2leaf_path(resid, exps: trees[j]).reversed() //<- macro expantion point : todo
                     
                     for elem in path2 {
                         if let pair = elem as? Pair {
@@ -601,7 +603,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
     }
     
     // get chain of exps from target exp to tree root exp
-    private func rec_root2leaf_path(uid:UInt, exps:SExpr) -> [SExpr] {
+    private func rec_root2leaf_path(_ uid:UInt, exps:SExpr) -> [SExpr] {
         if let atom = exps as? Atom {
             if atom.uid == uid {
                 return [atom]
@@ -633,7 +635,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         return []
     }
     
-    private func rec_search_symbol(key: String, tree: SExpr) -> UInt {
+    private func rec_search_symbol(_ key: String, tree: SExpr) -> UInt {
         if let atom = tree as? Atom {
             if let sym = atom as? MSymbol {
                 if sym.key == key {
@@ -656,7 +658,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
         return acc
     }
     
-    private func rec_collect_symbols(tree: SExpr) -> [MSymbol] {
+    private func rec_collect_symbols(_ tree: SExpr) -> [MSymbol] {
         if let sym = tree as? MSymbol {
             if !isSymbol_as_proc(sym) {
                 return [sym]
@@ -709,12 +711,12 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
 }
 
 extension SExpr {
-    func str_with_pos(inout positions: [(uid: UInt, pos: NSPoint)], indent: String, level: Int) -> String {
+    func str_with_pos(_ positions: inout [(uid: UInt, pos: NSPoint)], indent: String, level: Int) -> String {
         
         if let _ = self as? Pair {
             
             var leveledIndent : String = ""
-            for _ in 0.stride(to: level, by: 1) {
+            for _ in stride(from: 0, to: level, by: 1) {
                 leveledIndent += indent
             }
             
@@ -723,10 +725,11 @@ extension SExpr {
             var acc : String = ""
             var pos : String = "("
             
-            for i in 0.stride(to: positions.count, by: 1) {
+            for i in stride(from: 0, to: positions.count, by: 1) {
                 if self.uid == positions[i].uid {
                     pos += "_pos_ \(positions[i].pos.x) \(positions[i].pos.y)                "
-                    positions.removeAtIndex(i)
+                    positions.remove(at: i)
+                    break
                 }
             }
             
@@ -753,7 +756,7 @@ extension SExpr {
         }
     }
     
-    private func str_pos_list_of_exprs(_opds :SExpr, inout positions: [(uid: UInt, pos: NSPoint)], indent:String, level: Int) -> [String] {
+    private func str_pos_list_of_exprs(_ _opds :SExpr, positions: inout [(uid: UInt, pos: NSPoint)], indent:String, level: Int) -> [String] {
         if let atom = _opds as? Atom {
             return [atom.str(indent, level: level)]
         } else {
@@ -761,7 +764,7 @@ extension SExpr {
         }
     }
     
-    private func tail_str_pos_list_of_exprs(_opds :SExpr, acc: [String], inout positions: [(uid: UInt, pos: NSPoint)], indent:String, level: Int) -> [String] {
+    private func tail_str_pos_list_of_exprs(_ _opds :SExpr, acc: [String], positions: inout [(uid: UInt, pos: NSPoint)], indent:String, level: Int) -> [String] {
         
         var acc2 = acc
         

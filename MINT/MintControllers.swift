@@ -23,7 +23,7 @@ class MintController:NSObject {
     var undoStack : [MintCommand] = []
     var redoStack : [MintCommand] = []
         
-    func sendCommand(newCommand: MintCommand) {
+    func sendCommand(_ newCommand: MintCommand) {
                 
         newCommand.prepare(workspace, modelView: modelView, interpreter: interpreter)
         newCommand.execute()
@@ -31,11 +31,11 @@ class MintController:NSObject {
         // todo: manage err msg
         
         undoStack.append(newCommand)
-        redoStack.removeAll(keepCapacity: false)
+        redoStack.removeAll(keepingCapacity: false)
         
         // Maximam undo is 10
         if undoStack.count > 0 {
-            undoStack.removeAtIndex(0)
+            undoStack.remove(at: 0)
         }
     }
     
@@ -61,7 +61,7 @@ extension MintController {
         workspace.edited = true
     }
     
-    func reshape_workspace(newframe: NSRect) {
+    func reshape_workspace(_ newframe: NSRect) {
         workspace.reshapeFrame(newframe)
     }
     
@@ -77,15 +77,15 @@ extension MintController {
         interpreter.cancell()
     }
     
-    @IBAction func redraw(sender: AnyObject?) {
+    @IBAction func redraw(_ sender: AnyObject?) {
         run_all()
     }
     
-    @IBAction func stop(sender: AnyObject?) {
+    @IBAction func stop(_ sender: AnyObject?) {
         cancell()
     }
     
-    @IBAction func toggleAutoupdate(sender: AnyObject?) {
+    @IBAction func toggleAutoupdate(_ sender: AnyObject?) {
         if let menuitem = sender as? NSMenuItem {
             if interpreter.autoupdate {
                 interpreter.autoupdate = false

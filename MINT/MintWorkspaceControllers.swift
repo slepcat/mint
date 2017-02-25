@@ -28,33 +28,33 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
     
     // file management
     
-    var presentedItemURL : NSURL? {
+    var presentedItemURL : URL? {
         get {
             return fileurl
         }
     }
     
-    var presentedItemOperationQueue : NSOperationQueue {
+    var presentedItemOperationQueue : OperationQueue {
         get {
             return opqueue
         }
     }
     
-    var fileurl : NSURL? = nil
-    var opqueue : NSOperationQueue = NSOperationQueue()
+    var fileurl : URL? = nil
+    var opqueue : OperationQueue = OperationQueue()
     var edited : Bool = false
     
     override func awakeFromNib() {
         NSFileCoordinator.addFilePresenter(self)
     }
     
-    func presentedItemDidMoveToURL(newURL: NSURL) {
+    func presentedItemDidMoveToURL(newURL: URL) {
         fileurl = newURL
     }
     
     // Instantiate a leaf when tool dragged to workspace from toolbar.
     // Responsible for create leaf's view and model.
-    func addLeaf(toolName:String, setName:String, pos:NSPoint, uid:UInt) -> MintLeafViewController {
+    func addLeaf(_ toolName:String, setName:String, pos:NSPoint, uid:UInt) -> MintLeafViewController {
         
         if leafViewXib == nil {
             leafViewXib = NSNib(nibNamed: "LeafView", bundle: nil)
@@ -81,7 +81,7 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
         return viewStack.last!
     }
     
-    func reshapeFrame(newframe: CGRect) {
+    func reshapeFrame(_ newframe: CGRect) {
         //let newrect = workspace.convertRect(newframe, toView: workspace)
         
         workspace.frame = mintUnionRect(workspace.frame, leaf:newframe)
@@ -89,7 +89,7 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
         //print(workspace.frame)
     }
     
-    func addLinkBetween(argleafID: UInt, retleafID: UInt, isRef: Bool) {
+    func addLinkBetween(_ argleafID: UInt, retleafID: UInt, isRef: Bool) {
         
         for link in linkviews {
             if link.argleafID == argleafID && link.retleafID == retleafID {
@@ -167,7 +167,7 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
         workspace.needsDisplay = true
     }
     
-    func removeLinkBetween(argleafID: UInt, retleafID: UInt) {
+    func removeLinkBetween(_ argleafID: UInt, retleafID: UInt) {
         // Remove link between designated leaf IDs.
         // Only removed if 'linkcounter' = 0
         
@@ -182,14 +182,14 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
                     removeLinkObserver(linkviews[i].retleafID ,link: linkviews[i])
                     
                     linkviews[i].removeFromSuperview()
-                    linkviews.removeAtIndex(i)
+                    linkviews.remove(at: i)
                 }
                 return
             }
         }
     }
     
-    func removeLinkFrom(leafID: UInt) {
+    func removeLinkFrom(_ leafID: UInt) {
         // Remove link when the leaf is deleted.
         // search links from 'linkviews' and remove the link
         
@@ -204,7 +204,7 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
                 }
                 
                 linkviews[i].removeFromSuperview()
-                linkviews.removeAtIndex(i)
+                linkviews.remove(at: i)
                 
                 i -= 1 // decrement counter because length of array is modified by 'removeAtIndex()'
             }
@@ -213,7 +213,7 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
         }
     }
     
-    func removeLinkObserver(leafID: UInt, link: LinkView) {
+    func removeLinkObserver(_ leafID: UInt, link: LinkView) {
         for view in viewStack {
             if view.uid == leafID {
                 // view.removeLinkObserverFromView(link)
@@ -222,7 +222,7 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
         }
     }
     
-    func return_value(output: String, uid: UInt) {
+    func return_value(_ output: String, uid: UInt) {
         for leaf in viewStack {
             if leaf.uid == uid {
                 leaf.output.stringValue = output
@@ -231,7 +231,7 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
         }
     }
     
-    func setNewName(leafID: UInt, newName: String) {
+    func setNewName(_ leafID: UInt, newName: String) {
         for i in 0..<viewStack.count {
             if viewStack[i].uid == leafID {
                 viewStack[i].setName(newName)
@@ -240,7 +240,8 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
         }
     }
     
-    func removeLeaf(removeID: UInt) -> MintLeafViewController? {
+    func removeLeaf(_
+        removeID: UInt) -> MintLeafViewController? {
         for i in 0..<viewStack.count {
             if viewStack[i].uid == removeID {
                 viewStack[i].removeView()
@@ -249,7 +250,7 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
                 
                 //interpreter.removeObserver(viewStack[i])
                 
-                return viewStack.removeAtIndex(i)
+                return viewStack.remove(at: i)
             }
         }
         
@@ -259,20 +260,20 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
     
     ///// workspace save and load /////
     
-    @IBAction func save(sender: AnyObject?) {
+    @IBAction func save(_ sender: AnyObject?) {
         
         let command = SaveWorkspace(leafpositions: positions())
         controller.sendCommand(command)
     }
     
-    @IBAction func load(sender: AnyObject?) {
+    @IBAction func load(_ sender: AnyObject?) {
         
         let command = LoadWorkspace()
         controller.sendCommand(command)
         
     }
     
-    @IBAction func newworkspace(sender: AnyObject?) {
+    @IBAction func newworkspace(_ sender: AnyObject?) {
         
         let command = NewWorkspace()
         controller.sendCommand(command)
@@ -316,7 +317,7 @@ class MintWorkspaceController:NSObject, NSFilePresenter {
 }
 
 
-func mintUnionRect(workspace: NSRect, leaf: NSRect) -> NSRect {
+func mintUnionRect(_ workspace: NSRect, leaf: NSRect) -> NSRect {
     
     var unionRect: NSRect = workspace
     

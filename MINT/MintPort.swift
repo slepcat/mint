@@ -32,7 +32,7 @@ class Mint3DPort : MintPort, MintSubject {
     var lines : Lines? = nil
     var viewctrl : MintModelViewController? = nil
     
-    override func write(data: SExpr, uid: UInt){
+    override func write(_ data: SExpr, uid: UInt){
         
         portid = uid
         
@@ -156,20 +156,20 @@ class Mint3DPort : MintPort, MintSubject {
         return []
     }
     
-    func registerObserver(observer: MintObserver) {
+    func registerObserver(_ observer: MintObserver) {
         obs.append(observer)
     }
     
-    func removeObserver(observer: MintObserver) {
+    func removeObserver(_ observer: MintObserver) {
         for i in 0..<obs.count {
             if obs[i] === observer {
-                obs.removeAtIndex(i)
+                obs.remove(at: i)
                 break
             }
         }
     }
     
-    override func create_port(uid: UInt) {
+    override func create_port(_ uid: UInt) {
         for id in portidlist {
             if id == uid {
                 return
@@ -182,7 +182,7 @@ class Mint3DPort : MintPort, MintSubject {
         }
     }
     
-    override func remove_port(uid: UInt) {
+    override func remove_port(_ uid: UInt) {
         for i in 0..<portidlist.count {
             if portidlist[i] == uid {
                 
@@ -190,7 +190,7 @@ class Mint3DPort : MintPort, MintSubject {
                     removeObserver(mesh)
                 }
                 
-                portidlist.removeAtIndex(i)
+                portidlist.remove(at: i)
             }
             
         }
@@ -203,7 +203,7 @@ class MintErrPort : MintPort, MintSubject {
     var obs : [MintObserver] = []
     var err : String = ""
     
-    override func write(data: SExpr, uid: UInt){
+    override func write(_ data: SExpr, uid: UInt){
         if let errmsg = data as? MStr {
             
             err = errmsg.value
@@ -217,14 +217,14 @@ class MintErrPort : MintPort, MintSubject {
         }
     }
     
-    func registerObserver(observer: MintObserver) {
+    func registerObserver(_ observer: MintObserver) {
         obs.append(observer)
     }
     
-    func removeObserver(observer: MintObserver) {
+    func removeObserver(_ observer: MintObserver) {
         for i in 0..<obs.count {
             if obs[i] === observer {
-                obs.removeAtIndex(i)
+                obs.remove(at: i)
                 break
             }
         }
@@ -233,19 +233,19 @@ class MintErrPort : MintPort, MintSubject {
 
 class MintImportPort : MintReadPort {
     
-    override func read(path: String, uid: UInt) -> SExpr {
-        if let delegate = NSApplication.sharedApplication().delegate as? AppDelegate {
+    override func read(_ path: String, uid: UInt) -> SExpr {
+        if let delegate = NSApplication.shared().delegate as? AppDelegate {
             
-            if let url = getLibPath(path, docpath: delegate.workspace.fileurl?.URLByDeletingLastPathComponent?.path) {
+            if let url = getLibPath(path, docpath: delegate.workspace.fileurl?.deletingLastPathComponent().path) {
                 
                 let coordinator = NSFileCoordinator(filePresenter: delegate.workspace)
                 let error : NSErrorPointer = nil
                 var output = ""
                 
-                coordinator.coordinateReadingItemAtURL(url, options: .WithoutChanges, error: error) { (fileurl: NSURL) in
+                coordinator.coordinate(readingItemAt: url, options: .withoutChanges, error: error) { (fileurl: URL) in
                     
                     do {
-                        output = try NSString(contentsOfURL: url, encoding: NSUTF8StringEncoding) as String
+                        output = try NSString(contentsOf: url, encoding: String.Encoding.utf8.rawValue) as String
                     } catch {
                         print("fail to open", terminator:"\n")
                         return
@@ -253,11 +253,11 @@ class MintImportPort : MintReadPort {
                 }
                 
                 // load mint file. and unwrap "_pos_" expression
-                let interpreter = delegate.controller.interpreter
+                let interpreter : MintInterpreter = delegate.controller.interpreter
                 
                 var acc : [SExpr] = []
                 
-                for exp in interpreter.readfile(output) {
+                for exp in interpreter.readfile(fileContent: output) {
                     if let pair = exp as? Pair {
                         let posunwrap = MintPosUnwrapper(expr: pair)
                         acc.append(posunwrap.unwrapped)
@@ -273,17 +273,17 @@ class MintImportPort : MintReadPort {
         return MNull()
     }
     
-    private func getLibPath(path: String, docpath: String?) -> NSURL? {
+    private func getLibPath(_ path: String, docpath: String?) -> URL? {
         
-        if NSFileManager.defaultManager().fileExistsAtPath(path) {
-            return NSURL(fileURLWithPath: path)
+        if FileManager.default.fileExists(atPath: path) {
+            return URL(fileURLWithPath: path)
         } else {
-            let bundle = NSBundle.mainBundle()
-            if let libpath = bundle.pathForResource(path, ofType: "mint") {
-                return NSURL(fileURLWithPath: libpath)
+            let bundle = Bundle.main
+            if let libpath = bundle.path(forResource: path, ofType: "mint") {
+                return URL(fileURLWithPath: libpath)
             } else if let dirpath = docpath {
-                if NSFileManager.defaultManager().fileExistsAtPath(dirpath + path) {
-                    return NSURL(fileURLWithPath: dirpath + path)
+                if FileManager.default.fileExists(atPath: dirpath + path) {
+                    return URL(fileURLWithPath: dirpath + path)
                 }
             }
         }

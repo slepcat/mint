@@ -10,8 +10,8 @@ import Foundation
 
 class MintPosUnwrapper {
     
-    private var tree : Pair? = nil
-    private var positions : [(uid: UInt, pos:NSPoint)] = []
+    fileprivate var tree : Pair? = nil
+    fileprivate var positions : [(uid: UInt, pos:NSPoint)] = []
     
     var unwrapped : SExpr {
         get {
@@ -36,7 +36,7 @@ class MintPosUnwrapper {
         positions = repair_position(tree!, pos_acc: pos)
     }
     
-    private func rec_unwrap_pos(_head: Pair, inout pos_acc: [(uid: UInt, pos: NSPoint?)]) -> Pair {
+    fileprivate func rec_unwrap_pos(_ _head: Pair, pos_acc: inout [(uid: UInt, pos: NSPoint?)]) -> Pair {
         var pos_x : Double? = nil
         var pos_y : Double? = nil
         var head = _head
@@ -90,16 +90,16 @@ class MintPosUnwrapper {
         return head
     }
     
-    private func repair_position(tree: Pair, pos_acc: [(uid: UInt, pos: NSPoint?)]) -> [(uid: UInt, pos: NSPoint)] {
+    fileprivate func repair_position(_ tree: Pair, pos_acc: [(uid: UInt, pos: NSPoint?)]) -> [(uid: UInt, pos: NSPoint)] {
         
         let rel_pos : [[UInt]] = relative_pos(tree)
         
         var result : [(uid: UInt, pos:NSPoint)] = []
         
-        for depth in 0.stride(to:rel_pos.count, by:1) {
-            for num in 0.stride(to:rel_pos[depth].count, by:1) {
+        for depth in stride(from: 0, to:rel_pos.count, by:1) {
+            for num in stride(from: 0, to:rel_pos[depth].count, by:1) {
                 
-                if let pos = get_pos(pos_acc, uid: rel_pos[depth][num]) {
+                if let pos = get_pos(positions: pos_acc, uid: rel_pos[depth][num]) {
                     
                     result.append((rel_pos[depth][num], pos))
                 } else {
@@ -112,18 +112,18 @@ class MintPosUnwrapper {
         return result
     }
     
-    private func relative_pos(tree: Pair) -> [[UInt]] {
+    fileprivate func relative_pos(_ tree: Pair) -> [[UInt]] {
         
         var acc_pos : [[UInt]] = []
         
         // add head leaf
         acc_pos.append([tree.uid])
-        rec_rel_pos(tree, rel_pos: &acc_pos, depth: 1)
+        rec_rel_pos(tree: tree, rel_pos: &acc_pos, depth: 1)
         
         return acc_pos
     }
     
-    private func rec_rel_pos(tree: Pair, inout rel_pos: [[UInt]], depth: Int){
+    fileprivate func rec_rel_pos(tree: Pair, rel_pos: inout [[UInt]], depth: Int){
         let ops = delayed_list_of_values(tree)
         
         for op in ops {
@@ -133,12 +133,12 @@ class MintPosUnwrapper {
                 } else {
                     rel_pos[depth].append(pair.uid)
                 }
-                rec_rel_pos(pair, rel_pos: &rel_pos, depth: depth + 1)
+                rec_rel_pos(tree: pair, rel_pos: &rel_pos, depth: depth + 1)
             }
         }
     }
     
-    private func get_pos(positions: [(uid: UInt, pos: NSPoint?)], uid: UInt) -> NSPoint? {
+    fileprivate func get_pos(positions: [(uid: UInt, pos: NSPoint?)], uid: UInt) -> NSPoint? {
         for pos in positions {
             if pos.uid == uid {
                 return pos.pos
@@ -152,7 +152,7 @@ class MintPosUnwrapper {
 struct LeafPositions {
     var positions : [(uid: UInt, pos: NSPoint)] = []
     
-    func get_pos(uid: UInt) -> NSPoint {
+    func get_pos(_ uid: UInt) -> NSPoint {
         for pos in positions {
             if pos.uid == uid {
                 return pos.pos

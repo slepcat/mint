@@ -19,17 +19,17 @@ class Shader {
     init?(shaderName:String) {
         
         //load shader source from the app bundle
-        var vxShaderSource:UnsafePointer<CChar> = getVertexShaderSource(shaderName)
-        var fgShaderSource:UnsafePointer<CChar> = getFragmentShaderSource(shaderName)
+        var vxShaderSource:UnsafePointer<CChar>? = getVertexShaderSource(shaderName)
+        var fgShaderSource:UnsafePointer<CChar>? = getFragmentShaderSource(shaderName)
         
         //check cources
         if (vxShaderSource == nil)||(fgShaderSource == nil) {
             return nil
         }
         
-        var vxSourceLength: GLint = numericCast(String.fromCString(vxShaderSource)!.lengthOfBytesUsingEncoding(NSUTF8StringEncoding))
+        var vxSourceLength: GLint = numericCast(String(cString: vxShaderSource!).lengthOfBytes(using: String.Encoding.utf8))
         
-        var fgSourceLength: GLint = numericCast(String.fromCString(fgShaderSource)!.lengthOfBytesUsingEncoding(NSUTF8StringEncoding))
+        var fgSourceLength: GLint = numericCast(String(cString: fgShaderSource!).lengthOfBytes(using: String.Encoding.utf8))
         
         //prepare shader objects
         let vxShader : GLuint = glCreateShader(UInt32(GL_VERTEX_SHADER))
@@ -75,16 +75,14 @@ class Shader {
             glGetProgramiv(self.program, UInt32(GL_INFO_LOG_LENGTH) , &buffSize)
             
             if buffSize > 0 {
-                let infoLog = UnsafeMutablePointer<CChar>.alloc(numericCast(buffSize))
+                let infoLog = UnsafeMutablePointer<CChar>.allocate(capacity: numericCast(buffSize))
                 var l:GLsizei = 0
                 
                 glGetProgramInfoLog(self.program, buffSize, &l, infoLog)
                 
-                if let info = String.fromCString(infoLog) {
-                    print(info)
-                }
+                print(String(cString: infoLog))
                 
-                infoLog.destroy()
+                infoLog.deinitialize()
             }
             
             return nil
@@ -97,15 +95,15 @@ class Shader {
         self.colorSlot = glGetAttribLocation(self.program, "SourceColor")
     }
     
-    func getShaderSource(shaderName: String, ext: String) -> UnsafePointer<CChar> {
-        let appBundle = NSBundle.mainBundle()
-        let shaderPath:String? = appBundle.pathForResource(shaderName, ofType: ext)
+    func getShaderSource(_ shaderName: String, ext: String) -> UnsafePointer<CChar>? {
+        let appBundle = Bundle.main
+        let shaderPath:String? = appBundle.path(forResource: shaderName, ofType: ext)
         
         if let path = shaderPath {
             do {
-                let shaderSource = try NSString(contentsOfFile: path, encoding:NSUTF8StringEncoding)
+                let shaderSource = try NSString(contentsOfFile: path, encoding:String.Encoding.utf8.rawValue)
                 
-                let shaderSourceC:UnsafePointer<CChar> = shaderSource.UTF8String
+                let shaderSourceC:UnsafePointer<CChar>? = shaderSource.utf8String
                 return shaderSourceC
                 
             } catch {
@@ -117,11 +115,11 @@ class Shader {
         return nil
     }
 
-    func getVertexShaderSource(shaderName: String) -> UnsafePointer<CChar> {
+    func getVertexShaderSource(_ shaderName: String) -> UnsafePointer<CChar>? {
         return getShaderSource(shaderName, ext: "vs")
     }
 
-    func getFragmentShaderSource(shaderName: String) -> UnsafePointer<CChar> {
+    func getFragmentShaderSource(_ shaderName: String) -> UnsafePointer<CChar>? {
         return getShaderSource(shaderName, ext: "fs")
     }
 }

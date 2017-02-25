@@ -24,7 +24,7 @@ class AddLeaf:MintCommand {
         self.pos = pos
     }
     
-    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
+    func prepare(_ workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
         self.workspace = workspace
         self.modelView = modelView
         self.interpreter = interpreter
@@ -47,7 +47,7 @@ class AddLeaf:MintCommand {
             if let context = context(ofLeaf: leaf.target) {
                 if context == .Display {
                     let proc = post_process(context)
-                    proc(next: leaf.target, conscell: leaf.conscell)
+                    proc(leaf.target, leaf.conscell)
                 }
             }
 
@@ -82,7 +82,7 @@ class AddOperand:MintCommand {
         self.newvalue = newvalue
     }
     
-    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
+    func prepare(_ workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
         self.workspace = workspace
         self.modelView = modelView
         self.interpreter = interpreter
@@ -96,7 +96,7 @@ class AddOperand:MintCommand {
         let added = interpreter.lookup(addedargid)
         if let context = context(ofElem: added.target) {
             let post_proc = post_process(context)
-            post_proc(next: added.target, conscell: added.conscell)
+            post_proc(added.target, added.conscell)
         }
         
         workspace.edited = true
@@ -129,7 +129,7 @@ class SetOperand:MintCommand {
         self.newvalue = newvalue
     }
     
-    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
+    func prepare(_ workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
         self.workspace = workspace
         self.modelView = modelView
         self.interpreter = interpreter
@@ -144,7 +144,7 @@ class SetOperand:MintCommand {
         
         if let context = context(ofElem: old.target) {
             let prev_proc = pre_process(context)
-            prev_proc(prev: old.target, conscell: old.conscell)
+            prev_proc(old.target, old.conscell)
         }
         
         let uid = interpreter.overwrite_arg(argid, leafid: leafid, rawstr: newvalue)
@@ -155,7 +155,7 @@ class SetOperand:MintCommand {
         let newexp = interpreter.lookup(uid)
         if let context = context(ofElem: newexp.target) {
             let post_proc = post_process(context)
-            post_proc(next: newexp.target, conscell: newexp.conscell)
+            post_proc(newexp.target, newexp.conscell)
         }
         
         workspace.edited = true
@@ -187,7 +187,7 @@ class RemoveOperand:MintCommand {
         self.leafid = ofleafid
     }
     
-    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
+    func prepare(_ workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
         self.workspace = workspace
         self.modelView = modelView
         self.interpreter = interpreter
@@ -202,7 +202,7 @@ class RemoveOperand:MintCommand {
         
         if let context = context(ofElem: old.target) {
             let prev_proc = pre_process(context)
-            prev_proc(prev: old.target, conscell: old.conscell)
+            prev_proc(old.target, old.conscell)
             
             var wasGlobal = false
             
@@ -263,7 +263,7 @@ class LinkOperand:MintCommand {
         argumentID = argID
     }
     
-    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
+    func prepare(_ workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
         self.workspace = workspace
         self.modelView = modelView
         self.interpreter = interpreter
@@ -285,7 +285,7 @@ class LinkOperand:MintCommand {
         // pre process for overwritten operand
         if let context = context(ofElem: old.target) {
             let prev_proc = pre_process(context)
-            prev_proc(prev: old.target, conscell: old.conscell)
+            prev_proc(old.target, old.conscell)
         }
         
         // pre process for linked (parent of the operand) leaf
@@ -293,14 +293,14 @@ class LinkOperand:MintCommand {
         if let context = context(ofLeaf: leaf.target) {
             if context == .Define {
                 let pre_proc = pre_process(context)
-                pre_proc(prev: leaf.target, conscell: leaf.conscell)
+                pre_proc(leaf.target, leaf.conscell)
             }
         }
         
         // pre process for linking leaf
         let added = interpreter.lookup(returnLeafID)
         let prev_proc = pre_process(.Link)
-        prev_proc(prev: added.target, conscell: added.conscell)
+        prev_proc(added.target, added.conscell)
         
         interpreter.link_toArg(argumentLeafID, uid: argumentID, fromUid: returnLeafID)
         interpreter.run_around(argumentLeafID)
@@ -309,7 +309,7 @@ class LinkOperand:MintCommand {
         // for leaf of return value
         let post_added = interpreter.lookup(returnLeafID)
         let post_proc = post_process(.Link)
-        post_proc(next: post_added.target, conscell: post_added.conscell)
+        post_proc(post_added.target, post_added.conscell)
         
         // if removed arg is link to another leaf, update ref of the leaf to new scope
         if let context = context(ofElem: old.target) {
@@ -317,7 +317,7 @@ class LinkOperand:MintCommand {
                 let post_proc = post_process(context)
                 
                 let removed = interpreter.lookup(old.target.uid)
-                post_proc(next: removed.target, conscell: removed.conscell)
+                post_proc(removed.target, removed.conscell)
             }
         }
         
@@ -325,7 +325,7 @@ class LinkOperand:MintCommand {
         if let context = context(ofLeaf: leaf.target) {
             if context == .Define {
                 let post_proc = post_process(context)
-                post_proc(next: leaf.target, conscell: leaf.conscell)
+                post_proc(leaf.target, leaf.conscell)
             }
         }
         
@@ -356,7 +356,7 @@ class RemoveLink:MintCommand {
         argumentID = argID
     }
     
-    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
+    func prepare(_ workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
         self.workspace = workspace
         self.modelView = modelView
         self.interpreter = interpreter
@@ -372,8 +372,8 @@ class RemoveLink:MintCommand {
         let pre_retleaf = interpreter.lookup(argumentID)
         let pre_proc = pre_process(.Link)
         
-        pre_proc(prev: pre_argleaf.target, conscell: pre_argleaf.conscell)
-        pre_proc(prev: pre_retleaf.target, conscell: pre_retleaf.conscell)
+        pre_proc(pre_argleaf.target, pre_argleaf.conscell)
+        pre_proc(pre_retleaf.target, pre_retleaf.conscell)
         
         interpreter.unlink_arg(argumentID, ofleafid: argleafID)
         //interpreter.run_around(argumentID)
@@ -384,8 +384,8 @@ class RemoveLink:MintCommand {
         let retleaf = interpreter.lookup(argumentID)
         let post_proc = post_process(.Link)
         
-        post_proc(next: argleaf.target, conscell: argleaf.conscell)
-        post_proc(next: retleaf.target, conscell: retleaf.conscell)
+        post_proc(argleaf.target, argleaf.conscell)
+        post_proc(retleaf.target, retleaf.conscell)
 
         workspace.edited = true
         modelView.setNeedDisplay()
@@ -417,7 +417,7 @@ class SetReference:MintCommand {
         argumentID = argID
     }
     
-    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
+    func prepare(_ workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
         self.workspace = workspace
         self.modelView = modelView
         self.interpreter = interpreter
@@ -433,7 +433,7 @@ class SetReference:MintCommand {
         if let context = context(ofElem: old.target) {
             if context != .DeclVar {
                 let pre_proc = pre_process(context)
-                pre_proc(prev: old.target, conscell: old.conscell)
+                pre_proc(old.target, old.conscell)
             } else {
                 return
             }
@@ -445,7 +445,7 @@ class SetReference:MintCommand {
             let newarg = interpreter.lookup(newargid)
             
             let post_proc = post_process(MintLeafContext.VarRef)
-            post_proc(next: newarg.target, conscell: newarg.conscell)
+            post_proc(newarg.target, newarg.conscell)
         }
         
         workspace.edited = true
@@ -475,7 +475,7 @@ class RemoveReference:MintCommand {
         argumentID = argID
     }
     
-    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
+    func prepare(_ workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
         self.workspace = workspace
         self.modelView = modelView
         self.interpreter = interpreter
@@ -488,7 +488,7 @@ class RemoveReference:MintCommand {
         if let _ = res.target as? MSymbol {
             
             let pre_proc = pre_process(.VarRef)
-            pre_proc(prev: res.target, conscell: res.conscell)
+            pre_proc(res.target, res.conscell)
             
             interpreter.remove_arg(argumentID, ofleafid: argleafID)
             interpreter.run_around(argleafID)
@@ -519,7 +519,7 @@ class RemoveLeaf:MintCommand {
         self.removeID = removeID
     }
     
-    func prepare(workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
+    func prepare(_ workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
         self.workspace = workspace
         self.modelView = modelView
         self.interpreter = interpreter
@@ -531,7 +531,7 @@ class RemoveLeaf:MintCommand {
         
         if let context = context(ofLeaf: old.target) {
             let pre_proc = pre_process(context)
-            pre_proc(prev: old.target, conscell: old.conscell)
+            pre_proc(old.target, old.conscell)
             
             var leaves : [(target: SExpr, conscell: SExpr)] = []
             
@@ -555,11 +555,11 @@ class RemoveLeaf:MintCommand {
             
             if context != .Link {
                 let post_proc = post_process(context)
-                post_proc(next: MNull.errNull, conscell: MNull.errNull)
+                post_proc(MNull.errNull, MNull.errNull)
             } else {
                 let post_proc = post_process(.Link)
                 for leaf in leaves {
-                    post_proc(next: leaf.target, conscell: leaf.conscell)
+                    post_proc(leaf.target, leaf.conscell)
                 }
             }
         }

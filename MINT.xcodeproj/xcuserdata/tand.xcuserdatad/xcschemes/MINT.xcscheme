@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0700"
+   LastUpgradeVersion = "0800"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -17,7 +17,7 @@
                BlueprintIdentifier = "A68607EB19EEC1E1005E858A"
                BuildableName = "mint.app"
                BlueprintName = "mint.temp_caseinsensitive_rename"
-               ReferencedContainer = "container:mint.xcodeproj">
+               ReferencedContainer = "container:MINT.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,7 +35,7 @@
                BlueprintIdentifier = "A68607FD19EEC1E1005E858A"
                BuildableName = "mint.temp_caseinsensitive_renameTests.xctest"
                BlueprintName = "mint.temp_caseinsensitive_renameTests"
-               ReferencedContainer = "container:mint.xcodeproj">
+               ReferencedContainer = "container:MINT.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -45,7 +45,7 @@
             BlueprintIdentifier = "A68607EB19EEC1E1005E858A"
             BuildableName = "mint.app"
             BlueprintName = "mint.temp_caseinsensitive_rename"
-            ReferencedContainer = "container:mint.xcodeproj">
+            ReferencedContainer = "container:MINT.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -68,7 +68,7 @@
             BlueprintIdentifier = "A68607EB19EEC1E1005E858A"
             BuildableName = "mint.app"
             BlueprintName = "mint.temp_caseinsensitive_rename"
-            ReferencedContainer = "container:mint.xcodeproj">
+            ReferencedContainer = "container:MINT.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <EnvironmentVariables>
@@ -94,7 +94,7 @@
             BlueprintIdentifier = "A68607EB19EEC1E1005E858A"
             BuildableName = "mint.app"
             BlueprintName = "mint.temp_caseinsensitive_rename"
-            ReferencedContainer = "container:mint.xcodeproj">
+            ReferencedContainer = "container:MINT.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

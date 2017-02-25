@@ -6,6 +6,6 @@
 //  Copyright (c) 2014年 Taizo A. All rights reserved.
 //
 
-import Cocoa
+//import Cocoa
 
-NSApplicationMain(Process.argc, Process.unsafeArgv)
+//NSApplicationMain(Process.argc, Process.unsafeArgv)

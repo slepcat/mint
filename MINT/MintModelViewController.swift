@@ -17,16 +17,16 @@ class MintModelViewController:NSWindowController, NSWindowDelegate {
 
     //weak var port : Mint3DPort!
     
-    func addMesh(uid: UInt) -> GLmesh {
+    func addMesh(_ uid: UInt) -> GLmesh {
         let newmesh = GLmesh(leafID: uid, vattrib: modelview.gl_vertex, nattrib: modelview.gl_normal, cattrib: modelview.gl_color, aattrib: modelview.gl_alpha)
         modelview.stack.append(newmesh)
         return newmesh
     }
     
-    func removeMesh(uid: UInt) -> GLmesh? {
+    func removeMesh(_ uid: UInt) -> GLmesh? {
         for i in 0..<modelview.stack.count {
             if modelview.stack[i].leafID == uid {
-                let rmd = modelview.stack.removeAtIndex(i)
+                let rmd = modelview.stack.remove(at: i)
                 
                 if let mesh = rmd as? GLmesh {
                     return mesh
@@ -41,10 +41,10 @@ class MintModelViewController:NSWindowController, NSWindowDelegate {
         modelview.stack = []
     }
     
-    @IBAction func togglePanel(sender: AnyObject?) {
+    @IBAction func togglePanel(_ sender: AnyObject?) {
         if let panel = window {
             
-            if panel.visible {
+            if panel.isVisible {
                 close()
                 toggleMenu.title = "Show View Panel"
                 
@@ -55,7 +55,7 @@ class MintModelViewController:NSWindowController, NSWindowDelegate {
         }
     }
     
-    func windowShouldClose(sender: AnyObject) -> Bool {
+    func windowShouldClose(_ sender: Any) -> Bool {
         
         toggleMenu.title = "Show View Panel"
         return true

@@ -15,44 +15,44 @@ class MintOperandCellView : NSTableCellView, NSTextFieldDelegate {
     
     override func awakeFromNib() {
         self.textField?.delegate = self
-        self.registerForDraggedTypes(["com.mint.mint.returnLeafID", "com.mint.mint.referenceLeafID"])
+        self.register(forDraggedTypes: ["com.mint.mint.returnLeafID", "com.mint.mint.referenceLeafID"])
     }
     
     // 'MintArgumentButton just show argument list. Drop will be catched by 'MintArgumentCell'
-    override func draggingEntered(sender: NSDraggingInfo) -> NSDragOperation {
+    override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
         
         switch sender.draggingSourceOperationMask() {
-        case NSDragOperation.Link:
+        case NSDragOperation.link:
             if controller.isLinkReqAcceptable() {
-                return NSDragOperation.Link
+                return NSDragOperation.link
             }
         default:
             break
         }
-        return NSDragOperation.None
+        return []
     }
     
-    override func performDragOperation(sender: NSDraggingInfo) -> Bool {
+    override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
         
         let pboad = sender.draggingPasteboard()
-        let pbitems = pboad.readObjectsForClasses([NSPasteboardItem.self], options: nil)
+        let pbitems = pboad.readObjects(forClasses: [NSPasteboardItem.self], options: nil)
         
         if let item = pbitems?.last as? NSPasteboardItem {
             // pasteboardItemDataProvider is called when below line excuted.
             // but not reflect to return value. API bug??
             // After excution of the line, returnLeafID become available.
-            Swift.print(item.stringForType("com.mint.mint.returnLeafID"), terminator: "\n")
-            Swift.print(item.stringForType("com.mint.mint.referenceLeafID"), terminator: "\n")
+            Swift.print(item.string(forType: "com.mint.mint.returnLeafID") ?? "nil", terminator: "\n")
+            Swift.print(item.string(forType: "com.mint.mint.referenceLeafID") ?? "nil", terminator: "\n")
         }
         
         switch sender.draggingSourceOperationMask() {
-        case NSDragOperation.Link:
-            if let leafIDstr = pboad.stringForType("com.mint.mint.returnLeafID") {
+        case NSDragOperation.link:
+            if let leafIDstr = pboad.string(forType: "com.mint.mint.returnLeafID") {
                 let leafID = NSString(string: leafIDstr).intValue
                 controller.acceptLinkFrom(UInt(leafID), toArg: uid)
 
                 return true
-            } else if let leafIDstr = pboad.stringForType("com.mint.mint.referenceLeafID") {
+            } else if let leafIDstr = pboad.string(forType: "com.mint.mint.referenceLeafID") {
                 let leafID = NSString(string: leafIDstr).intValue
                 controller.acceptRefFrom(UInt(leafID), toArg: uid)
                 
@@ -65,10 +65,10 @@ class MintOperandCellView : NSTableCellView, NSTextFieldDelegate {
     }
     
     
-    override func controlTextDidEndEditing(obj: NSNotification) {
+    override func controlTextDidEndEditing(_ obj: Notification) {
         Swift.print("cell value edited (id: \(uid))", terminator: "\n")
         
-        let row = controller.operandList.rowForView(self)
+        let row = controller.operandList.row(for: self)
         
         if let newvalue = self.textField?.stringValue {
             controller.operand(uid, valueDidEndEditing: newvalue, atRow: row)
@@ -80,7 +80,7 @@ class MintOperandCellView : NSTableCellView, NSTextFieldDelegate {
 class MintRmOpdCellView : MintOperandCellView {
     @IBOutlet weak var rmbutton : NSButton!
     
-    @IBAction func remove(sender: AnyObject) {
+    @IBAction func remove(_ sender: AnyObject) {
         controller.remove(uid)
     }
 }

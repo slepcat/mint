@@ -98,7 +98,7 @@ extension MintCommand {
     // post process -> add new link/ref. link and register observer
     
     // return pre process for previous element / leaf
-    func pre_process(context: MintLeafContext) -> (prev: SExpr, conscell: SExpr) -> () {
+    func pre_process(_ context: MintLeafContext) -> (_ prev: SExpr, _ conscell: SExpr) -> () {
         switch context {
         case .Link:
             return {(prev: SExpr, conscell: SExpr) in
@@ -157,7 +157,7 @@ extension MintCommand {
     */
     
     // return post process for changed element / leaf
-    func post_process(context: MintLeafContext) -> (next: SExpr, conscell: SExpr) -> () {
+    func post_process(_ context: MintLeafContext) -> (_ next: SExpr, _ conscell: SExpr) -> () {
         switch context {
         case .Link:
             return {(next: SExpr, conscell: SExpr) in
@@ -217,7 +217,7 @@ extension MintCommand {
         }
     }
     
-    private func rec_remove_ref(pair: Pair, ofleafid: UInt) {
+    private func rec_remove_ref(_ pair: Pair, ofleafid: UInt) {
         if let pair_car = pair.car as? Pair {
             rec_remove_ref(pair_car, ofleafid: pair_car.uid)
         } else if let sym = pair.car as? MSymbol {
@@ -241,7 +241,7 @@ extension MintCommand {
         }
     }
     
-    private func rec_add_ref(pair: Pair, ofleafid: UInt) {
+    private func rec_add_ref(_ pair: Pair, ofleafid: UInt) {
         if let pair_car = pair.car as? Pair {
             rec_add_ref(pair_car, ofleafid: pair_car.uid)
         } else if let sym = pair.car as? MSymbol {

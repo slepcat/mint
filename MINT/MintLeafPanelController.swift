@@ -22,17 +22,17 @@ class MintLeafPanelController:NSWindowController, NSTableViewDataSource, NSTable
     var selectedCate : String = ""
     var toolImages : [String : NSImage] = [:]
     
-    @IBAction func changeCategory(sender: AnyObject?) {
+    @IBAction func changeCategory(_ sender: AnyObject?) {
         if let selected = toolList.selectedItem {
             selectedCate = selected.title
             leafList.reloadData()
         }
     }
     
-    @IBAction func togglePanel(sender: AnyObject?) {
+    @IBAction func togglePanel(_ sender: AnyObject?) {
         if let panel = window {
             
-            if panel.visible {
+            if panel.isVisible {
                 close()
                 toggleMenu.title = "Show Leaf Panel"
                 
@@ -49,29 +49,29 @@ class MintLeafPanelController:NSWindowController, NSTableViewDataSource, NSTable
         return true
     }
     
-    func updateContents(leafDic: [String : [String]]) {
+    func updateContents(_ leafDic: [String : [String]]) {
         self.leafDic = leafDic
         selectedCate = leafDic.keys.first!
         
         // set categories to popup button
         
         toolList.removeAllItems()
-        toolList.addItemsWithTitles([String](leafDic.keys))
-        toolList.selectItemAtIndex(0)
+        toolList.addItems(withTitles: [String](leafDic.keys))
+        toolList.selectItem(at: 0)
         
         // set data source and delegate for NSTableView
-        leafList.setDataSource(self as NSTableViewDataSource)
-        leafList.setDelegate(self as NSTableViewDelegate)
+        leafList.dataSource = self as NSTableViewDataSource
+        leafList.delegate = self as NSTableViewDelegate
         
         // set drag operation mask
-        leafList.setDraggingSourceOperationMask(NSDragOperation.Generic, forLocal: true)
+        leafList.setDraggingSourceOperationMask(NSDragOperation.generic, forLocal: true)
         
         // load icon images
         
-        let appBundle = NSBundle.mainBundle()
+        let appBundle = Bundle.main
         
         // load default icon
-        let toolIconPath = appBundle.pathForResource("Cube", ofType: "tiff")
+        let toolIconPath = appBundle.path(forResource: "Cube", ofType: "tiff")
         var defaultIcon : NSImage?
         if let path = toolIconPath {
             defaultIcon = NSImage(contentsOfFile: path)
@@ -83,7 +83,7 @@ class MintLeafPanelController:NSWindowController, NSTableViewDataSource, NSTable
             for name in cate.1 {
                 
                 // load icon
-                let toolIconPath = appBundle.pathForResource(name, ofType: "tiff")
+                let toolIconPath = appBundle.path(forResource: name, ofType: "tiff")
                 if let path = toolIconPath {
                     let iconImage = NSImage(contentsOfFile: path)
                     
@@ -102,7 +102,7 @@ class MintLeafPanelController:NSWindowController, NSTableViewDataSource, NSTable
         // fin load image
     }
 
-    func numberOfRowsInTableView(tableView: NSTableView) -> Int {
+    func numberOfRows(in: NSTableView) -> Int {
         
         if let leaves = leafDic[selectedCate] {
             return leaves.count
@@ -112,8 +112,8 @@ class MintLeafPanelController:NSWindowController, NSTableViewDataSource, NSTable
     }
     
     // Provide data for NSTableView
-    func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        let result: AnyObject? = tableView.makeViewWithIdentifier("leafCell" , owner: self)
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        let result: AnyObject? = tableView.make(withIdentifier: "leafCell" , owner: self)
         
         if let toolView = result as? NSTableCellView {
             let name = leafDic[selectedCate]![row]
@@ -125,18 +125,16 @@ class MintLeafPanelController:NSWindowController, NSTableViewDataSource, NSTable
     }
     
     // Provide leaf type (=tool name) to NSPasteboard for dragging operation
-    func tableView(tableView: NSTableView, writeRowsWithIndexes rowIndexes: NSIndexSet, toPasteboard pboard: NSPasteboard) -> Bool {
+    func tableView(_ tableView: NSTableView, writeRowsWith rowIndexes: IndexSet, to pboard: NSPasteboard) -> Bool {
         pboard.clearContents()
         pboard.declareTypes(["leaf", "type"], owner: self)
-        if pboard.setString(leafDic[selectedCate]![rowIndexes.firstIndex], forType:"leaf" ) {
-            
-            if pboard.setString(selectedCate, forType: "type") {
-                return true
-            } else {
-                return false
+        if let i = rowIndexes.first {
+            if pboard.setString(leafDic[selectedCate]![i], forType:"leaf" ) {
+                if pboard.setString(selectedCate, forType: "type") {
+                    return true
+                }
             }
-        } else {
-            return false
         }
+        return false
     }
 }
