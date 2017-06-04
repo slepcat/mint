@@ -209,9 +209,9 @@ struct ViewAngle {
         
         // caricurate rotation angle
         
-        let ax : GLfloat = viewAngle.x * GLfloat(M_PI) / 180
-        let ay : GLfloat = viewAngle.y * GLfloat(M_PI) / 180
-        let az : GLfloat = viewAngle.z * GLfloat(M_PI) / 180
+        let ax : GLfloat = viewAngle.x * GLfloat(Double.pi) / 180
+        let ay : GLfloat = viewAngle.y * GLfloat(Double.pi) / 180
+        let az : GLfloat = viewAngle.z * GLfloat(Double.pi) / 180
         
         //Swift.print("perspective: \(perspective)")
         
@@ -657,6 +657,29 @@ class GLmesh:GLvertices, MintObserver {
                 buffersize = GLsizei(glmesh.count)
                 
                 drawtype = GLenum(GL_TRIANGLES)
+                
+                prepare_vao(vex: glmesh, normal: glnormal, color: glcolor, alpha: glalpha)
+            }
+        }
+    }
+}
+
+class GLlines:GLvertices, MintObserver {
+    
+    // update open gl vertices & attribute array
+    func update(_ subject: MintSubject, uid: UInt) {
+        
+        if uid == leafID {
+            if let meshio = subject as? Mint3DPort {
+                let glmesh = meshio.line_vex()
+                let glnormal = meshio.line_normal()
+                let glcolor = meshio.line_color()
+                let glalpha = meshio.line_alpha()
+                //let gldraw = meshio.drawtype()
+                
+                buffersize = GLsizei(glmesh.count)
+                
+                drawtype = GLenum(GL_LINES)
                 
                 prepare_vao(vex: glmesh, normal: glnormal, color: glcolor, alpha: glalpha)
             }

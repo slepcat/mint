@@ -36,10 +36,17 @@ class Mint3DPort : MintPort, MintSubject {
         
         portid = uid
         
+        // accumulator for polygons
         var acc: [Double] = []
         var acc_normal: [Double] = []
         var acc_color: [Float] = []
         var acc_alpha: [Float] = []
+        
+        // accumulator for lines
+        var ln_acc: [Double] = []
+        var ln_acc_normal: [Double] = []
+        var ln_acc_color: [Float] = []
+        var ln_acc_alpha: [Float] = []
         
         let args = delayed_list_of_values(data)
         
@@ -74,13 +81,21 @@ class Mint3DPort : MintPort, MintSubject {
                         }
                     }
                     
-                } /*else if let l = elm as? MLine {
-                   // implement line
-                }*/
+                } else if let l = elm as? MLineSeg {
+                    // implement line
+                    let ln = l.value
+                    ln_acc += [ln.from.pos.x, ln.from.pos.y, ln.from.pos.z,
+                                ln.to.pos.x, ln.to.pos.y, ln.to.pos.z]
+                    ln_acc_normal += [ln.from.normal.x, ln.from.normal.y, ln.from.normal.z,
+                                ln.to.normal.x, ln.to.normal.y, ln.to.normal.z]
+                    ln_acc_color += ln.from.color + ln.to.color
+                    ln_acc_alpha += [ln.from.alpha, ln.to.alpha]
+                }
             }
         }
         
         mesh = Mesh(vexes: d2farray(acc), normals: d2farray(acc_normal), colors: acc_color, alphas: acc_alpha)
+        lines = Lines(vexes: d2farray(ln_acc), normals: d2farray(ln_acc_normal), colors: ln_acc_color, alphas: ln_acc_alpha)
     }
     
     override func update() {
@@ -125,32 +140,32 @@ class Mint3DPort : MintPort, MintSubject {
     
     
     func line_vex() -> [Float] {
-        if let m = mesh {
-            return m.vexes
+        if let l = lines {
+            return l.vexes
         }
         
         return []
     }
     
     func line_normal() -> [Float] {
-        if let m = mesh {
-            return m.normals
+        if let l = lines {
+            return l.normals
         }
         
         return []
     }
     
     func line_color() -> [Float] {
-        if let m = mesh {
-            return m.colors
+        if let l = lines {
+            return l.colors
         }
         
         return []
     }
     
     func line_alpha() -> [Float] {
-        if let m = mesh {
-            return m.alphas
+        if let l = lines {
+            return l.alphas
         }
         
         return []
@@ -170,14 +185,17 @@ class Mint3DPort : MintPort, MintSubject {
     }
     
     override func create_port(_ uid: UInt) {
+        
+        //if the portid is arleady exist, exit func.
         for id in portidlist {
             if id == uid {
                 return
             }
         }
         
-        if let mesh = viewctrl?.addMesh(uid){
-            registerObserver(mesh)
+        if let _mesh = viewctrl?.addMesh(uid), let _lines = viewctrl?.addLines(uid) {
+            registerObserver(_mesh)
+            registerObserver(_lines)
             portidlist.append(uid)
         }
     }
@@ -186,11 +204,13 @@ class Mint3DPort : MintPort, MintSubject {
         for i in 0..<portidlist.count {
             if portidlist[i] == uid {
                 
-                if let mesh = viewctrl?.removeMesh(portidlist[i]) {
+                if let mesh = viewctrl?.removeMesh(portidlist[i]), let lines = viewctrl?.removeLines(portidlist[i]) {
                     removeObserver(mesh)
+                    removeObserver(lines)
                 }
                 
                 portidlist.remove(at: i)
+                break
             }
             
         }

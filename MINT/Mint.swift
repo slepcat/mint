@@ -204,7 +204,7 @@ public class MintInterpreter : Interpreter, MintLeafSubject {
                 
                 if res.conscell.isNull() {
                     trees.remove(at: i)
-                    
+                    break
                 } else if let pair = res.conscell as? Pair {
                     
                     if pair.car.uid == uid {

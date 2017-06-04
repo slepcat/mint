@@ -111,7 +111,7 @@ class LoadWorkspace:MintCommand {
     weak var modelView: MintModelViewController!
     weak var interpreter: MintInterpreter!
     
-    var temptree : SExpr = MNull.errNull
+    var temptree : SExpr = MNull()
     
     func prepare(_ workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
         self.workspace = workspace
@@ -173,7 +173,7 @@ class LoadWorkspace:MintCommand {
                 self.interpreter.trees = []
                 self.interpreter.init_env()
                 self.workspace.reset_leaves()
-                self.modelView.resetMesh()
+                self.modelView.resetMeshAndLines()
                 self.modelView.setNeedDisplay()
                 
                 if let url = panel.url {
@@ -260,7 +260,7 @@ class NewWorkspace:MintCommand {
     weak var modelView: MintModelViewController!
     weak var interpreter: MintInterpreter!
     
-    var temptree : SExpr = MNull.errNull
+    var temptree : SExpr = MNull()
     
     func prepare(_
         workspace: MintWorkspaceController, modelView: MintModelViewController, interpreter: MintInterpreter) {
@@ -298,7 +298,7 @@ class NewWorkspace:MintCommand {
         interpreter.trees = []
         interpreter.init_env()
         workspace.reset_leaves()
-        modelView.resetMesh()
+        modelView.resetMeshAndLines()
         workspace.fileurl = nil
         modelView.setNeedDisplay()
     }

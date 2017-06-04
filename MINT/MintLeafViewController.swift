@@ -106,6 +106,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                 
                 opds = []
                 
+                // ###not working code.
                 for a in opds {
                     labels.append(a.param)
                 }
@@ -146,6 +147,7 @@ class MintLeafViewController:NSObject, NSTableViewDataSource, NSTableViewDelegat
                 for i in stride(from: 0, to: opds.count, by: 1) {
                     if opds[i].uid == olduid {
                         opds.remove(at: i)
+                        break
                     }
                 }
                 

@@ -509,7 +509,7 @@ class RemoveReference:MintCommand {
 
 class RemoveLeaf:MintCommand {
     let removeID : UInt
-    var oldvalue : SExpr = MNull.errNull
+    var oldvalue : SExpr = MNull()
     
     weak var workspace:MintWorkspaceController!
     weak var modelView: MintModelViewController!
@@ -555,7 +555,7 @@ class RemoveLeaf:MintCommand {
             
             if context != .Link {
                 let post_proc = post_process(context)
-                post_proc(MNull.errNull, MNull.errNull)
+                post_proc(MNull(), MNull())
             } else {
                 let post_proc = post_process(.Link)
                 for leaf in leaves {

@@ -24,10 +24,12 @@ mint todo
 * env. var(?)
 
 ###macro
-* macro implement
+* macro implement -> Cancel
 
 ##Mint-Lisp
 * Primitive call to python interpreter(?)
 * Remove recursive call from Boolean operation. (Smaller memory consumption and suspend size of thread call stack)
 * Line Drawing
+* Runtime-type-check
+* Class/Protocol
 * Delegate Display implementation to Port. -> Done

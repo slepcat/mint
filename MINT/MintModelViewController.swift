@@ -37,7 +37,27 @@ class MintModelViewController:NSWindowController, NSWindowDelegate {
         return nil
     }
     
-    func resetMesh() {
+    func addLines(_ uid: UInt) -> GLlines {
+        let newlines = GLlines(leafID: uid, vattrib: modelview.gl_vertex, nattrib: modelview.gl_normal, cattrib: modelview.gl_color, aattrib: modelview.gl_alpha)
+        modelview.stack.append(newlines)
+        return newlines
+    }
+    
+    func removeLines(_ uid: UInt) -> GLlines? {
+        for i in 0..<modelview.stack.count {
+            if modelview.stack[i].leafID == uid {
+                let rmd = modelview.stack.remove(at: i)
+                
+                if let lines = rmd as? GLlines {
+                    return lines
+                }
+            }
+        }
+        
+        return nil
+    }
+    
+    func resetMeshAndLines() {
         modelview.stack = []
     }
     
